@@ -14,11 +14,11 @@
 
 <!-- TOPBAR -->
 <div class="topbar">
-  <div>Cleveland, Ohio — Est. 1951 &nbsp;·&nbsp; <a href="https://javlb.lt/en/" target="_blank">Part of Lithuanian American Community, Inc.</a></div>
+  <div><span data-en="Cleveland, Ohio — Est. 1951" data-lt="Klivlandas, Ohajas — Įkurta 1951 m.">Cleveland, Ohio — Est. 1951</span> &nbsp;·&nbsp; <a href="https://javlb.lt/en/" target="_blank"><span data-en="Part of Lithuanian American Community, Inc." data-lt="JAV Lietuvių Bendruomenės narys">Part of Lithuanian American Community, Inc.</span></a></div>
   <div class="topbar-social">
     <a href="https://www.facebook.com/profile.php?id=61565856471983" target="_blank">Facebook</a>
     <a href="https://www.instagram.com/cleveland_lietuviu_bendruomene" target="_blank">Instagram</a>
-    <a href="mailto:info@clacleveland.org">Contact</a>
+    <a href="mailto:info@clacleveland.org" data-en="Contact" data-lt="Susisiekti">Contact</a>
   </div>
 </div>
 
@@ -29,18 +29,18 @@
     <div class="nav-logo-lt">Clevelando Lietuvių Bendruomenė</div>
   </a>
   <ul class="nav-links" id="nav-links">
-    <li><a href="index.html" class="active">Home</a></li>
-    <li><a href="#upcoming">Events</a></li>
-    <li><a href="community.html">Community Calendar</a></li>
-    <li><a href="#journal">Journal</a></li>
-    <li><a href="#announcements">News</a></li>
-    <li><a href="#about">About</a></li>
+    <li><a href="index.html" class="active" data-en="Home" data-lt="Pradžia">Home</a></li>
+    <li><a href="#upcoming" data-en="Events" data-lt="Renginiai">Events</a></li>
+    <li><a href="community.html" data-en="Community Calendar" data-lt="Bendruomenės Kalendorius">Community Calendar</a></li>
+    <li><a href="#journal" data-en="Journal" data-lt="Archyvas">Journal</a></li>
+    <li><a href="#announcements" data-en="News" data-lt="Žinios">News</a></li>
+    <li><a href="#about" data-en="About" data-lt="Apie Mus">About</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
   <div class="nav-right">
     <div class="nav-lang">
-      <button class="lang-btn active">EN</button>
-      <button class="lang-btn">LT</button>
+      <button class="lang-btn active" data-lang="en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" data-lang="lt" onclick="setLang('lt')">LT</button>
     </div>
     <div class="hamburger" onclick="document.getElementById('nav-links').classList.toggle('open')">
       <span></span><span></span><span></span>
@@ -58,13 +58,13 @@
       <p class="hero-sub" id="hero-sub">The heartbeat of Lithuanian culture in Northeast Ohio — celebrating our heritage, connecting generations, and building a living community here on the shores of Lake Erie.</p>
     </div>
     <div class="hero-actions">
-      <a href="#upcoming" class="btn-primary">Upcoming Events</a>
-      <a href="#journal" class="btn-ghost-inv">Photo Journal</a>
+      <a href="#upcoming" class="btn-primary" data-en="Upcoming Events" data-lt="Artėjantys Renginiai">Upcoming Events</a>
+      <a href="#journal" class="btn-ghost-inv" data-en="Photo Journal" data-lt="Nuotraukų Archyvas">Photo Journal</a>
     </div>
     <div class="hero-meta">
-      <div><div class="hero-stat-num">70+</div><div class="hero-stat-label">Years Active</div></div>
-      <div><div class="hero-stat-num">E. 185th</div><div class="hero-stat-label">Heritage Corridor</div></div>
-      <div><div class="hero-stat-num">LAC</div><div class="hero-stat-label">National Affiliate</div></div>
+      <div><div class="hero-stat-num">70+</div><div class="hero-stat-label" data-en="Years Active" data-lt="Veiklos Metai">Years Active</div></div>
+      <div><div class="hero-stat-num">E. 185th</div><div class="hero-stat-label" data-en="Heritage Corridor" data-lt="Paveldo Koridorius">Heritage Corridor</div></div>
+      <div><div class="hero-stat-num">LAC</div><div class="hero-stat-label" data-en="National Affiliate" data-lt="Nacionalinis Narys">National Affiliate</div></div>
     </div>
   </div>
   <div class="hero-right">
@@ -89,7 +89,7 @@
         <div class="section-title">Upcoming Events</div>
         <div class="section-title-lt">Artėjantys Renginiai</div>
       </div>
-      <a href="#" class="section-link">Full Calendar →</a>
+      <a href="#" class="section-link">data-en="Full Calendar →" data-lt="Visas Kalendorius →">Full Calendar →</a>
     </div>
     <div class="two-col">
       <div class="upcoming-list" id="upcoming-list">
@@ -97,7 +97,7 @@
       </div>
       <div>
         <div class="sidebar-widget">
-          <div class="sidebar-widget-title">Follow Our Community</div>
+          <div class="sidebar-widget-title" data-en="Follow Our Community" data-lt="Sekite Mus">Follow Our Community</div>
           <div class="social-grid">
             <a href="https://www.facebook.com/profile.php?id=61565856471983" target="_blank" class="social-btn">
               <span class="si">f</span><span>Facebook</span>
@@ -108,7 +108,7 @@
           </div>
         </div>
         <div class="sidebar-widget">
-          <div class="sidebar-widget-title">Quick Links</div>
+          <div class="sidebar-widget-title" data-en="Quick Links" data-lt="Nuorodos">Quick Links</div>
           <ul class="sidebar-link-list">
             <li><a href="https://javlb.lt/en/" target="_blank">National LAC (javlb.lt) <span>↗</span></a></li>
             <li><a href="#">Membership Information <span>→</span></a></li>
@@ -121,7 +121,7 @@
         <div class="sidebar-widget">
           <div class="sidebar-widget-title">National Organization</div>
           <div style="border: 1px solid rgba(200,144,58,0.3); padding:18px; margin-top:4px;">
-            <p style="font-size:13px; color:rgba(242,237,228,0.6); line-height:1.6; margin-bottom:12px;">A chapter of the Lithuanian American Community, Inc. — active since 1951 with 50 chapters across 26 states.</p>
+            <p style="font-size:13px; color:rgba(242,237,228,0.6); line-height:1.6; margin-bottom:12px;"><span data-en="A chapter of the Lithuanian American Community, Inc. — active since 1951 with 50 chapters across 26 states." data-lt="JAV Lietuvių Bendruomenės skyrius — veikia nuo 1951 m., 50 skyrių 26 valstijose.">A chapter of the Lithuanian American Community, Inc. — active since 1951 with 50 chapters across 26 states.</span></p>
             <a href="https://javlb.lt/en/" target="_blank" style="font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.1em; color:var(--amber); text-decoration:none; text-transform:uppercase;">Visit javlb.lt ↗</a>
           </div>
         </div>
@@ -138,13 +138,13 @@
         <div class="section-title" style="color:var(--cream);">Photo Journal</div>
         <div class="section-title-lt">Archyvas / Nuotraukos</div>
       </div>
-      <a href="#" class="section-link">Full Archive →</a>
+      <a href="#" class="section-link" data-en="Full Archive →" data-lt="Visas Archyvas →">Full Archive →</a>
     </div>
     <div class="journal-grid" id="journal-grid">
       <div style="color:rgba(242,237,228,0.4); padding:40px; grid-column:span 4;">Loading...</div>
     </div>
     <div style="text-align:center; margin-top:36px;">
-      <a href="#" class="btn-ghost-inv">View Full Archive — All Years →</a>
+      <a href="#" class="btn-ghost-inv" data-en="View Full Archive — All Years →" data-lt="Peržiūrėti Visą Archyvą →">View Full Archive — All Years →</a>
     </div>
   </div>
 </section>
@@ -157,7 +157,7 @@
         <div class="section-title">Event Highlights</div>
         <div class="section-title-lt">Renginių Akimirkos</div>
       </div>
-      <a href="#" class="section-link">All Past Events →</a>
+      <a href="#" class="section-link" data-en="All Past Events →" data-lt="Visi Buvę Renginiai →">All Past Events →</a>
     </div>
     <div class="events-grid" id="events-grid">
       <div style="color:var(--text-muted); padding:40px; grid-column:span 3;">Loading...</div>
@@ -173,7 +173,7 @@
         <div class="section-title">News &amp; Announcements</div>
         <div class="section-title-lt">Žinios ir Pranešimai</div>
       </div>
-      <a href="#" class="section-link">All News →</a>
+      <a href="#" class="section-link" data-en="All News →" data-lt="Visos Žinios →">All News →</a>
     </div>
     <div class="two-col">
       <div id="announce-list">
@@ -190,9 +190,9 @@
           </ul>
         </div>
         <div class="sidebar-widget">
-          <div class="sidebar-widget-title">Submit News or Photos</div>
-          <p style="font-size:13px; color:rgba(242,237,228,0.6); line-height:1.65; margin-bottom:14px;">Have photos from a recent event? Want to share a community announcement? Send them our way.</p>
-          <a href="mailto:info@clacleveland.org" class="btn-primary" style="font-size:11px; padding:10px 18px;">Send to Us →</a>
+          <div class="sidebar-widget-title" data-en="Submit News or Photos" data-lt="Siųskite Žinias ar Nuotraukas">Submit News or Photos</div>
+          <p style="font-size:13px; color:rgba(242,237,228,0.6); line-height:1.65; margin-bottom:14px;"><span data-en="Have photos from a recent event? Want to share a community announcement? Send them our way." data-lt="Turite nuotraukų iš nesenų renginių? Norite pasidalinti bendruomenės pranešimu? Siųskite mums.">Have photos from a recent event? Want to share a community announcement? Send them our way.</span></p>
+          <a href="mailto:info@clacleveland.org" class="btn-primary" style="font-size:11px; padding:10px 18px;" data-en="Send to Us →" data-lt="Siųsti →">Send to Us →</a>
         </div>
       </div>
     </div>
@@ -228,7 +228,7 @@
       <div id="cf-list" style="display:none;"></div>
     </div>
     <div style="text-align:center; margin-top:32px;">
-      <a href="community.html" class="btn-primary">View Full Community Calendar →</a>
+      <a href="community.html" class="btn-primary" data-en="View Full Community Calendar →" data-lt="Peržiūrėti Visą Bendruomenės Kalendorių →">View Full Community Calendar →</a>
     </div>
   </div>
 </section>
@@ -237,20 +237,20 @@
 <div class="about-strip" id="about">
   <div class="about-inner">
     <div>
-      <div class="ab-label">Who We Are</div>
+      <div class="ab-label" data-en="Who We Are" data-lt="Kas Mes Esame">Who We Are</div>
       <div class="ab-heading">Clevelando Lietuvių Bendruomenė</div>
       <div class="ab-body">We are the Cleveland chapter of the Lithuanian American Community, Inc. — a national nonprofit active since 1951. Our roots run deep along Cleveland's E. 185th Street corridor, where generations of Lithuanian immigrants built a church, a community, and a lasting legacy.</div>
     </div>
     <div class="ab-divider"></div>
     <div>
-      <div class="ab-label">What We Do</div>
-      <div class="ab-heading">Celebrating Culture &amp; Building Connections</div>
+      <div class="ab-label" data-en="What We Do" data-lt="Ką Mes Darome">What We Do</div>
+      <div class="ab-heading" data-en="Celebrating Culture &amp; Building Connections" data-lt="Švenčiame Kultūrą ir Kuriame Ryšius">Celebrating Culture &amp; Building Connections</div>
       <div class="ab-body">We organize cultural events throughout the year — spring gatherings, summer picnics, Christmas Eve Kūčios, and appearances at One World Day. We connect members to the national and global Lithuanian diaspora through <a href="https://javlb.lt/en/">javlb.lt</a>.</div>
     </div>
     <div class="ab-divider"></div>
     <div>
-      <div class="ab-label">Get Involved</div>
-      <div class="ab-heading">Everyone with Lithuanian Roots is Welcome</div>
+      <div class="ab-label" data-en="Get Involved" data-lt="Prisijunkite">Get Involved</div>
+      <div class="ab-heading" data-en="Everyone with Lithuanian Roots is Welcome" data-lt="Visi, turintys lietuviškų šaknų, yra laukiami">Everyone with Lithuanian Roots is Welcome</div>
       <div class="ab-body">Whether you speak Lithuanian at home or are just discovering your heritage — you belong here. Follow us on <a href="https://www.facebook.com/profile.php?id=61565856471983">Facebook</a> and <a href="https://www.instagram.com/cleveland_lietuviu_bendruomene">Instagram</a>, or reach out to join as a member.</div>
     </div>
   </div>
@@ -260,12 +260,12 @@
 <div class="newsletter-strip">
   <div class="newsletter-inner">
     <div>
-      <div class="newsletter-heading">Stay in the loop.<br>Likite prisijungę.</div>
-      <div class="newsletter-sub">Events, news, and community updates delivered to your inbox.</div>
+      <div class="newsletter-heading">Stay in the loop.<br data-en="Stay in the loop." data-lt="Likite prisijungę.">Likite prisijungę.</div>
+      <div class="newsletter-sub" data-en="Events, news, and community updates delivered to your inbox." data-lt="Renginiai, žinios ir bendruomenės naujienos — tiesiai į jūsų paštą.">Events, news, and community updates delivered to your inbox.</div>
     </div>
     <div class="newsletter-form">
-      <input type="email" class="newsletter-input" placeholder="Your email address">
-      <button class="newsletter-submit" onclick="handleSubscribe(this)">Subscribe →</button>
+      <input type="email" class="newsletter-input" data-en-placeholder="Your email address" data-lt-placeholder="Jūsų el. pašto adresas" placeholder="Your email address">
+      <button class="newsletter-submit" onclick="handleSubscribe(this)" data-en="Subscribe →" data-lt="Prenumeruoti →">Subscribe →</button>
     </div>
   </div>
 </div>
@@ -279,7 +279,7 @@
       <div class="footer-desc">A chapter of the Lithuanian American Community, Inc. — preserving Lithuanian culture and heritage in Northeast Ohio since 1951. Affiliated with <a href="https://javlb.lt/en/" style="color:var(--amber);">javlb.lt</a>.</div>
     </div>
     <div>
-      <div class="footer-col-title">Navigate</div>
+      <div class="footer-col-title" data-en="Navigate" data-lt="Naršyti">Navigate</div>
       <ul class="footer-links">
         <li><a href="index.html">Home</a></li>
         <li><a href="#upcoming">Events</a></li>
@@ -290,7 +290,7 @@
       </ul>
     </div>
     <div>
-      <div class="footer-col-title">Heritage Sites</div>
+      <div class="footer-col-title" data-en="Heritage Sites" data-lt="Paveldo Vietos">Heritage Sites</div>
       <ul class="footer-links">
         <li><a href="#">St. George Lithuanian Church</a></li>
         <li><a href="#">Lithuanian Cultural Garden</a></li>
@@ -299,13 +299,13 @@
       </ul>
     </div>
     <div>
-      <div class="footer-col-title">Connect</div>
+      <div class="footer-col-title" data-en="Connect" data-lt="Ryšiai">Connect</div>
       <ul class="footer-links">
         <li><a href="https://www.facebook.com/profile.php?id=61565856471983" target="_blank">Facebook</a></li>
         <li><a href="https://www.instagram.com/cleveland_lietuviu_bendruomene" target="_blank">Instagram</a></li>
         <li><a href="https://javlb.lt/en/" target="_blank">National LAC</a></li>
         <li><a href="mailto:info@clacleveland.org">Email Us</a></li>
-        <li><a href="dashboard.html">Board Login</a></li>
+        <li><a href="dashboard.html" data-en="Board Login" data-lt="Valdybos Prisijungimas">Board Login</a></li>
       </ul>
     </div>
   </div>
@@ -513,6 +513,48 @@
       document.getElementById('cf-status').textContent = 'Could not load community events';
     }
   })();
+</script>
+<script>
+// ── LANGUAGE TOGGLE ──────────────────────────────────────────────────────────
+(function() {
+  const LANG_KEY = 'clac_lang';
+
+  function setLang(lang) {
+    localStorage.setItem(LANG_KEY, lang);
+    document.documentElement.setAttribute('lang', lang);
+
+    // Swap all data-en / data-lt elements
+    document.querySelectorAll('[data-en]').forEach(el => {
+      el.innerHTML = lang === 'lt' ? el.dataset.lt : el.dataset.en;
+    });
+
+    // Swap placeholders
+    document.querySelectorAll('[data-en-placeholder]').forEach(el => {
+      el.placeholder = lang === 'lt' ? el.dataset.ltPlaceholder : el.dataset.enPlaceholder;
+    });
+
+    // Update toggle buttons
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+  }
+
+  function initLang() {
+    const saved = localStorage.getItem(LANG_KEY) || 'en';
+    setLang(saved);
+  }
+
+  // Expose globally
+  window.setLang = setLang;
+  window.initLang = initLang;
+
+  // Init on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLang);
+  } else {
+    initLang();
+  }
+})();
 </script>
 </body>
 </html>
