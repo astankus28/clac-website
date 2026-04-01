@@ -154,6 +154,7 @@ const CommunityFeed = (() => {
 
   async function fetchClacEvents() {
     try {
+      await CLAC.ready();
       return CLAC.events.upcoming().map(normalizeClac);
     } catch (e) {
       console.warn('CommunityFeed: CLAC events unavailable', e);
