@@ -152,6 +152,9 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
       <a class="snav-item" onclick="showPage('media')" href="#"><span class="snav-icon">▲</span> Media Library</a>
       <a class="snav-item" onclick="showPage('users')" href="#"><span class="snav-icon">◈</span> Users</a>
       <a class="snav-item" onclick="showPage('settings')" href="#"><span class="snav-icon">⚙</span> Settings</a>
+      <div class="snav-section">Board</div>
+      <a class="snav-item" onclick="showPage('portal')" href="#"><span class="snav-icon">◆</span> Board Portal</a>
+      <a class="snav-item" onclick="showPage('inquiries')" href="#"><span class="snav-icon">✦</span> Inquiries</a>
       <div class="snav-section">Public</div>
       <a class="snav-item" href="index.html" target="_blank"><span class="snav-icon">↗</span> View Public Site</a>
     </nav>
@@ -469,6 +472,89 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
     </div>
 
 
+
+
+    <!-- BOARD PORTAL -->
+    <div class="page" id="page-portal">
+      <div style="margin-bottom:24px;"><div style="font-size:13px; color:var(--text-muted);">Board resources, tools, and quick access to all community platforms.</div></div>
+
+      <!-- GRANT TRACKER -->
+      <div class="settings-section" style="padding:0; overflow:hidden;">
+        <div style="padding:20px 28px; border-bottom:1px solid var(--rule); display:flex; justify-content:space-between; align-items:center;">
+          <div class="settings-section-title" style="margin:0;">Grant Tracker</div>
+          <a href="https://cle-grants.vercel.app" target="_blank" class="btn-sm">Open Full Page ↗</a>
+        </div>
+        <iframe src="https://cle-grants.vercel.app" style="width:100%; height:600px; border:none; display:block;"></iframe>
+      </div>
+
+      <!-- QUICK ACCESS -->
+      <div class="settings-section" style="margin-top:20px;">
+        <div class="settings-section-title">Quick Access</div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:4px;">
+          <a href="https://supabase.com/dashboard/project/pipgdibeustnvbiayixg" target="_blank" style="display:block; background:var(--white); border:1px solid var(--rule); padding:20px; text-decoration:none; transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--amber)'" onmouseout="this.style.borderColor='var(--rule)'">
+            <div style="font-size:20px; margin-bottom:8px;">🗄</div>
+            <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber); margin-bottom:4px;">Database</div>
+            <div style="font-size:13px; color:var(--text-dark); font-weight:500;">Supabase</div>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Tables, storage, SQL</div>
+          </a>
+          <a href="https://dash.cloudflare.com" target="_blank" style="display:block; background:var(--white); border:1px solid var(--rule); padding:20px; text-decoration:none; transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--amber)'" onmouseout="this.style.borderColor='var(--rule)'">
+            <div style="font-size:20px; margin-bottom:8px;">☁</div>
+            <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber); margin-bottom:4px;">Hosting</div>
+            <div style="font-size:13px; color:var(--text-dark); font-weight:500;">Cloudflare</div>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Pages, workers, domains</div>
+          </a>
+          <a href="https://github.com/astankus28/clac-website" target="_blank" style="display:block; background:var(--white); border:1px solid var(--rule); padding:20px; text-decoration:none; transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--amber)'" onmouseout="this.style.borderColor='var(--rule)'">
+            <div style="font-size:20px; margin-bottom:8px;">💻</div>
+            <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber); margin-bottom:4px;">Code</div>
+            <div style="font-size:13px; color:var(--text-dark); font-weight:500;">GitHub</div>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Website source code</div>
+          </a>
+          <a href="https://resend.com" target="_blank" style="display:block; background:var(--white); border:1px solid var(--rule); padding:20px; text-decoration:none; transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--amber)'" onmouseout="this.style.borderColor='var(--rule)'">
+            <div style="font-size:20px; margin-bottom:8px;">✉</div>
+            <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber); margin-bottom:4px;">Email</div>
+            <div style="font-size:13px; color:var(--text-dark); font-weight:500;">Resend</div>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Contact form delivery</div>
+          </a>
+          <a href="https://www.facebook.com/profile.php?id=61565856471983" target="_blank" style="display:block; background:var(--white); border:1px solid var(--rule); padding:20px; text-decoration:none; transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--amber)'" onmouseout="this.style.borderColor='var(--rule)'">
+            <div style="font-size:20px; margin-bottom:8px;">f</div>
+            <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber); margin-bottom:4px;">Social</div>
+            <div style="font-size:13px; color:var(--text-dark); font-weight:500;">Facebook Page</div>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">CLAC community page</div>
+          </a>
+          <a href="https://javlb.lt/en/" target="_blank" style="display:block; background:var(--white); border:1px solid var(--rule); padding:20px; text-decoration:none; transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--amber)'" onmouseout="this.style.borderColor='var(--rule)'">
+            <div style="font-size:20px; margin-bottom:8px;">🌍</div>
+            <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber); margin-bottom:4px;">National</div>
+            <div style="font-size:13px; color:var(--text-dark); font-weight:500;">LAC National</div>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">javlb.lt</div>
+          </a>
+        </div>
+      </div>
+
+      <!-- BOARD CONTACTS -->
+      <div class="settings-section" style="margin-top:20px;">
+        <div class="settings-section-title">Board Contacts</div>
+        <div id="portal-board-list" style="margin-top:8px;"></div>
+      </div>
+    </div>
+
+    <!-- INQUIRIES -->
+    <div class="page" id="page-inquiries">
+      <div style="margin-bottom:24px;"><div style="font-size:13px; color:var(--text-muted);">People who submitted the Join & Get Involved form.</div></div>
+      <div style="background:var(--white); border:1px solid var(--rule);">
+        <div style="padding:16px 20px; border-bottom:1px solid var(--rule); display:flex; gap:10px; align-items:center; justify-content:space-between;">
+          <div style="display:flex; gap:8px;">
+            <button class="btn-sm active" id="inq-filter-new" onclick="filterInquiries('new')" style="background:var(--forest); color:var(--amber); border-color:var(--forest);">New</button>
+            <button class="btn-sm" id="inq-filter-contacted" onclick="filterInquiries('contacted')">Contacted</button>
+            <button class="btn-sm" id="inq-filter-all" onclick="filterInquiries('all')">All</button>
+          </div>
+          <span id="inq-count" style="font-family:'DM Mono',monospace; font-size:11px; color:var(--text-muted);"></span>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Name</th><th>Email</th><th>Interests</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="inq-tbody"></tbody>
+        </table>
+      </div>
+    </div>
 
     <!-- USERS PAGE -->
     <div class="page" id="page-users">
@@ -1071,9 +1157,9 @@ if (_existingSession) {
 function doLogout() { CLAC.auth.logout(); window.location.href = 'index.html'; }
 
 // ── NAVIGATION ────────────────────────────────────────────
-const pages = ['dashboard','events','announcements','settings','page-content','quick-links','board','media','users'];
-const pageTitles = { dashboard:'Dashboard', events:'Events', announcements:'Announcements', settings:'Settings', 'page-content':'Page Content', 'quick-links':'Quick Links', board:'Board Members', media:'Media Library', users:'Users & Security' };
-const topbarActions = { dashboard:'+ New Event', events:'+ New Event', announcements:'+ New Announcement', settings:'Save Settings', 'page-content':'Save Content', 'quick-links':'+ New Link', board:'+ New Member', media:'Upload Photos', users:'+ Add User' };
+const pages = ['dashboard','events','announcements','settings','page-content','quick-links','board','media','users','portal','inquiries'];
+const pageTitles = { dashboard:'Dashboard', events:'Events', announcements:'Announcements', settings:'Settings', 'page-content':'Page Content', 'quick-links':'Quick Links', board:'Board Members', media:'Media Library', users:'Users & Security', portal:'Board Portal', inquiries:'Inquiries' };
+const topbarActions = { dashboard:'+ New Event', events:'+ New Event', announcements:'+ New Announcement', settings:'Save Settings', 'page-content':'Save Content', 'quick-links':'+ New Link', board:'+ New Member', media:'Upload Photos', users:'+ Add User', portal:'', inquiries:'' };
 
 async function showPage(name) {
   pages.forEach(p => {
@@ -1093,6 +1179,8 @@ async function showPage(name) {
   if (name === 'board') await renderBmTable();
   if (name === 'media') await renderMediaGrid();
   if (name === 'users') await renderUsersTable();
+  if (name === 'portal') await loadPortal();
+  if (name === 'inquiries') await renderInquiries();
   // Update topbar action
   const btn = document.getElementById('topbar-action');
   btn.textContent = topbarActions[name] || '+ New';
@@ -1112,11 +1200,15 @@ async function renderDashboard() {
   const anns = await CLAC.announcements.all();
   const upcoming = events.filter(e => e.status === 'upcoming').length;
   const past = events.filter(e => e.status === 'past').length;
+  // Get inquiry count
+  const inqData = await sbGet('inquiries', '?select=id&status=eq.new');
+  const newInquiries = inqData ? inqData.length : 0;
+
   document.getElementById('stats-grid').innerHTML = `
     <div class="stat-card"><div class="sc-label">Total Events</div><div class="sc-value">${events.length}</div><div class="sc-sub">${upcoming} upcoming, ${past} past</div><a class="sc-link" onclick="showPage('events')">Manage Events →</a></div>
-    <div class="stat-card"><div class="sc-label">Upcoming Events</div><div class="sc-value">${upcoming}</div><div class="sc-sub">On public calendar</div><a class="sc-link" href="../index.html#upcoming" target="_blank">View on site ↗</a></div>
+    <div class="stat-card"><div class="sc-label">Upcoming Events</div><div class="sc-value">${upcoming}</div><div class="sc-sub">On public calendar</div><a class="sc-link" href="index.html#upcoming" target="_blank">View on site ↗</a></div>
     <div class="stat-card"><div class="sc-label">Announcements</div><div class="sc-value">${anns.filter(a=>a.published).length}</div><div class="sc-sub">${anns.length} total</div><a class="sc-link" onclick="showPage('announcements')">Manage →</a></div>
-    <div class="stat-card"><div class="sc-label">Past Events</div><div class="sc-value">${past}</div><div class="sc-sub">In photo journal</div><a class="sc-link" href="../index.html#journal" target="_blank">View Journal ↗</a></div>`;
+    <div class="stat-card"><div class="sc-label">New Inquiries</div><div class="sc-value">${newInquiries}</div><div class="sc-sub">Awaiting follow-up</div><a class="sc-link" onclick="showPage('inquiries')">View All →</a></div>`;
 
   const upcomingItems = CLAC.events.upcoming().slice(0,5);
   document.getElementById('dash-upcoming').innerHTML = upcomingItems.length
@@ -2114,6 +2206,102 @@ async function deleteMedia(id) {
   await sbDelete('media', id);
   await renderMediaGrid();
   showToast('✓ Photo deleted.');
+}
+
+
+// ── BOARD PORTAL ──────────────────────────────────────────────────────────────
+async function loadPortal() {
+  const members = await sbGet('board_members', '?select=*&published=eq.true&order=sort_order.asc');
+  const el = document.getElementById('portal-board-list');
+  if (!members || !members.length) {
+    el.innerHTML = '<div style="padding:16px; color:var(--text-muted); font-size:13px;">No board members yet. Add them in Board Members.</div>';
+    return;
+  }
+  el.innerHTML = members.map(m => `
+    <div style="display:flex; align-items:center; gap:16px; padding:12px 0; border-bottom:1px solid var(--rule);">
+      ${m.photo
+        ? `<img src="${m.photo}" style="width:36px; height:36px; border-radius:50%; object-fit:cover; flex-shrink:0;">`
+        : `<div style="width:36px; height:36px; border-radius:50%; background:var(--forest); display:flex; align-items:center; justify-content:center; color:var(--amber); font-weight:700; flex-shrink:0;">${m.name.charAt(0)}</div>`}
+      <div style="flex:1;">
+        <div style="font-weight:500; color:var(--text-dark); font-size:14px;">${m.name}</div>
+        <div style="font-size:12px; color:var(--text-muted);">${m.role || ''}</div>
+      </div>
+      ${m.email ? `<a href="mailto:${m.email}" style="font-family:'DM Mono',monospace; font-size:11px; color:var(--amber); text-decoration:none;">${m.email}</a>` : ''}
+    </div>`).join('');
+}
+
+// ── INQUIRIES ─────────────────────────────────────────────────────────────────
+let _inqFilter = 'new';
+
+function filterInquiries(status) {
+  _inqFilter = status;
+  ['new','contacted','all'].forEach(s => {
+    const btn = document.getElementById('inq-filter-' + s);
+    if (btn) {
+      btn.style.background  = s === status ? 'var(--forest)' : '';
+      btn.style.color       = s === status ? 'var(--amber)'  : '';
+      btn.style.borderColor = s === status ? 'var(--forest)' : '';
+    }
+  });
+  renderInquiries();
+}
+
+async function renderInquiries() {
+  const params = _inqFilter === 'all'
+    ? '?select=*&order=created_at.desc'
+    : `?select=*&status=eq.${_inqFilter}&order=created_at.desc`;
+  const items = await sbGet('inquiries', params);
+  const tbody = document.getElementById('inq-tbody');
+  const count = document.getElementById('inq-count');
+  if (!items || !items.length) {
+    tbody.innerHTML = `<tr><td colspan="6" style="padding:32px; text-align:center; color:var(--text-muted); font-size:13px;">No ${_inqFilter === 'all' ? '' : _inqFilter + ' '}inquiries.</td></tr>`;
+    count.textContent = '';
+    return;
+  }
+  count.textContent = items.length + ' record' + (items.length !== 1 ? 's' : '');
+  tbody.innerHTML = items.map(inq => {
+    const date = new Date(inq.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+    const interests = (inq.interests || []).map(i =>
+      `<span style="font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; padding:2px 7px; border:1px solid var(--rule); color:var(--text-muted); margin-right:4px;">${i}</span>`
+    ).join('');
+    return `<tr>
+      <td>
+        <div class="td-title">${inq.name}</div>
+        ${inq.phone ? `<div class="td-meta">${inq.phone}</div>` : ''}
+        ${inq.heard_from ? `<div class="td-meta">Via: ${inq.heard_from}</div>` : ''}
+      </td>
+      <td><a href="mailto:${inq.email}" style="color:var(--amber); font-size:13px; text-decoration:none;">${inq.email}</a></td>
+      <td>${interests}</td>
+      <td><span style="font-family:'DM Mono',monospace; font-size:12px;">${date}</span></td>
+      <td>
+        <select onchange="updateInquiryStatus('${inq.id}', this.value)" style="font-family:'DM Mono',monospace; font-size:10px; padding:4px 8px; border:1px solid var(--rule); background:transparent; cursor:pointer;">
+          <option value="new" ${inq.status==='new'?'selected':''}>New</option>
+          <option value="contacted" ${inq.status==='contacted'?'selected':''}>Contacted</option>
+          <option value="closed" ${inq.status==='closed'?'selected':''}>Closed</option>
+        </select>
+      </td>
+      <td><div class="row-actions">
+        <a class="row-btn" href="mailto:${inq.email}?subject=Cleveland Lithuanian American Community">Email ↗</a>
+        <button class="row-btn del" onclick="deleteInquiry('${inq.id}')">Delete</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+async function updateInquiryStatus(id, status) {
+  await fetch(`${SB_URL}/rest/v1/inquiries?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { ...SB_HEADERS, 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ status }),
+  });
+  showToast('✓ Status updated.');
+}
+
+async function deleteInquiry(id) {
+  if (!confirm('Delete this inquiry?')) return;
+  await sbDelete('inquiries', id);
+  await renderInquiries();
+  showToast('✓ Inquiry deleted.');
 }
 
 // ── TOAST ─────────────────────────────────────────────────
