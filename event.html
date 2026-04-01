@@ -505,8 +505,8 @@ const CLAC = {
       bg.style.background = `url(${event.coverPhoto}) center/cover no-repeat`;
     } else {
       bg.style.background = event.coverColor || '#2d4a33';
+      bg.style.backgroundImage = 'repeating-linear-gradient(45deg,transparent,transparent 20px,rgba(255,255,255,0.015) 20px,rgba(255,255,255,0.015) 21px)';
     }
-    bg.style.backgroundImage = 'repeating-linear-gradient(45deg,transparent,transparent 20px,rgba(255,255,255,0.015) 20px,rgba(255,255,255,0.015) 21px)';
 
     // Status badge
     const badge         = document.getElementById('status-badge');
@@ -522,7 +522,7 @@ const CLAC = {
     // Meta row
     document.getElementById('event-meta').innerHTML = [
       { label: 'Date',     value: CLAC.formatDate(event.date) },
-      { label: 'Time',     value: event.time + (event.endTime ? ' – ' + event.endTime : '') },
+      event.time ? { label: 'Time', value: event.time + (event.endTime ? ' – ' + event.endTime : '') } : null,
       { label: 'Location', value: event.location },
       event.category  ? { label: 'Category',  value: event.category }       : null,
       event.attendees ? { label: 'Attendees', value: event.attendees + '+' } : null,
@@ -532,7 +532,7 @@ const CLAC = {
 
     // Description
     document.getElementById('event-desc').innerHTML =
-      event.description.split('\n').filter(p => p.trim()).map(p => `<p>${p}</p>`).join('');
+      (event.description || '').split('\n').filter(p => p.trim()).map(p => `<p>${p}</p>`).join('');
 
     // Tags
     if (event.tags && event.tags.length) {
@@ -558,7 +558,7 @@ const CLAC = {
     // Detail sidebar
     const detailRows = [
       { label: 'Date',    value: CLAC.formatDate(event.date) },
-      { label: 'Time',    value: event.time + (event.endTime ? ' – ' + event.endTime : '') },
+      event.time ? { label: 'Time', value: event.time + (event.endTime ? ' – ' + event.endTime : '') } : null,
       { label: 'Location', value: event.location },
       event.address      ? { label: 'Address',  value: `<a href="https://maps.google.com?q=${encodeURIComponent(event.address)}" target="_blank">${event.address} ↗</a>` } : null,
       { label: 'Category', value: event.category },
