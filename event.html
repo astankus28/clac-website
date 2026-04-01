@@ -501,7 +501,11 @@ const CLAC = {
 
     // Hero background
     const bg = document.getElementById('hero-bg');
-    bg.style.background      = event.coverColor || '#2d4a33';
+    if (event.coverPhoto) {
+      bg.style.background = `url(${event.coverPhoto}) center/cover no-repeat`;
+    } else {
+      bg.style.background = event.coverColor || '#2d4a33';
+    }
     bg.style.backgroundImage = 'repeating-linear-gradient(45deg,transparent,transparent 20px,rgba(255,255,255,0.015) 20px,rgba(255,255,255,0.015) 21px)';
 
     // Status badge
@@ -588,6 +592,7 @@ const CLAC = {
     document.getElementById('related-grid').innerHTML = others.slice(0, 3).length
       ? others.slice(0, 3).map((e, i) => {
           const color = e.coverColor || PALETTES[i % PALETTES.length];
+        const relBg = e.coverPhoto ? `background:url(${e.coverPhoto}) center/cover no-repeat;` : `background:${color};`;
           return `<a class="related-card" href="event.html?id=${e.id}">
             <div class="rc-top">
               <div class="rc-img" style="background:${color}; background-image:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(255,255,255,0.02) 10px,rgba(255,255,255,0.02) 11px);"></div>

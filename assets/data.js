@@ -49,7 +49,7 @@
       location: e.location, address: e.address,
       category: e.category, status: e.status,
       featured: e.featured, published: e.published,
-      coverColor: e.cover_color, description: e.description,
+      coverColor: e.cover_color, coverPhoto: e.cover_photo || '', description: e.description,
       tags: e.tags || [], attendees: e.attendees,
       rsvpLink: e.rsvp_link, recap: e.recap,
       contactEmail: e.contact_email, photos: e.photos || [],

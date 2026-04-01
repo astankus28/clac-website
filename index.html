@@ -327,8 +327,13 @@
     const lang = localStorage.getItem('clac_lang') || 'en';
     if (featured) {
       const bg = document.getElementById('hfc-bg');
-      bg.style.background = featured.coverColor || '#2d4a33';
-      bg.style.backgroundImage = 'repeating-linear-gradient(45deg,transparent,transparent 20px,rgba(255,255,255,0.015) 20px,rgba(255,255,255,0.015) 21px)';
+      if (featured.coverPhoto) {
+        bg.style.background = `url(${featured.coverPhoto}) center/cover no-repeat`;
+        bg.style.backgroundImage = '';
+      } else {
+        bg.style.background = featured.coverColor || '#2d4a33';
+        bg.style.backgroundImage = 'repeating-linear-gradient(45deg,transparent,transparent 20px,rgba(255,255,255,0.015) 20px,rgba(255,255,255,0.015) 21px)';
+      }
       const title = (lang === 'lt' && featured.titleLt) ? featured.titleLt : featured.title;
       document.getElementById('hfc-title').textContent = title;
       document.getElementById('hfc-date').textContent  = CLAC.formatDate(featured.date) + ' · ' + featured.location;
@@ -386,8 +391,11 @@
       const icon  = ICONS[i % ICONS.length];
       const color = e.coverColor || PALETTES[i % PALETTES.length];
       const angle = 45 + i * 15;
+      const bgStyle = e.coverPhoto
+        ? `background:url(${e.coverPhoto}) center/cover no-repeat;`
+        : `background:${color}; background-image:repeating-linear-gradient(${angle}deg,transparent,transparent 12px,rgba(255,255,255,0.02) 12px,rgba(255,255,255,0.02) 13px);`;
       return `<a class="journal-item" href="event.html?id=${e.id}" style="text-decoration:none;">
-        <div class="jg-bg" style="background:${color}; background-image:repeating-linear-gradient(${angle}deg,transparent,transparent 12px,rgba(255,255,255,0.02) 12px,rgba(255,255,255,0.02) 13px);">
+        <div class="jg-bg" style="${bgStyle}">
           <span class="jg-icon">${icon}</span>
         </div>
         <div class="jg-overlay">
@@ -411,8 +419,11 @@
       const large = i === 0;
       const color = e.coverColor || PALETTES[i % PALETTES.length];
       const angle = 35 + i * 20;
+      const ecBgStyle = e.coverPhoto
+        ? `background:url(${e.coverPhoto}) center/cover no-repeat;`
+        : `background:${color}; background-image:repeating-linear-gradient(${angle}deg,transparent,transparent 15px,rgba(255,255,255,0.018) 15px,rgba(255,255,255,0.018) 16px);`;
       return `<a class="event-card${large ? ' large' : ''}" href="event.html?id=${e.id}" style="text-decoration:none;">
-        <div class="ec-bg" style="background:${color}; background-image:repeating-linear-gradient(${angle}deg,transparent,transparent 15px,rgba(255,255,255,0.018) 15px,rgba(255,255,255,0.018) 16px);"></div>
+        <div class="ec-bg" style="${ecBgStyle}"></div>
         <div class="ec-overlay"></div>
         <div class="ec-content">
           <div class="ec-tag">${e.category} — ${CLAC.formatDateShort(e.date)}</div>
