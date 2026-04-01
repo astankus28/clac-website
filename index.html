@@ -356,7 +356,7 @@
     const events = CLAC.events.upcoming();
     const el     = document.getElementById('upcoming-list');
     if (!events.length) {
-      el.innerHTML = '<div style="color:var(--text-muted);padding:40px 0;">No upcoming events at this time. Check back soon.</div>';
+      el.innerHTML = `<div style="color:var(--text-muted);padding:40px 0;">${lang === 'lt' ? 'Šiuo metu artėjančių renginių nėra. Grįžkite netrukus.' : 'No upcoming events at this time. Check back soon.'}</div>`;
       return;
     }
     el.innerHTML = events.map(e => {
@@ -379,7 +379,7 @@
     const past = CLAC.events.past();
     const el   = document.getElementById('journal-grid');
     if (!past.length) {
-      el.innerHTML = '<div style="color:rgba(242,237,228,0.4);padding:40px;grid-column:span 4;">No past events yet.</div>';
+      el.innerHTML = `<div style="color:rgba(242,237,228,0.4);padding:40px;grid-column:span 4;">${lang === 'lt' ? 'Kol kas nėra praeities renginių.' : 'No past events yet.'}</div>`;
       return;
     }
     el.innerHTML = past.slice(0, 8).map((e, i) => {
@@ -400,10 +400,11 @@
 
   /* ── EVENT HIGHLIGHTS ── */
   function buildHighlights() {
+    const lang = localStorage.getItem('clac_lang') || 'en';
     const past = CLAC.events.past();
     const el   = document.getElementById('events-grid');
     if (!past.length) {
-      el.innerHTML = '<div style="color:var(--text-muted);padding:40px;grid-column:span 3;">No past events yet.</div>';
+      el.innerHTML = `<div style="color:var(--text-muted);padding:40px;grid-column:span 3;">${lang === 'lt' ? 'Kol kas nėra praeities renginių.' : 'No past events yet.'}</div>`;
       return;
     }
     el.innerHTML = past.slice(0, 4).map((e, i) => {
@@ -431,7 +432,7 @@
     const anns = CLAC.announcements.published();
     const el   = document.getElementById('announce-list');
     if (!anns.length) {
-      el.innerHTML = '<div style="color:var(--text-muted);padding:20px 0;">No announcements at this time.</div>';
+      el.innerHTML = `<div style="color:var(--text-muted);padding:20px 0;">${lang === 'lt' ? 'Šiuo metu pranešimų nėra.' : 'No announcements at this time.'}</div>`;
       return;
     }
     el.innerHTML = anns.slice(0, 5).map(a => `
