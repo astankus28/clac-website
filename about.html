@@ -67,6 +67,38 @@
     .national-link { display: inline-block; margin-top: 16px; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); text-decoration: none; border: 1px solid rgba(200,144,58,0.4); padding: 8px 16px; transition: all 0.2s; }
     .national-link:hover { background: rgba(200,144,58,0.1); }
 
+
+    /* ── CONTACT FORM ── */
+    .contact-form-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 36px; }
+    .contact-form-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--cream); margin-bottom: 6px; }
+    .contact-form-sub { font-size: 13px; color: rgba(242,237,228,0.5); margin-bottom: 24px; line-height: 1.6; }
+    .cf-group { margin-bottom: 16px; }
+    .cf-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--amber); display: block; margin-bottom: 6px; }
+    .cf-input, .cf-textarea, .cf-select {
+      width: 100%; padding: 11px 14px; border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.06); color: var(--cream);
+      font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none;
+      transition: border-color 0.2s;
+    }
+    .cf-input::placeholder, .cf-textarea::placeholder { color: rgba(242,237,228,0.3); }
+    .cf-input:focus, .cf-textarea:focus, .cf-select:focus { border-color: var(--amber); }
+    .cf-textarea { min-height: 100px; resize: vertical; line-height: 1.6; }
+    .cf-select { cursor: pointer; }
+    .cf-select option { background: var(--forest-mid); color: var(--cream); }
+    .cf-submit {
+      width: 100%; background: var(--amber); color: var(--forest); border: none;
+      padding: 13px; font-family: 'DM Mono', monospace; font-size: 11px;
+      letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer;
+      transition: background 0.2s; margin-top: 8px;
+    }
+    .cf-submit:hover { background: var(--amber-light); }
+    .cf-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+    .cf-success { display: none; text-align: center; padding: 32px 20px; }
+    .cf-success-icon { font-size: 36px; margin-bottom: 12px; }
+    .cf-success-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--cream); margin-bottom: 8px; }
+    .cf-success-sub { font-size: 13px; color: rgba(242,237,228,0.6); line-height: 1.6; }
+    .cf-error { display: none; font-size: 12px; color: #e07a7a; margin-top: 8px; font-family: 'DM Mono', monospace; }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 1024px) {
       .about-cols { grid-template-columns: 1fr; }
@@ -259,11 +291,41 @@
           </div>
         </div>
       </div>
-      <div class="national-box">
-        <div class="national-label" data-en="National Organization" data-lt="Nacionalinė Organizacija">National Organization</div>
-        <div class="national-heading" data-en="Lithuanian American Community, Inc." data-lt="JAV Lietuvių Bendruomenė">Lithuanian American Community, Inc.</div>
-        <div class="national-body" data-en="CLAC is a proud chapter of the Lithuanian American Community, Inc. (JAV Lietuvių Bendruomenė) — a national nonprofit with 50 chapters across 26 states, preserving Lithuanian culture and heritage throughout the United States." data-lt="CLAC yra JAV Lietuvių Bendruomenės skyrius — nacionalinė ne pelno organizacija su 50 skyrių 26 valstijose, sauganti lietuvių kultūrą ir paveldą visose Jungtinėse Valstijose.">CLAC is a proud chapter of the Lithuanian American Community, Inc. (JAV Lietuvių Bendruomenė) — a national nonprofit with 50 chapters across 26 states, preserving Lithuanian culture and heritage throughout the United States.</div>
-        <a href="https://javlb.lt/en/" target="_blank" class="national-link" data-en="Visit javlb.lt ↗" data-lt="Apsilankykite javlb.lt ↗">Visit javlb.lt ↗</a>
+      <div class="contact-form-box">
+        <div id="cf-form-wrap">
+          <div class="contact-form-title" data-en="Send Us a Message" data-lt="Parašykite mums">Send Us a Message</div>
+          <div class="contact-form-sub" data-en="Questions, event submissions, membership inquiries — we'd love to hear from you." data-lt="Klausimai, renginių pasiūlymai, narystės klausimai — mielai išgirsime jus.">Questions, event submissions, membership inquiries — we'd love to hear from you.</div>
+          <div class="cf-group">
+            <label class="cf-label" data-en="Your Name" data-lt="Jūsų vardas">Your Name</label>
+            <input class="cf-input" type="text" id="cf-name" placeholder="Vardas Pavardė">
+          </div>
+          <div class="cf-group">
+            <label class="cf-label" data-en="Email Address" data-lt="El. pašto adresas">Email Address</label>
+            <input class="cf-input" type="email" id="cf-email" placeholder="jusu@email.com">
+          </div>
+          <div class="cf-group">
+            <label class="cf-label" data-en="Subject" data-lt="Tema">Subject</label>
+            <select class="cf-select" id="cf-subject">
+              <option value="General Inquiry">General Inquiry</option>
+              <option value="Membership">Membership</option>
+              <option value="Event Submission">Event Submission</option>
+              <option value="Volunteer">Volunteer</option>
+              <option value="Media / Press">Media / Press</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="cf-group">
+            <label class="cf-label" data-en="Message" data-lt="Žinutė">Message</label>
+            <textarea class="cf-textarea" id="cf-message" placeholder="Your message..."></textarea>
+          </div>
+          <div class="cf-error" id="cf-error"></div>
+          <button class="cf-submit" id="cf-submit" onclick="submitContactForm()" data-en="Send Message →" data-lt="Siųsti →">Send Message →</button>
+        </div>
+        <div class="cf-success" id="cf-success">
+          <div class="cf-success-icon">✓</div>
+          <div class="cf-success-title" data-en="Message Sent!" data-lt="Žinutė išsiųsta!">Message Sent!</div>
+          <div class="cf-success-sub" data-en="Thank you for reaching out. We'll get back to you soon." data-lt="Ačiū, kad susisiekėte. Netrukus atsakysime.">Thank you for reaching out. We'll get back to you soon.</div>
+        </div>
       </div>
     </div>
   </div>
@@ -358,6 +420,51 @@
         ${m.email ? `<a href="mailto:${m.email}" class="board-email">${m.email}</a>` : ''}
       </div>`;
     }).join('');
+  }
+
+
+  async function submitContactForm() {
+    const name    = document.getElementById('cf-name').value.trim();
+    const email   = document.getElementById('cf-email').value.trim();
+    const subject = document.getElementById('cf-subject').value;
+    const message = document.getElementById('cf-message').value.trim();
+    const errEl   = document.getElementById('cf-error');
+    const btn     = document.getElementById('cf-submit');
+
+    errEl.style.display = 'none';
+
+    if (!name || !email || !message) {
+      errEl.textContent = 'Please fill in all fields.';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (!email.includes('@')) {
+      errEl.textContent = 'Please enter a valid email address.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, subject, message }),
+      });
+
+      if (!res.ok) throw new Error('Server error');
+
+      document.getElementById('cf-form-wrap').style.display = 'none';
+      document.getElementById('cf-success').style.display   = 'block';
+
+    } catch(e) {
+      errEl.textContent = 'Could not send message. Please email us directly at info@clacleveland.org';
+      errEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Send Message →';
+    }
   }
 
   function buildContact() {
