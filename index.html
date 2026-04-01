@@ -458,12 +458,14 @@
   });
 
   /* ── INIT ── */
-  buildHero();
-  buildTicker();
-  buildUpcoming();
-  buildJournal();
-  buildHighlights();
-  buildAnnouncements();
+  CLAC.ready().then(() => {
+    buildHero();
+    buildTicker();
+    buildUpcoming();
+    buildJournal();
+    buildHighlights();
+    buildAnnouncements();
+  });
 
   /* ── COMMUNITY FEED PREVIEW ── */
   (async () => {

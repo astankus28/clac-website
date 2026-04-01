@@ -1,0 +1,25 @@
+{
+  "announcements": [
+    {
+      "title": "2026 Membership Renewal Now Open",
+      "type": "Membership",
+      "date": "2026-01-15",
+      "body": "Annual membership renewal is open for 2026. Please contact a board member or reach us at info@clacleveland.org to renew or join.",
+      "status": "published"
+    },
+    {
+      "title": "CLAC Now on Instagram",
+      "type": "Community",
+      "date": "2026-02-01",
+      "body": "Follow us @cleveland_lietuviu_bendruomene for photos, event updates, and community news.",
+      "status": "published"
+    },
+    {
+      "title": "New Website Launched",
+      "type": "News",
+      "date": "2026-03-01",
+      "body": "Welcome to the new CLAC website. Events, news, and community resources are now available online. More features coming soon.",
+      "status": "published"
+    }
+  ]
+}

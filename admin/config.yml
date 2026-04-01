@@ -1,0 +1,72 @@
+backend:
+  name: github
+  repo: astankus28/clac-website
+  branch: main
+
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+
+collections:
+
+  # ── EVENTS ────────────────────────────────────────────────────────────────
+  - name: "events"
+    label: "Events"
+    files:
+      - label: "All Events"
+        name: "events"
+        file: "_data/events.json"
+        fields:
+          - label: "Events"
+            name: "events"
+            widget: "list"
+            summary: "{{fields.title}} — {{fields.date}}"
+            fields:
+              - { label: "ID", name: "id", widget: "string", hint: "Unique slug e.g. evt-spring-dinner-2026" }
+              - { label: "Title (English)", name: "title", widget: "string" }
+              - { label: "Title (Lithuanian)", name: "titleLt", widget: "string", required: false }
+              - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
+              - { label: "Time", name: "time", widget: "string", hint: "e.g. 6:00 PM", required: false }
+              - { label: "Location", name: "location", widget: "string" }
+              - { label: "Category", name: "category", widget: "select", options: ["Cultural","Social","Education","Religious","Meeting","Fundraiser","Other"] }
+              - { label: "Status", name: "status", widget: "select", options: ["upcoming","past"], default: "upcoming" }
+              - { label: "Featured", name: "featured", widget: "boolean", default: false }
+              - { label: "Description", name: "description", widget: "text", required: false }
+              - { label: "Cover Color", name: "coverColor", widget: "color", default: "#2d4a33", required: false }
+              - { label: "Attendees", name: "attendees", widget: "number", required: false }
+              - { label: "External URL", name: "url", widget: "string", required: false }
+              - { label: "Recap / Notes", name: "recap", widget: "text", required: false }
+              - { label: "Tags", name: "tags", widget: "list", required: false }
+
+  # ── ANNOUNCEMENTS ──────────────────────────────────────────────────────────
+  - name: "announcements"
+    label: "Announcements"
+    files:
+      - label: "All Announcements"
+        name: "announcements"
+        file: "_data/announcements.json"
+        fields:
+          - label: "Announcements"
+            name: "announcements"
+            widget: "list"
+            summary: "{{fields.title}} — {{fields.date}}"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Type", name: "type", widget: "select", options: ["Membership","Community","News","Event","Other"] }
+              - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
+              - { label: "Body", name: "body", widget: "text" }
+              - { label: "Status", name: "status", widget: "select", options: ["published","draft"], default: "published" }
+
+  # ── SITE SETTINGS ──────────────────────────────────────────────────────────
+  - name: "settings"
+    label: "Site Settings"
+    files:
+      - label: "General"
+        name: "general"
+        file: "_data/settings.json"
+        fields:
+          - { label: "Hero Headline", name: "heroHeadline", widget: "string" }
+          - { label: "Hero Subheading", name: "heroSub", widget: "text" }
+          - { label: "Ticker Text", name: "tickerText", widget: "string" }
+          - { label: "Contact Email", name: "contactEmail", widget: "string" }
+          - { label: "Facebook URL", name: "facebookUrl", widget: "string", required: false }
+          - { label: "Instagram URL", name: "instagramUrl", widget: "string", required: false }

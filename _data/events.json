@@ -1,0 +1,72 @@
+{
+  "events": [
+    {
+      "id": "evt-uzgavenes-2026",
+      "title": "Užgavėnės — Shrove Tuesday Celebration",
+      "titleLt": "Užgavėnių šventė",
+      "date": "2026-03-03",
+      "time": "5:00 PM",
+      "location": "Lithuanian Club, Cleveland",
+      "category": "Cultural",
+      "status": "past",
+      "featured": true,
+      "description": "Join us for the traditional Lithuanian Shrove Tuesday celebration with blynai, music, and the burning of Morė to chase away winter.\n\nAll are welcome. Bring the family!",
+      "coverColor": "#2d4a33",
+      "attendees": 80,
+      "url": "",
+      "recap": "A wonderful evening celebrating the end of winter with the whole community.",
+      "tags": ["traditional", "family", "food"]
+    },
+    {
+      "id": "evt-spring-dinner-2026",
+      "title": "Annual Spring Dinner & Dance",
+      "titleLt": "Pavasario vakaronė",
+      "date": "2026-05-10",
+      "time": "6:00 PM",
+      "location": "Lithuanian Club, E. 185th St, Cleveland",
+      "category": "Social",
+      "status": "upcoming",
+      "featured": true,
+      "description": "Our beloved annual dinner and dance returns. Enjoy traditional Lithuanian cuisine, live music, and an evening with the community.\n\nTickets available at the door or in advance from board members.",
+      "coverColor": "#3d2e1a",
+      "attendees": null,
+      "url": "",
+      "recap": "",
+      "tags": ["dinner", "dance", "music", "annual"]
+    },
+    {
+      "id": "evt-language-summer-2026",
+      "title": "Lithuanian Language Class — Summer Session",
+      "titleLt": "Lietuvių kalbos kursai",
+      "date": "2026-06-07",
+      "time": "10:00 AM",
+      "location": "St. George Church, Cleveland",
+      "category": "Education",
+      "status": "upcoming",
+      "featured": false,
+      "description": "Summer session Lithuanian language classes for all ages. Beginner and intermediate levels available.\n\nContact us to register.",
+      "coverColor": "#1e2e3a",
+      "attendees": null,
+      "url": "",
+      "recap": "",
+      "tags": ["language", "education", "children"]
+    },
+    {
+      "id": "evt-jonines-2026",
+      "title": "Joninės — Midsummer Night",
+      "titleLt": "Joninių šventė",
+      "date": "2026-06-21",
+      "time": "7:00 PM",
+      "location": "Lithuanian Cultural Garden, Cleveland",
+      "category": "Cultural",
+      "status": "upcoming",
+      "featured": false,
+      "description": "Celebrate the summer solstice at the Lithuanian Cultural Garden. Traditional songs, flower wreaths, and a bonfire.",
+      "coverColor": "#2e3a1e",
+      "attendees": null,
+      "url": "",
+      "recap": "",
+      "tags": ["traditional", "midsummer", "outdoor"]
+    }
+  ]
+}
