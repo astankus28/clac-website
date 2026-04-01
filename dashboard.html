@@ -684,7 +684,7 @@ async function showPage(name) {
   if (name === 'events') await renderEventsTable('all');
   if (name === 'announcements') await renderAnnouncementsTable();
   if (name === 'settings') await loadSettings();
-  if (name === 'dashboard') await // init handled by initApp()
+  if (name === 'dashboard') await renderDashboard();
   // Update topbar action
   const btn = document.getElementById('topbar-action');
   btn.textContent = topbarActions[name] || '+ New';
@@ -799,7 +799,7 @@ function hideEventForm() {
   editingEventId = null;
 }
 
-function saveEvent() {
+async function saveEvent() {
   const title = document.getElementById('f-title').value.trim();
   const date = document.getElementById('f-date').value;
   if (!title || !date) { showToast('⚠ Title and Date are required.'); return; }
@@ -826,7 +826,7 @@ function saveEvent() {
     published: document.getElementById('f-published').checked,
     featured: document.getElementById('f-featured').checked,
     photos,
-    createdAt: editingEventId ? (CLAC.events.get(editingEventId)||{}).createdAt || new Date().toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+    createdAt: editingEventId ? ((await CLAC.events.get(editingEventId))||{}).createdAt || new Date().toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
     updatedAt: new Date().toISOString().split('T')[0]
   };
   await CLAC.events.save(event);
@@ -840,7 +840,7 @@ function previewEvent() {
   if (editingEventId) window.open(`event.html?id=${editingEventId}`, '_blank');
 }
 
-function deleteEvent(id) {
+async function deleteEvent(id) {
   if (!confirm('Delete this event? This cannot be undone.')) return;
   await CLAC.events.delete(id);
   await renderEventsTable(filterStatus);
@@ -957,7 +957,7 @@ function cancelAnnEdit() {
   ['ann-title-input','ann-body-input'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
 }
 
-function editAnn(id) {
+async function editAnn(id) {
   const all_anns = await CLAC.announcements.all();
   const a = all_anns.find(a => a.id === id);
   if (!a) return;
@@ -972,7 +972,7 @@ function editAnn(id) {
   document.getElementById('ann-form-fields').scrollIntoView({ behavior:'smooth' });
 }
 
-function saveAnnouncement() {
+async function saveAnnouncement() {
   const title = document.getElementById('ann-title-input').value.trim();
   if (!title) { showToast('⚠ Title is required.'); return; }
   const editId = document.getElementById('ann-editing-id').value;
@@ -991,7 +991,7 @@ function saveAnnouncement() {
   showToast('✓ Announcement saved.');
 }
 
-function deleteAnn(id) {
+async function deleteAnn(id) {
   if (!confirm('Delete this announcement?')) return;
   await CLAC.announcements.delete(id);
   await renderAnnouncementsTable();
@@ -1030,7 +1030,7 @@ async function loadSettings() {
   document.getElementById('s-ticker').value = s.tickerText;
 }
 
-function saveSettings() {
+async function saveSettings() {
   await CLAC.settings.save({
     siteName: document.getElementById('s-name').value.trim(),
     siteNameLt: document.getElementById('s-name-lt').value.trim(),
