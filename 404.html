@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found — Cleveland Lithuanian American Community</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <style>
+    .error-page {
+      min-height: 100vh;
+      background: var(--forest);
+      color: var(--cream);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .error-page::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(255,255,255,0.012) 60px,rgba(255,255,255,0.012) 61px),repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(255,255,255,0.012) 60px,rgba(255,255,255,0.012) 61px);
+      pointer-events: none;
+    }
+    .error-content { position: relative; z-index: 1; max-width: 560px; }
+    .error-code {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(100px, 20vw, 180px);
+      font-weight: 900;
+      color: var(--amber);
+      line-height: 1;
+      opacity: 0.3;
+      margin-bottom: -20px;
+    }
+    .error-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 16px;
+    }
+    .error-sub {
+      font-size: 15px;
+      color: rgba(242,237,228,0.6);
+      line-height: 1.7;
+      font-weight: 300;
+      margin-bottom: 40px;
+    }
+    .error-lt {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--amber);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .error-links {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+
+<div class="error-page">
+  <div class="error-content">
+    <div class="error-code">404</div>
+    <div class="error-lt">Puslapis nerastas</div>
+    <div class="error-title">Page Not Found</div>
+    <div class="error-sub">
+      The page you're looking for doesn't exist or may have been moved.<br>
+      Let's get you back to the community.
+    </div>
+    <div class="error-links">
+      <a href="index.html" class="btn-primary">← Back to Homepage</a>
+      <a href="index.html#upcoming" class="btn-ghost-inv">View Events</a>
+      <a href="about.html" class="btn-ghost-inv">About Us</a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
