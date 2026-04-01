@@ -2116,7 +2116,7 @@ async function renderBmTable() {
     <tr>
       <td>
         <div style="display:flex; align-items:center; gap:10px;">
-          ${m.photo ? `<img src="${m.photo}" style="width:32px; height:32px; border-radius:50%; object-fit:cover;">` : '<div style="width:32px; height:32px; border-radius:50%; background:var(--forest); display:flex; align-items:center; justify-content:center; color:var(--amber); font-size:12px;">${m.name.charAt(0)}</div>'}
+          ${m.photo ? `<img src="${m.photo}" style="width:32px; height:32px; border-radius:50%; object-fit:cover;">` : `<div style="width:32px; height:32px; border-radius:50%; background:var(--forest); display:flex; align-items:center; justify-content:center; color:var(--amber); font-size:12px;">${m.name.charAt(0)}</div>`}
           <div class="td-title">${m.name}</div>
         </div>
       </td>
