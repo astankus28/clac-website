@@ -132,7 +132,7 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
 </style>
 </head>
 <body>
-<div class="admin-shell">
+<div class="admin-shell" id="app-shell">
 
   <!-- SIDEBAR -->
   <aside class="admin-sidebar" id="admin-sidebar">
@@ -437,278 +437,237 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
 
 <script>
 // ─────────────────────────────────────────────────────────────────────────────
-//  CLAC DATA LAYER
-//  Cleveland Lithuanian American Community — clacleveland.org
-//  All site data stored in localStorage under "clac_*" keys.
-//  To migrate to a real backend, swap the save()/all() methods in each module
-//  to API calls — the frontend pages require no changes.
-// ─────────────────────────────────────────────────────────────────────────────
 
+<div id="login-screen" style="display:none; position:fixed; inset:0; background:var(--forest); z-index:1000; display:flex; align-items:center; justify-content:center;">
+  <div style="background:var(--linen); padding:48px; max-width:360px; width:100%;">
+    <div style="font-family:'Playfair Display',serif; font-size:24px; font-weight:700; color:var(--text-dark); margin-bottom:4px;">CLAC Admin</div>
+    <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; color:var(--amber); margin-bottom:32px;">CLEVELANDO LIETUVIŲ BENDRUOMENĖ</div>
+    <div style="margin-bottom:16px;">
+      <label style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber); display:block; margin-bottom:8px;">Username</label>
+      <input id="login-user" type="text" style="width:100%; padding:10px 14px; border:1px solid var(--rule); font-family:'DM Sans',sans-serif; font-size:14px; outline:none;" placeholder="admin / richard / editor">
+    </div>
+    <div style="margin-bottom:24px;">
+      <label style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber); display:block; margin-bottom:8px;">Password</label>
+      <input id="login-pass" type="password" style="width:100%; padding:10px 14px; border:1px solid var(--rule); font-family:'DM Sans',sans-serif; font-size:14px; outline:none;" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div id="login-error" style="color:var(--red); font-size:12px; margin-bottom:12px; display:none;">Incorrect username or password.</div>
+    <button onclick="doLogin()" style="width:100%; background:var(--amber); color:var(--forest); border:none; padding:13px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; cursor:pointer;">Sign In →</button>
+  </div>
+</div>
+
+<script>
+const SB_URL = 'https://pipgdibeustnvbiayixg.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBpcGdkaWJldXN0bnZiaWF5aXhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMDczODMsImV4cCI6MjA5MDU4MzM4M30.dkzUwPGg4q3bF9MfjLmc0Huf69Y1sadXXojuA62005w';
+const DASHBOARD_PASSWORD = 'clac2025!';
+
+const SB_HEADERS = {
+  'apikey': SB_KEY,
+  'Authorization': 'Bearer ' + SB_KEY,
+  'Content-Type': 'application/json',
+  'Prefer': 'return=representation',
+};
+
+async function sbGet(table, params = '') {
+  const res = await fetch(`${SB_URL}/rest/v1/${table}${params}`, { headers: SB_HEADERS });
+  return res.json();
+}
+
+async function sbUpsert(table, data) {
+  const res = await fetch(`${SB_URL}/rest/v1/${table}`, {
+    method: 'POST',
+    headers: { ...SB_HEADERS, 'Prefer': 'resolution=merge-duplicates,return=representation' },
+    body: JSON.stringify(data),
+  });
+  return res.json();
+}
+
+async function sbDelete(table, id) {
+  await fetch(`${SB_URL}/rest/v1/${table}?id=eq.${id}`, {
+    method: 'DELETE',
+    headers: SB_HEADERS,
+  });
+}
+
+function mapEvent(e) {
+  return {
+    id: e.id, title: e.title, titleLt: e.title_lt,
+    date: e.date, time: e.time, endTime: e.end_time,
+    location: e.location, address: e.address,
+    category: e.category, status: e.status,
+    featured: e.featured, published: e.published,
+    coverColor: e.cover_color, description: e.description,
+    tags: e.tags || [], attendees: e.attendees,
+    rsvpLink: e.rsvp_link, recap: e.recap,
+    contactEmail: e.contact_email, photos: e.photos || [],
+    createdAt: e.created_at, updatedAt: e.updated_at,
+  };
+}
+
+function unmapEvent(e) {
+  return {
+    id: e.id, title: e.title, title_lt: e.titleLt,
+    date: e.date, time: e.time, end_time: e.endTime,
+    location: e.location, address: e.address,
+    category: e.category, status: e.status,
+    featured: e.featured, published: e.published,
+    cover_color: e.coverColor, description: e.description,
+    tags: e.tags || [], attendees: e.attendees || null,
+    rsvp_link: e.rsvpLink, recap: e.recap,
+    contact_email: e.contactEmail, photos: e.photos || [],
+    updated_at: new Date().toISOString().split('T')[0],
+  };
+}
+
+// ── AUTH ─────────────────────────────────────────────────────────────────────
 const CLAC = {
-
-  // ── AUTH ─────────────────────────────────────────────────────────────────
-  // Production: replace this with a real auth service (Supabase, Firebase, etc.)
   auth: {
-    users: [
-      { username: 'admin',   password: 'clac2025!', name: 'Board Admin',     role: 'admin'  },
-      { username: 'richard', password: 'clac2025!', name: 'Richard (Chair)', role: 'editor' },
-      { username: 'editor',  password: 'clac2025!', name: 'Board Editor',    role: 'editor' }
-    ],
     login(username, password) {
-      const user = this.users.find(u => u.username === username && u.password === password);
-      if (!user) return null;
-      const session = { username: user.username, name: user.name, role: user.role, ts: Date.now() };
-      localStorage.setItem('clac_session', JSON.stringify(session));
+      if (password !== DASHBOARD_PASSWORD) return null;
+      const names = { admin: 'Board Admin', richard: 'Richard (Chair)', editor: 'Board Editor' };
+      const roles = { admin: 'admin', richard: 'editor', editor: 'editor' };
+      if (!names[username]) return null;
+      const session = { username, name: names[username], role: roles[username], ts: Date.now() };
+      sessionStorage.setItem('clac_session', JSON.stringify(session));
       return session;
     },
-    logout() {
-      localStorage.removeItem('clac_session');
-    },
+    logout() { sessionStorage.removeItem('clac_session'); },
     current() {
-      const raw = localStorage.getItem('clac_session');
+      const raw = sessionStorage.getItem('clac_session');
       if (!raw) return null;
-      const session = JSON.parse(raw);
-      // 8-hour session timeout
-      if (Date.now() - session.ts > 8 * 60 * 60 * 1000) { this.logout(); return null; }
-      return session;
-    },
-    require() {
-      const s = this.current();
-      if (!s) { window.location.href = '/admin/index.html'; return null; }
+      const s = JSON.parse(raw);
+      if (Date.now() - s.ts > 8 * 60 * 60 * 1000) { this.logout(); return null; }
       return s;
-    }
+    },
   },
 
-  // ── EVENTS ───────────────────────────────────────────────────────────────
+  // ── EVENTS ──────────────────────────────────────────────────────────────
   events: {
-    _key: 'clac_events',
+    _cache: null,
 
-    _defaults: [
-      {
-        id: 'spring-gathering-2025',
-        title: 'Spring Community Gathering',
-        titleLt: 'Pavasario Bendruomenės Susirinkimas',
-        date: '2025-04-19',
-        time: '2:00 PM',
-        endTime: '6:00 PM',
-        location: 'Lithuanian Cultural Garden, Rockefeller Park',
-        address: '750 E 88th St, Cleveland, OH 44108',
-        category: 'Cultural',
-        status: 'upcoming',
-        featured: true,
-        coverColor: '#2d4a33',
-        description: `Our annual spring gathering returns to the Lithuanian Cultural Garden in Rockefeller Park. This beloved tradition brings together Cleveland's Lithuanian community for an afternoon of food, music, and fellowship beneath the open sky.\n\nBring a dish to share — traditional Lithuanian recipes always welcome, but anything goes. We'll have music, time for children to run around, and plenty of good conversation.\n\nAll members, families, and friends are warmly welcome. No RSVP required — just show up!`,
-        descriptionLt: 'Mūsų metinis pavasario susirinkimas grįžta į Lietuvių kultūros sodą Rokfelerio parke.',
-        photos: [],
-        contactName: 'Board Contact',
-        contactEmail: 'info@clacleveland.org',
-        rsvpLink: '',
-        tags: ['Annual', 'Potluck', 'Family-Friendly', 'Outdoors'],
-        attendees: null,
-        recap: '',
-        published: true,
-        createdAt: '2025-03-01',
-        updatedAt: '2025-03-28'
-      },
-      {
-        id: 'mothers-day-mass-2025',
-        title: "Mother's Day Mass",
-        titleLt: 'Motinos Dienos Mišios',
-        date: '2025-05-11',
-        time: '10:00 AM',
-        endTime: '12:00 PM',
-        location: 'St. George Lithuanian Church',
-        address: 'E. 185th Street, Cleveland, OH',
-        category: 'Religious',
-        status: 'upcoming',
-        featured: false,
-        coverColor: '#1e2e3a',
-        description: `Annual Mother's Day Lithuanian Mass at St. George's, the heart of Cleveland's Lithuanian heritage. Mass in Lithuanian with reception to follow in the parish hall.\n\nAll are welcome — bring your mothers, grandmothers, and families.`,
-        descriptionLt: '',
-        photos: [],
-        contactName: 'Board Contact',
-        contactEmail: 'info@clacleveland.org',
-        rsvpLink: '',
-        tags: ['Annual', 'Religious', 'Family'],
-        attendees: null,
-        recap: '',
-        published: true,
-        createdAt: '2025-03-01',
-        updatedAt: '2025-03-01'
-      },
-      {
-        id: 'one-world-day-2024',
-        title: 'One World Day 2024',
-        titleLt: 'Viso Pasaulio Diena 2024',
-        date: '2024-09-08',
-        time: '11:00 AM',
-        endTime: '5:00 PM',
-        location: 'Rockefeller Park, Cleveland',
-        address: '750 E 88th St, Cleveland, OH 44108',
-        category: 'Festival',
-        status: 'past',
-        featured: true,
-        coverColor: '#3d2e1a',
-        description: `Cleveland's beloved One World Day returned to Rockefeller Park and the Lithuanian community showed up in force — our largest presence in recent memory.\n\nVolunteers in traditional dress staffed the Lithuanian booth with food, crafts, and information about our community. Thousands of Clevelanders stopped by to learn about Lithuania.\n\nThank you to all who volunteered, cooked, and represented our heritage with such pride.`,
-        descriptionLt: '',
-        photos: [],
-        contactName: 'Board Contact',
-        contactEmail: 'info@clacleveland.org',
-        rsvpLink: '',
-        tags: ['Annual', 'Multicultural', 'Outreach'],
-        attendees: 200,
-        recap: 'Record attendance. Lithuanian booth drew strong interest. Traditional dress and food were highlights.',
-        published: true,
-        createdAt: '2024-09-20',
-        updatedAt: '2024-09-20'
-      },
-      {
-        id: 'mindaugas-picnic-2024',
-        title: 'Mindaugas Day Picnic',
-        titleLt: 'Mindaugo Dienos Piknikas',
-        date: '2024-07-06',
-        time: '1:00 PM',
-        endTime: '5:00 PM',
-        location: 'Community Grounds, Greater Cleveland',
-        address: 'Cleveland, OH',
-        category: 'Celebration',
-        status: 'past',
-        featured: false,
-        coverColor: '#2a1e2e',
-        description: `Celebrating Lithuania's national holiday — the Coronation of King Mindaugas — with our annual summer picnic. Food, games, and great company under the summer sun.`,
-        descriptionLt: '',
-        photos: [],
-        contactName: 'Board Contact',
-        contactEmail: 'info@clacleveland.org',
-        rsvpLink: '',
-        tags: ['Annual', 'National Holiday', 'Picnic'],
-        attendees: 45,
-        recap: '',
-        published: true,
-        createdAt: '2024-07-10',
-        updatedAt: '2024-07-10'
-      }
-    ],
-
-    _init() {
-      if (!localStorage.getItem(this._key)) {
-        localStorage.setItem(this._key, JSON.stringify(this._defaults));
-      }
+    async all() {
+      if (this._cache) return this._cache;
+      const rows = await sbGet('events', '?select=*&order=date.desc');
+      this._cache = (rows || []).map(mapEvent);
+      return this._cache;
     },
-    all() {
-      this._init();
-      return JSON.parse(localStorage.getItem(this._key));
-    },
-    get(id) {
-      return this.all().find(e => e.id === id) || null;
+    async get(id) {
+      const all = await this.all();
+      return all.find(e => e.id === id) || null;
     },
     upcoming() {
-      return this.all()
-        .filter(e => e.status === 'upcoming' && e.published)
-        .sort((a, b) => new Date(a.date) - new Date(b.date));
+      const today = new Date(); today.setHours(0,0,0,0);
+      return (this._cache||[]).filter(e => new Date(e.date+'T12:00:00') >= today).sort((a,b) => new Date(a.date)-new Date(b.date));
     },
     past() {
-      return this.all()
-        .filter(e => e.status === 'past' && e.published)
-        .sort((a, b) => new Date(b.date) - new Date(a.date));
+      const today = new Date(); today.setHours(0,0,0,0);
+      return (this._cache||[]).filter(e => new Date(e.date+'T12:00:00') < today).sort((a,b) => new Date(b.date)-new Date(a.date));
     },
-    save(event) {
-      const all = this.all();
-      const idx = all.findIndex(e => e.id === event.id);
-      event.updatedAt = new Date().toISOString().split('T')[0];
-      if (idx >= 0) { all[idx] = event; } else { all.unshift(event); }
-      localStorage.setItem(this._key, JSON.stringify(all));
-      return event;
+    async save(event) {
+      const row = unmapEvent(event);
+      if (!row.created_at) row.created_at = new Date().toISOString().split('T')[0];
+      await sbUpsert('events', row);
+      this._cache = null;
     },
-    delete(id) {
-      localStorage.setItem(this._key, JSON.stringify(this.all().filter(e => e.id !== id)));
+    async delete(id) {
+      await sbDelete('events', id);
+      this._cache = null;
     },
     slugify(title) {
-      return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
-        + '-' + Date.now().toString(36);
-    }
+      return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '-' + Date.now().toString(36);
+    },
   },
 
   // ── ANNOUNCEMENTS ────────────────────────────────────────────────────────
   announcements: {
-    _key: 'clac_announcements',
+    _cache: null,
 
-    _defaults: [
-      { id: 'ann-1', type: 'Community Update',     title: 'Spring 2025 Gathering Confirmed for April 19',       body: 'Our annual spring gathering returns to the Lithuanian Cultural Garden in Rockefeller Park. Potluck format — bring a dish. All welcome.',                                          date: '2025-03-28', published: true },
-      { id: 'ann-2', type: 'National Organization', title: 'LAC Newsletter Spring Edition Now Available',         body: 'The national Lithuanian American Community newsletter for Spring 2025 is now available at javlb.lt/en/naujienlaiskiui.',                                                        date: '2025-03-15', published: true },
-      { id: 'ann-3', type: 'Heritage',              title: 'Cultural Garden Spring Cleanup — Volunteers Needed',  body: 'Volunteers needed for the annual spring cleanup of the Lithuanian Cultural Garden at Rockefeller Park. Contact us via Facebook to sign up.',                                  date: '2025-03-10', published: true },
-      { id: 'ann-4', type: 'Membership',            title: '2025 Membership Renewal — Open Now',                 body: 'Annual membership renewal is open. Supporting the community through membership helps fund our events and cultural programming. Contact the board for details.',               date: '2025-01-05', published: true }
-    ],
-
-    _init() {
-      if (!localStorage.getItem(this._key)) {
-        localStorage.setItem(this._key, JSON.stringify(this._defaults));
-      }
-    },
-    all() {
-      this._init();
-      return JSON.parse(localStorage.getItem(this._key));
+    async all() {
+      if (this._cache) return this._cache;
+      const rows = await sbGet('announcements', '?select=*&order=date.desc');
+      this._cache = rows || [];
+      return this._cache;
     },
     published() {
-      return this.all()
-        .filter(a => a.published)
-        .sort((a, b) => new Date(b.date) - new Date(a.date));
+      return (this._cache||[]).filter(a => a.published);
     },
-    save(ann) {
-      const all = this.all();
-      const idx = all.findIndex(a => a.id === ann.id);
-      if (idx >= 0) { all[idx] = ann; } else { all.unshift(ann); }
-      localStorage.setItem(this._key, JSON.stringify(all));
+    async save(ann) {
+      await sbUpsert('announcements', ann);
+      this._cache = null;
     },
-    delete(id) {
-      localStorage.setItem(this._key, JSON.stringify(this.all().filter(a => a.id !== id)));
-    }
+    async delete(id) {
+      await sbDelete('announcements', id);
+      this._cache = null;
+    },
   },
 
   // ── SETTINGS ─────────────────────────────────────────────────────────────
   settings: {
-    _key: 'clac_settings',
-
-    _defaults: {
-      siteName:      'Cleveland Lithuanian American Community',
-      siteNameLt:    'Clevelando Lietuvių Bendruomenė',
-      email:         'info@clacleveland.org',
-      facebook:      'https://www.facebook.com/profile.php?id=61565856471983',
-      instagram:     'https://www.instagram.com/cleveland_lietuviu_bendruomene',
-      nationalUrl:   'https://javlb.lt/en/',
-      tickerText:    'St. George Lithuanian Church — Sundays at 10:00 AM · Lithuanian Cultural Garden — Rockefeller Park · Follow us on Facebook & Instagram',
-      heroHeadline:  'One community. Many stories. One Cleveland.',
-      heroSub:       'The heartbeat of Lithuanian culture in Northeast Ohio — celebrating our heritage, connecting generations, and building a living community here on the shores of Lake Erie.'
+    _cache: null,
+    async get() {
+      if (this._cache) return this._cache;
+      const rows = await sbGet('settings', '?select=*');
+      const s = {};
+      (rows||[]).forEach(r => s[r.key] = r.value);
+      this._cache = s;
+      return s;
     },
-
-    get() {
-      const stored = localStorage.getItem(this._key);
-      return stored ? { ...this._defaults, ...JSON.parse(stored) } : { ...this._defaults };
+    async save(data) {
+      const rows = Object.entries(data).map(([key, value]) => ({ key, value }));
+      await sbUpsert('settings', rows);
+      this._cache = null;
     },
-    save(data) {
-      localStorage.setItem(this._key, JSON.stringify(data));
-    }
   },
 
-  // ── HELPERS ──────────────────────────────────────────────────────────────
   formatDate(dateStr) {
-    return new Date(dateStr + 'T12:00:00').toLocaleDateString('en-US', {
-      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-    });
+    return new Date(dateStr + 'T12:00:00').toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
   },
   formatDateShort(dateStr) {
-    return new Date(dateStr + 'T12:00:00').toLocaleDateString('en-US', {
-      month: 'short', day: 'numeric', year: 'numeric'
-    });
+    return new Date(dateStr + 'T12:00:00').toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
   },
   monthDay(dateStr) {
     const d = new Date(dateStr + 'T12:00:00');
-    return {
-      month: d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase(),
-      day:   d.getDate()
-    };
-  }
+    return { month: d.toLocaleDateString('en-US',{month:'short'}).toUpperCase(), day: d.getDate() };
+  },
 };
+
+
+// ── AUTH CHECK ───────────────────────────────────────────────────────────
+
+function doLogin() {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value;
+  const session = CLAC.auth.login(u, p);
+  if (!session) {
+    document.getElementById('login-error').style.display = 'block';
+    return;
+  }
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app-shell').style.display = 'grid';
+  initApp(session);
+}
+
+let currentUser = null;
+function initApp(session) {
+  currentUser = session;
+  document.getElementById('su-name').textContent = session.name;
+  document.getElementById('su-role').textContent = session.role;
+  document.getElementById('su-avatar').textContent = session.name.charAt(0).toUpperCase();
+  document.getElementById('welcome-name').textContent = session.name.split(' ')[0];
+  renderDashboard();
+}
+
+function doLogout() { CLAC.auth.logout(); location.reload(); }
+
+// Show login or app on load
+const _session = CLAC.auth.current();
+if (_session) {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app-shell').style.display = 'grid';
+  initApp(_session);
+} else {
+  document.getElementById('app-shell').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+}
 
 </script>
 <script>
@@ -722,14 +681,14 @@ document.getElementById('su-role').textContent = session.role;
 document.getElementById('su-avatar').textContent = session.name.charAt(0).toUpperCase();
 document.getElementById('welcome-name').textContent = session.name.split(' ')[0];
 
-function doLogout() { CLAC.auth.logout(); window.location.href = 'index.html'; }
+
 
 // ── NAVIGATION ────────────────────────────────────────────
 const pages = ['dashboard','events','announcements','settings'];
 const pageTitles = { dashboard:'Dashboard', events:'Events', announcements:'Announcements', settings:'Site Settings' };
 const topbarActions = { dashboard:'+ New Event', events:'+ New Event', announcements:'+ New Announcement', settings:'Save Settings' };
 
-function showPage(name) {
+async function showPage(name) {
   pages.forEach(p => {
     document.getElementById('page-'+p).classList.toggle('active', p === name);
     document.querySelectorAll('.snav-item').forEach((el,i) => el.classList.remove('active'));
@@ -738,10 +697,10 @@ function showPage(name) {
     if (el.getAttribute('onclick') && el.getAttribute('onclick').includes(`'${name}'`)) el.classList.add('active');
   });
   document.getElementById('page-title').textContent = pageTitles[name] || name;
-  if (name === 'events') renderEventsTable('all');
-  if (name === 'announcements') renderAnnouncementsTable();
-  if (name === 'settings') loadSettings();
-  if (name === 'dashboard') renderDashboard();
+  if (name === 'events') await renderEventsTable('all');
+  if (name === 'announcements') await renderAnnouncementsTable();
+  if (name === 'settings') await loadSettings();
+  if (name === 'dashboard') await renderDashboard();  // async, runs in background
   // Update topbar action
   const btn = document.getElementById('topbar-action');
   btn.textContent = topbarActions[name] || '+ New';
@@ -750,9 +709,9 @@ function showPage(name) {
 }
 
 // ── DASHBOARD ─────────────────────────────────────────────
-function renderDashboard() {
-  const events = CLAC.events.all();
-  const anns = CLAC.announcements.all();
+async function renderDashboard() {
+  const events = await CLAC.events.all();
+  const anns = await CLAC.announcements.all();
   const upcoming = events.filter(e => e.status === 'upcoming').length;
   const past = events.filter(e => e.status === 'past').length;
   document.getElementById('stats-grid').innerHTML = `
@@ -820,9 +779,9 @@ function clearEventForm() {
   buildColorGrid();
 }
 
-function editEvent(id) {
+async function editEvent(id) {
   showPage('events');
-  const e = CLAC.events.get(id);
+  const e = await CLAC.events.get(id);
   if (!e) return;
   editingEventId = id;
   document.getElementById('form-mode-title').textContent = 'Edit Event';
@@ -886,31 +845,31 @@ function saveEvent() {
     createdAt: editingEventId ? (CLAC.events.get(editingEventId)||{}).createdAt || new Date().toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
     updatedAt: new Date().toISOString().split('T')[0]
   };
-  CLAC.events.save(event);
+  await CLAC.events.save(event);
   hideEventForm();
-  renderEventsTable(filterStatus);
-  renderDashboard();
+  await renderEventsTable(filterStatus);
+  await renderDashboard();
   showToast(`✓ Event "${title}" saved successfully.`);
 }
 
 function previewEvent() {
-  if (editingEventId) window.open(`../event.html?id=${editingEventId}`, '_blank');
+  if (editingEventId) window.open(`event.html?id=${editingEventId}`, '_blank');
 }
 
 function deleteEvent(id) {
   if (!confirm('Delete this event? This cannot be undone.')) return;
-  CLAC.events.delete(id);
-  renderEventsTable(filterStatus);
-  renderDashboard();
+  await CLAC.events.delete(id);
+  await renderEventsTable(filterStatus);
+  await renderDashboard();
   showToast('✓ Event deleted.');
 }
 
-function toggleEventPublished(id) {
-  const e = CLAC.events.get(id);
+async function toggleEventPublished(id) {
+  const e = await CLAC.events.get(id);
   if (!e) return;
   e.published = !e.published;
-  CLAC.events.save(e);
-  renderEventsTable(filterStatus);
+  await CLAC.events.save(e);
+  await renderEventsTable(filterStatus);
   showToast(e.published ? '✓ Event published.' : '✓ Event unpublished.');
 }
 
@@ -923,8 +882,8 @@ function filterEvents(status) {
   renderEventsTable(status);
 }
 
-function renderEventsTable(status) {
-  let events = CLAC.events.all();
+async function renderEventsTable(status) {
+  let events = await CLAC.events.all();
   if (status !== 'all') events = events.filter(e => e.status === status);
   events.sort((a,b) => {
     if (a.status === 'upcoming' && b.status === 'past') return -1;
@@ -1015,7 +974,8 @@ function cancelAnnEdit() {
 }
 
 function editAnn(id) {
-  const a = CLAC.announcements.all().find(a => a.id === id);
+  const all_anns = await CLAC.announcements.all();
+  const a = all_anns.find(a => a.id === id);
   if (!a) return;
   document.getElementById('ann-editing-id').value = id;
   document.getElementById('ann-type').value = a.type;
@@ -1040,23 +1000,23 @@ function saveAnnouncement() {
     date: document.getElementById('ann-date').value,
     published: document.getElementById('ann-published').checked
   };
-  CLAC.announcements.save(ann);
+  await CLAC.announcements.save(ann);
   cancelAnnEdit();
-  renderAnnouncementsTable();
-  renderDashboard();
+  await renderAnnouncementsTable();
+  await renderDashboard();
   showToast('✓ Announcement saved.');
 }
 
 function deleteAnn(id) {
   if (!confirm('Delete this announcement?')) return;
-  CLAC.announcements.delete(id);
-  renderAnnouncementsTable();
-  renderDashboard();
+  await CLAC.announcements.delete(id);
+  await renderAnnouncementsTable();
+  await renderDashboard();
   showToast('✓ Announcement deleted.');
 }
 
-function renderAnnouncementsTable() {
-  const anns = CLAC.announcements.all();
+async function renderAnnouncementsTable() {
+  const anns = await CLAC.announcements.all();
   const tbody = document.getElementById('ann-tbody');
   if (!anns.length) { tbody.innerHTML = '<tr><td colspan="5" style="padding:24px; text-align:center; color:var(--text-muted); font-size:13px;">No announcements yet.</td></tr>'; return; }
   tbody.innerHTML = anns.sort((a,b) => new Date(b.date)-new Date(a.date)).map(a => `
@@ -1073,8 +1033,8 @@ function renderAnnouncementsTable() {
 }
 
 // ── SETTINGS ──────────────────────────────────────────────
-function loadSettings() {
-  const s = CLAC.settings.get();
+async function loadSettings() {
+  const s = await CLAC.settings.get();
   document.getElementById('s-name').value = s.siteName;
   document.getElementById('s-name-lt').value = s.siteNameLt;
   document.getElementById('s-email').value = s.email;
@@ -1087,7 +1047,7 @@ function loadSettings() {
 }
 
 function saveSettings() {
-  CLAC.settings.save({
+  await CLAC.settings.save({
     siteName: document.getElementById('s-name').value.trim(),
     siteNameLt: document.getElementById('s-name-lt').value.trim(),
     email: document.getElementById('s-email').value.trim(),
@@ -1113,6 +1073,7 @@ function showToast(msg) {
 
 // ── INIT ──────────────────────────────────────────────────
 renderDashboard();
+
 </script>
 </body>
 </html>
