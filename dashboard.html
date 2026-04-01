@@ -132,7 +132,7 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
 </style>
 </head>
 <body>
-<div class="admin-shell" id="app-shell">
+<div class="admin-shell" id="app-shell" style="display:none;">
 
   <!-- SIDEBAR -->
   <aside class="admin-sidebar" id="admin-sidebar">
@@ -435,10 +435,8 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<script>
-// ─────────────────────────────────────────────────────────────────────────────
-
-<div id="login-screen" style="display:none; position:fixed; inset:0; background:var(--forest); z-index:1000; display:flex; align-items:center; justify-content:center;">
+<!-- LOGIN -->
+<div id="login-screen" style="position:fixed; inset:0; background:var(--forest); z-index:1000; display:flex; align-items:center; justify-content:center;">
   <div style="background:var(--linen); padding:48px; max-width:360px; width:100%;">
     <div style="font-family:'Playfair Display',serif; font-size:24px; font-weight:700; color:var(--text-dark); margin-bottom:4px;">CLAC Admin</div>
     <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; color:var(--amber); margin-bottom:32px;">CLEVELANDO LIETUVIŲ BENDRUOMENĖ</div>
@@ -454,6 +452,9 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
     <button onclick="doLogin()" style="width:100%; background:var(--amber); color:var(--forest); border:none; padding:13px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; cursor:pointer;">Sign In →</button>
   </div>
 </div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
 <script>
 const SB_URL = 'https://pipgdibeustnvbiayixg.supabase.co';
@@ -631,57 +632,40 @@ const CLAC = {
 };
 
 
-// ── AUTH CHECK ───────────────────────────────────────────────────────────
 
+// ── BOOTSTRAP ────────────────────────────────────────────────────────────────
 function doLogin() {
   const u = document.getElementById('login-user').value.trim();
   const p = document.getElementById('login-pass').value;
-  const session = CLAC.auth.login(u, p);
-  if (!session) {
-    document.getElementById('login-error').style.display = 'block';
-    return;
-  }
+  const sess = CLAC.auth.login(u, p);
+  if (!sess) { document.getElementById('login-error').style.display = 'block'; return; }
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app-shell').style.display = 'grid';
-  initApp(session);
+  initApp(sess);
 }
 
 let currentUser = null;
-function initApp(session) {
-  currentUser = session;
-  document.getElementById('su-name').textContent = session.name;
-  document.getElementById('su-role').textContent = session.role;
-  document.getElementById('su-avatar').textContent = session.name.charAt(0).toUpperCase();
-  document.getElementById('welcome-name').textContent = session.name.split(' ')[0];
+function initApp(sess) {
+  currentUser = sess;
+  document.getElementById('su-name').textContent = sess.name;
+  document.getElementById('su-role').textContent = sess.role;
+  document.getElementById('su-avatar').textContent = sess.name.charAt(0).toUpperCase();
+  document.getElementById('welcome-name').textContent = sess.name.split(' ')[0];
   renderDashboard();
 }
 
-function doLogout() { CLAC.auth.logout(); location.reload(); }
-
-// Show login or app on load
-const _session = CLAC.auth.current();
-if (_session) {
+// On load: check existing session
+const _existingSession = CLAC.auth.current();
+if (_existingSession) {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app-shell').style.display = 'grid';
-  initApp(_session);
+  initApp(_existingSession);
 } else {
   document.getElementById('app-shell').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
 }
 
-</script>
-<script>
-// ── AUTH ──────────────────────────────────────────────────
-const session = CLAC.auth.current();
-if (!session) { window.location.href = 'index.html'; }
-let currentUser = session;
 
-document.getElementById('su-name').textContent = session.name;
-document.getElementById('su-role').textContent = session.role;
-document.getElementById('su-avatar').textContent = session.name.charAt(0).toUpperCase();
-document.getElementById('welcome-name').textContent = session.name.split(' ')[0];
-
-
+function doLogout() { CLAC.auth.logout(); window.location.href = 'index.html'; }
 
 // ── NAVIGATION ────────────────────────────────────────────
 const pages = ['dashboard','events','announcements','settings'];
@@ -700,7 +684,7 @@ async function showPage(name) {
   if (name === 'events') await renderEventsTable('all');
   if (name === 'announcements') await renderAnnouncementsTable();
   if (name === 'settings') await loadSettings();
-  if (name === 'dashboard') await renderDashboard();  // async, runs in background
+  if (name === 'dashboard') await // init handled by initApp()
   // Update topbar action
   const btn = document.getElementById('topbar-action');
   btn.textContent = topbarActions[name] || '+ New';
