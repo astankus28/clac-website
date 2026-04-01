@@ -1469,6 +1469,56 @@ async function saveSettings() {
 
 
 
+
+// ── IMAGE COMPRESSION ─────────────────────────────────────────────────────────
+// Resizes and compresses images client-side before uploading to Supabase
+// maxW/maxH: max dimensions in px, quality: 0-1 JPEG quality
+async function compressImage(file, maxW = 1600, maxH = 1600, quality = 0.82) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let { width, height } = img;
+
+      // Scale down if needed
+      if (width > maxW || height > maxH) {
+        const ratio = Math.min(maxW / width, maxH / height);
+        width  = Math.round(width  * ratio);
+        height = Math.round(height * ratio);
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width  = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+
+      canvas.toBlob(
+        (blob) => resolve(new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' })),
+        'image/jpeg',
+        quality
+      );
+    };
+    img.src = url;
+  });
+}
+
+// Cover photos: max 1200×800, good quality
+async function compressCover(file) {
+  return compressImage(file, 1200, 800, 0.85);
+}
+
+// Gallery/event photos: max 1600×1200
+async function compressGallery(file) {
+  return compressImage(file, 1600, 1200, 0.82);
+}
+
+// Avatars/thumbnails: max 400×400
+async function compressAvatar(file) {
+  return compressImage(file, 400, 400, 0.88);
+}
+
 // ── COVER PHOTO UPLOAD ────────────────────────────────────────────────────────
 let _coverPhotoUrl = '';
 
@@ -1486,10 +1536,12 @@ async function handleCoverDrop(event) {
 
 async function uploadCoverPhoto(file) {
   const status = document.getElementById('cover-upload-status');
-  status.textContent = 'Uploading cover photo...';
+  status.textContent = 'Optimizing cover photo...';
   status.style.display = 'block';
   try {
-    const ext  = file.name.split('.').pop().toLowerCase();
+    file = await compressCover(file);
+    status.textContent = 'Uploading cover photo...';
+    const ext  = 'jpg';
     const name = `covers/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
     const res  = await fetch(`${SB_URL}/storage/v1/object/clac-media/${name}`, {
       method:  'POST',
@@ -1545,7 +1597,8 @@ function setUploadStatus(msg, show=true) {
 }
 
 async function uploadPhoto(file) {
-  const ext  = file.name.split('.').pop().toLowerCase();
+  file = await compressGallery(file);
+  const ext  = 'jpg';
   const name = `events/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
   const res  = await fetch(`${SB_URL}/storage/v1/object/clac-media/${name}`, {
     method:  'POST',
@@ -1886,7 +1939,8 @@ function cancelBmEdit() {
 
 async function handleBmPhoto(file) {
   if (!file) return;
-  const ext  = file.name.split('.').pop().toLowerCase();
+  file = await compressAvatar(file);
+  const ext  = 'jpg';
   const name = `board/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
   const res  = await fetch(`${SB_URL}/storage/v1/object/clac-media/${name}`, {
     method: 'POST',
@@ -1998,9 +2052,10 @@ async function handleMediaUpload(files) {
   const status = document.getElementById('media-upload-status');
   status.style.display = 'block';
   let uploaded = 0;
-  for (const file of files) {
+  for (let file of files) {
     try {
-      const ext  = file.name.split('.').pop().toLowerCase();
+      file = await compressGallery(file);
+      const ext  = 'jpg';
       const name = `library/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
       const res  = await fetch(`${SB_URL}/storage/v1/object/clac-media/${name}`, {
         method: 'POST',
