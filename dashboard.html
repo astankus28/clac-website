@@ -146,9 +146,13 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
       <a class="snav-item" onclick="showPage('events')" href="#"><span class="snav-icon">◆</span> Events</a>
       <a class="snav-item" onclick="showPage('announcements')" href="#"><span class="snav-icon">✦</span> Announcements</a>
       <div class="snav-section">Site</div>
-      <a class="snav-item" onclick="showPage('settings')" href="#"><span class="snav-icon">⚙</span> Site Settings</a>
+      <a class="snav-item" onclick="showPage('page-content')" href="#"><span class="snav-icon">✎</span> Page Content</a>
+      <a class="snav-item" onclick="showPage('quick-links')" href="#"><span class="snav-icon">⬡</span> Quick Links</a>
+      <a class="snav-item" onclick="showPage('board')" href="#"><span class="snav-icon">◉</span> Board Members</a>
+      <a class="snav-item" onclick="showPage('media')" href="#"><span class="snav-icon">▲</span> Media Library</a>
+      <a class="snav-item" onclick="showPage('settings')" href="#"><span class="snav-icon">⚙</span> Settings</a>
       <div class="snav-section">Public</div>
-      <a class="snav-item" href="../index.html" target="_blank"><span class="snav-icon">↗</span> View Public Site</a>
+      <a class="snav-item" href="index.html" target="_blank"><span class="snav-icon">↗</span> View Public Site</a>
     </nav>
     <div class="sidebar-user" id="sidebar-user">
       <div class="su-avatar" id="su-avatar">A</div>
@@ -463,6 +467,268 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
       <button class="btn-sm primary" onclick="saveSettings()" style="padding:12px 28px;">Save Settings →</button>
     </div>
 
+
+    <!-- PAGE CONTENT -->
+    <div class="page" id="page-page-content">
+      <div style="margin-bottom:24px;"><div style="font-size:13px; color:var(--text-muted);">Edit homepage hero, about section, and ticker text.</div></div>
+      <div class="settings-section">
+        <div class="settings-section-title">Hero Section</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Hero Headline (English)</label>
+            <input class="form-input" type="text" id="pc-hero-headline">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Hero Headline (Lithuanian)</label>
+            <input class="form-input" type="text" id="pc-hero-headline-lt">
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Hero Subtext (English)</label>
+            <textarea class="form-textarea" style="min-height:80px;" id="pc-hero-sub"></textarea>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Hero Subtext (Lithuanian)</label>
+            <textarea class="form-textarea" style="min-height:80px;" id="pc-hero-sub-lt"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Stat 1 — Number</label>
+            <input class="form-input" type="text" id="pc-stat1-num" placeholder="70+">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Stat 1 — Label (English)</label>
+            <input class="form-input" type="text" id="pc-stat1-label" placeholder="Years Active">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Stat 2 — Number</label>
+            <input class="form-input" type="text" id="pc-stat2-num" placeholder="E. 185th">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Stat 2 — Label (English)</label>
+            <input class="form-input" type="text" id="pc-stat2-label" placeholder="Heritage Corridor">
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Ticker Text</label>
+            <input class="form-input" type="text" id="pc-ticker">
+            <div class="form-hint">Scrolling banner. Upcoming events are prepended automatically.</div>
+          </div>
+        </div>
+      </div>
+      <div class="settings-section">
+        <div class="settings-section-title">About Section</div>
+        <div style="margin-bottom:20px; font-size:13px; color:var(--text-muted);">Three columns displayed on the homepage.</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Column 1 — Label (EN)</label>
+            <input class="form-input" type="text" id="pc-ab1-label" placeholder="Who We Are">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Column 1 — Label (LT)</label>
+            <input class="form-input" type="text" id="pc-ab1-label-lt" placeholder="Kas Mes Esame">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Column 1 — Heading (EN)</label>
+            <input class="form-input" type="text" id="pc-ab1-heading">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Column 1 — Heading (LT)</label>
+            <input class="form-input" type="text" id="pc-ab1-heading-lt">
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Column 1 — Body (EN)</label>
+            <textarea class="form-textarea" style="min-height:80px;" id="pc-ab1-body"></textarea>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Column 1 — Body (LT)</label>
+            <textarea class="form-textarea" style="min-height:80px;" id="pc-ab1-body-lt"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Column 2 — Label (EN)</label>
+            <input class="form-input" type="text" id="pc-ab2-label" placeholder="What We Do">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Column 2 — Label (LT)</label>
+            <input class="form-input" type="text" id="pc-ab2-label-lt">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Column 2 — Heading (EN)</label>
+            <input class="form-input" type="text" id="pc-ab2-heading">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Column 2 — Heading (LT)</label>
+            <input class="form-input" type="text" id="pc-ab2-heading-lt">
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Column 2 — Body (EN)</label>
+            <textarea class="form-textarea" style="min-height:80px;" id="pc-ab2-body"></textarea>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Column 2 — Body (LT)</label>
+            <textarea class="form-textarea" style="min-height:80px;" id="pc-ab2-body-lt"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Column 3 — Label (EN)</label>
+            <input class="form-input" type="text" id="pc-ab3-label" placeholder="Get Involved">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Column 3 — Label (LT)</label>
+            <input class="form-input" type="text" id="pc-ab3-label-lt">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Column 3 — Heading (EN)</label>
+            <input class="form-input" type="text" id="pc-ab3-heading">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Column 3 — Heading (LT)</label>
+            <input class="form-input" type="text" id="pc-ab3-heading-lt">
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Column 3 — Body (EN)</label>
+            <textarea class="form-textarea" style="min-height:80px;" id="pc-ab3-body"></textarea>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Column 3 — Body (LT)</label>
+            <textarea class="form-textarea" style="min-height:80px;" id="pc-ab3-body-lt"></textarea>
+          </div>
+        </div>
+      </div>
+      <button class="btn-sm primary" onclick="savePageContent()" style="padding:12px 28px;">Save Page Content →</button>
+    </div>
+
+    <!-- QUICK LINKS PAGE -->
+    <div class="page" id="page-quick-links">
+      <div style="margin-bottom:24px;"><div style="font-size:13px; color:var(--text-muted);">Manage the Quick Links sidebar on the homepage.</div></div>
+      <div class="ann-form-mini" id="ql-form-wrap">
+        <div class="ann-form-title">
+          <span id="ql-form-title">New Link</span>
+          <button class="toggle-form-btn" onclick="toggleQlForm()">+ Add New</button>
+        </div>
+        <div id="ql-form-fields" style="display:none;">
+          <div class="form-grid" style="grid-template-columns:1fr 1fr;">
+            <div class="form-group">
+              <label class="form-label">Label (English)</label>
+              <input class="form-input" type="text" id="ql-label" placeholder="National LAC">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Label (Lithuanian)</label>
+              <input class="form-input" type="text" id="ql-label-lt" placeholder="Nacionalinė LAC">
+            </div>
+            <div class="form-group full">
+              <label class="form-label">URL</label>
+              <input class="form-input" type="text" id="ql-url" placeholder="https://...">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Sort Order</label>
+              <input class="form-input" type="number" id="ql-sort" placeholder="1">
+            </div>
+            <div class="form-group" style="display:flex; align-items:center; gap:8px; padding-top:24px;">
+              <input type="checkbox" id="ql-external" checked style="accent-color:var(--amber);">
+              <label class="form-label" style="margin:0;">Opens in new tab</label>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-sm primary" onclick="saveQuickLink()">Save Link →</button>
+            <button class="btn-sm" onclick="cancelQlEdit()">Cancel</button>
+          </div>
+          <input type="hidden" id="ql-editing-id">
+        </div>
+      </div>
+      <div style="background:var(--white); border:1px solid var(--rule);">
+        <table class="data-table">
+          <thead><tr><th>Label</th><th>URL</th><th>Order</th><th>Actions</th></tr></thead>
+          <tbody id="ql-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- BOARD MEMBERS PAGE -->
+    <div class="page" id="page-board">
+      <div style="margin-bottom:24px;"><div style="font-size:13px; color:var(--text-muted);">Manage board members displayed on the public site.</div></div>
+      <div class="ann-form-mini" id="bm-form-wrap">
+        <div class="ann-form-title">
+          <span id="bm-form-title">New Board Member</span>
+          <button class="toggle-form-btn" onclick="toggleBmForm()">+ Add New</button>
+        </div>
+        <div id="bm-form-fields" style="display:none;">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input class="form-input" type="text" id="bm-name" placeholder="Vardas Pavardė">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Role / Title (English)</label>
+              <input class="form-input" type="text" id="bm-role" placeholder="Board Chair">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Role / Title (Lithuanian)</label>
+              <input class="form-input" type="text" id="bm-role-lt" placeholder="Valdybos pirmininkas">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email — optional</label>
+              <input class="form-input" type="email" id="bm-email">
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Bio (English) — optional</label>
+              <textarea class="form-textarea" style="min-height:60px;" id="bm-bio"></textarea>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Bio (Lithuanian) — optional</label>
+              <textarea class="form-textarea" style="min-height:60px;" id="bm-bio-lt"></textarea>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Photo</label>
+              <div class="photo-upload-area" style="padding:16px;" onclick="document.getElementById('bm-photo-input').click()">
+                <div class="upload-icon" style="font-size:18px;">👤</div>
+                <div class="upload-text" style="font-size:12px;">Click to upload photo</div>
+              </div>
+              <input type="file" id="bm-photo-input" accept="image/*" style="display:none" onchange="handleBmPhoto(this.files[0])">
+              <div id="bm-photo-preview" style="margin-top:8px; display:none;">
+                <img id="bm-photo-img" src="" style="width:80px; height:80px; object-fit:cover; border-radius:50%;">
+                <button onclick="removeBmPhoto()" style="margin-left:8px; font-size:11px; color:var(--red); background:none; border:none; cursor:pointer;">Remove</button>
+              </div>
+              <input type="hidden" id="bm-photo-url">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Sort Order</label>
+              <input class="form-input" type="number" id="bm-sort" placeholder="1">
+            </div>
+            <div class="form-group" style="display:flex; align-items:center; gap:8px; padding-top:24px;">
+              <input type="checkbox" id="bm-published" checked style="accent-color:var(--amber);">
+              <label class="form-label" style="margin:0;">Published</label>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-sm primary" onclick="saveBoardMember()">Save Member →</button>
+            <button class="btn-sm" onclick="cancelBmEdit()">Cancel</button>
+          </div>
+          <input type="hidden" id="bm-editing-id">
+        </div>
+      </div>
+      <div style="background:var(--white); border:1px solid var(--rule);">
+        <table class="data-table">
+          <thead><tr><th>Name</th><th>Role</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="bm-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- MEDIA LIBRARY PAGE -->
+    <div class="page" id="page-media">
+      <div style="margin-bottom:24px;"><div style="font-size:13px; color:var(--text-muted);">Upload and manage photos. Click any photo to copy its URL.</div></div>
+      <div class="settings-section">
+        <div class="settings-section-title">Upload Photos</div>
+        <div class="photo-upload-area" id="media-drop-zone" onclick="document.getElementById('media-file-input').click()" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleMediaDrop(event)">
+          <div class="upload-icon">📁</div>
+          <div class="upload-text">Click or drag photos here to upload to media library</div>
+          <div class="upload-hint">JPG, PNG, WEBP — multiple files OK</div>
+        </div>
+        <input type="file" id="media-file-input" accept="image/*" multiple style="display:none" onchange="handleMediaUpload(this.files)">
+        <div id="media-upload-status" style="font-size:12px; color:var(--amber); font-family:'DM Mono',monospace; margin-top:8px; display:none;"></div>
+      </div>
+      <div class="settings-section">
+        <div class="settings-section-title">All Photos <span id="media-count" style="font-family:'DM Mono',monospace; font-size:11px; color:var(--text-muted); font-weight:400;"></span></div>
+        <div id="media-grid" style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:4px;"></div>
+      </div>
+    </div>
   </main>
 </div>
 
@@ -702,9 +968,9 @@ if (_existingSession) {
 function doLogout() { CLAC.auth.logout(); window.location.href = 'index.html'; }
 
 // ── NAVIGATION ────────────────────────────────────────────
-const pages = ['dashboard','events','announcements','settings'];
-const pageTitles = { dashboard:'Dashboard', events:'Events', announcements:'Announcements', settings:'Site Settings' };
-const topbarActions = { dashboard:'+ New Event', events:'+ New Event', announcements:'+ New Announcement', settings:'Save Settings' };
+const pages = ['dashboard','events','announcements','settings','page-content','quick-links','board','media'];
+const pageTitles = { dashboard:'Dashboard', events:'Events', announcements:'Announcements', settings:'Settings', 'page-content':'Page Content', 'quick-links':'Quick Links', board:'Board Members', media:'Media Library' };
+const topbarActions = { dashboard:'+ New Event', events:'+ New Event', announcements:'+ New Announcement', settings:'Save Settings', 'page-content':'Save Content', 'quick-links':'+ New Link', board:'+ New Member', media:'Upload Photos' };
 
 async function showPage(name) {
   pages.forEach(p => {
@@ -719,10 +985,19 @@ async function showPage(name) {
   if (name === 'announcements') await renderAnnouncementsTable();
   if (name === 'settings') await loadSettings();
   if (name === 'dashboard') await renderDashboard();
+  if (name === 'page-content') await loadPageContent();
+  if (name === 'quick-links') await renderQlTable();
+  if (name === 'board') await renderBmTable();
+  if (name === 'media') await renderMediaGrid();
   // Update topbar action
   const btn = document.getElementById('topbar-action');
   btn.textContent = topbarActions[name] || '+ New';
-  btn.onclick = name === 'announcements' ? () => { showPage('announcements'); toggleAnnForm(true); } : newEventClick;
+  if (name === 'announcements') btn.onclick = () => { showPage('announcements'); toggleAnnForm(true); };
+  else if (name === 'quick-links') btn.onclick = () => toggleQlForm(true);
+  else if (name === 'board') btn.onclick = () => toggleBmForm(true);
+  else if (name === 'media') btn.onclick = () => document.getElementById('media-file-input').click();
+  else if (name === 'page-content') btn.onclick = savePageContent;
+  else btn.onclick = newEventClick;
   return false;
 }
 
@@ -919,7 +1194,7 @@ async function renderEventsTable(status) {
       <td><div class="td-title">${e.title}</div><div class="td-meta">${e.location}</div></td>
       <td><div style="font-family:'DM Mono',monospace; font-size:12px;">${CLAC.formatDateShort(e.date)}</div></td>
       <td><span style="font-size:12px; color:var(--text-muted);">${e.category}</span></td>
-      <td><span class="status-pill ${e.status}">${e.status}</span>${!e.published ? ' <span class="status-pill draft">draft</span>' : ''}</td>
+      <td><span class="status-pill ${e.status}">${e.status}</span> ${!e.published ? '<span class="status-pill draft" style="margin-left:4px;">DRAFT</span>' : ''}</td>
       <td><span class="${e.featured ? 'featured-star' : ''}" style="font-size:16px;">${e.featured ? '★' : '☆'}</span></td>
       <td><div class="row-actions">
         <button class="row-btn" onclick="editEvent('${e.id}')">Edit</button>
@@ -1229,6 +1504,360 @@ function removePhoto(index) {
 function loadPhotoPreviews(photos) {
   _uploadedPhotos = photos || [];
   renderPhotoPreview();
+}
+
+
+
+// ── PAGE CONTENT ──────────────────────────────────────────────────────────────
+async function loadPageContent() {
+  const s = await CLAC.settings.get();
+  const fields = {
+    'pc-hero-headline':    s.heroHeadline    || '',
+    'pc-hero-headline-lt': s.heroHeadlineLt  || '',
+    'pc-hero-sub':         s.heroSub         || '',
+    'pc-hero-sub-lt':      s.heroSubLt       || '',
+    'pc-stat1-num':        s.stat1Num        || '70+',
+    'pc-stat1-label':      s.stat1Label      || 'Years Active',
+    'pc-stat2-num':        s.stat2Num        || 'E. 185th',
+    'pc-stat2-label':      s.stat2Label      || 'Heritage Corridor',
+    'pc-ticker':           s.tickerText      || '',
+    'pc-ab1-label':        s.ab1Label        || 'Who We Are',
+    'pc-ab1-label-lt':     s.ab1LabelLt      || 'Kas Mes Esame',
+    'pc-ab1-heading':      s.ab1Heading      || '',
+    'pc-ab1-heading-lt':   s.ab1HeadingLt    || '',
+    'pc-ab1-body':         s.ab1Body         || '',
+    'pc-ab1-body-lt':      s.ab1BodyLt       || '',
+    'pc-ab2-label':        s.ab2Label        || 'What We Do',
+    'pc-ab2-label-lt':     s.ab2LabelLt      || 'Ką Mes Darome',
+    'pc-ab2-heading':      s.ab2Heading      || '',
+    'pc-ab2-heading-lt':   s.ab2HeadingLt    || '',
+    'pc-ab2-body':         s.ab2Body         || '',
+    'pc-ab2-body-lt':      s.ab2BodyLt       || '',
+    'pc-ab3-label':        s.ab3Label        || 'Get Involved',
+    'pc-ab3-label-lt':     s.ab3LabelLt      || 'Prisijunkite',
+    'pc-ab3-heading':      s.ab3Heading      || '',
+    'pc-ab3-heading-lt':   s.ab3HeadingLt    || '',
+    'pc-ab3-body':         s.ab3Body         || '',
+    'pc-ab3-body-lt':      s.ab3BodyLt       || '',
+  };
+  Object.entries(fields).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el) el.value = val;
+  });
+}
+
+async function savePageContent() {
+  const ids = ['pc-hero-headline','pc-hero-headline-lt','pc-hero-sub','pc-hero-sub-lt',
+    'pc-stat1-num','pc-stat1-label','pc-stat2-num','pc-stat2-label','pc-ticker',
+    'pc-ab1-label','pc-ab1-label-lt','pc-ab1-heading','pc-ab1-heading-lt','pc-ab1-body','pc-ab1-body-lt',
+    'pc-ab2-label','pc-ab2-label-lt','pc-ab2-heading','pc-ab2-heading-lt','pc-ab2-body','pc-ab2-body-lt',
+    'pc-ab3-label','pc-ab3-label-lt','pc-ab3-heading','pc-ab3-heading-lt','pc-ab3-body','pc-ab3-body-lt'];
+  const keyMap = {
+    'pc-hero-headline':'heroHeadline','pc-hero-headline-lt':'heroHeadlineLt',
+    'pc-hero-sub':'heroSub','pc-hero-sub-lt':'heroSubLt',
+    'pc-stat1-num':'stat1Num','pc-stat1-label':'stat1Label',
+    'pc-stat2-num':'stat2Num','pc-stat2-label':'stat2Label',
+    'pc-ticker':'tickerText',
+    'pc-ab1-label':'ab1Label','pc-ab1-label-lt':'ab1LabelLt',
+    'pc-ab1-heading':'ab1Heading','pc-ab1-heading-lt':'ab1HeadingLt',
+    'pc-ab1-body':'ab1Body','pc-ab1-body-lt':'ab1BodyLt',
+    'pc-ab2-label':'ab2Label','pc-ab2-label-lt':'ab2LabelLt',
+    'pc-ab2-heading':'ab2Heading','pc-ab2-heading-lt':'ab2HeadingLt',
+    'pc-ab2-body':'ab2Body','pc-ab2-body-lt':'ab2BodyLt',
+    'pc-ab3-label':'ab3Label','pc-ab3-label-lt':'ab3LabelLt',
+    'pc-ab3-heading':'ab3Heading','pc-ab3-heading-lt':'ab3HeadingLt',
+    'pc-ab3-body':'ab3Body','pc-ab3-body-lt':'ab3BodyLt',
+  };
+  const data = {};
+  ids.forEach(id => { data[keyMap[id]] = document.getElementById(id).value.trim(); });
+  await CLAC.settings.save(data);
+  showToast('✓ Page content saved. Refresh public site to see changes.');
+}
+
+// ── QUICK LINKS ───────────────────────────────────────────────────────────────
+let _qlEditingId = null;
+
+function toggleQlForm(forceOpen) {
+  const fields = document.getElementById('ql-form-fields');
+  const show = forceOpen || fields.style.display === 'none';
+  fields.style.display = show ? 'block' : 'none';
+  if (show) {
+    _qlEditingId = null;
+    document.getElementById('ql-editing-id').value = '';
+    document.getElementById('ql-label').value = '';
+    document.getElementById('ql-label-lt').value = '';
+    document.getElementById('ql-url').value = '';
+    document.getElementById('ql-sort').value = '';
+    document.getElementById('ql-external').checked = true;
+    document.getElementById('ql-form-title').textContent = 'New Link';
+  }
+}
+
+function cancelQlEdit() {
+  document.getElementById('ql-form-fields').style.display = 'none';
+  _qlEditingId = null;
+}
+
+async function editQuickLink(id) {
+  const all = await sbGet('quick_links', '?select=*&order=sort_order.asc');
+  const item = all.find(q => q.id === id);
+  if (!item) return;
+  _qlEditingId = id;
+  document.getElementById('ql-editing-id').value = id;
+  document.getElementById('ql-label').value = item.label || '';
+  document.getElementById('ql-label-lt').value = item.label_lt || '';
+  document.getElementById('ql-url').value = item.url || '';
+  document.getElementById('ql-sort').value = item.sort_order || 0;
+  document.getElementById('ql-external').checked = item.external !== false;
+  document.getElementById('ql-form-title').textContent = 'Edit Link';
+  document.getElementById('ql-form-fields').style.display = 'block';
+  document.getElementById('ql-form-fields').scrollIntoView({ behavior:'smooth' });
+}
+
+async function saveQuickLink() {
+  const label = document.getElementById('ql-label').value.trim();
+  if (!label) { showToast('⚠ Label is required.'); return; }
+  const item = {
+    id:         _qlEditingId || 'ql-' + Date.now().toString(36),
+    label,
+    label_lt:   document.getElementById('ql-label-lt').value.trim(),
+    url:        document.getElementById('ql-url').value.trim(),
+    sort_order: parseInt(document.getElementById('ql-sort').value) || 0,
+    external:   document.getElementById('ql-external').checked,
+  };
+  await sbUpsert('quick_links', item);
+  cancelQlEdit();
+  await renderQlTable();
+  showToast('✓ Quick link saved.');
+}
+
+async function deleteQuickLink(id) {
+  if (!confirm('Delete this link?')) return;
+  await sbDelete('quick_links', id);
+  await renderQlTable();
+  showToast('✓ Link deleted.');
+}
+
+async function renderQlTable() {
+  const items = await sbGet('quick_links', '?select=*&order=sort_order.asc');
+  const tbody = document.getElementById('ql-tbody');
+  if (!items || !items.length) {
+    tbody.innerHTML = '<tr><td colspan="4" style="padding:24px; text-align:center; color:var(--text-muted);">No links yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = items.map(q => `
+    <tr>
+      <td><div class="td-title">${q.label}</div><div class="td-meta">${q.label_lt || ''}</div></td>
+      <td><div style="font-size:12px; color:var(--text-muted); font-family:'DM Mono',monospace;">${q.url}</div></td>
+      <td><span style="font-size:12px;">${q.sort_order}</span></td>
+      <td><div class="row-actions">
+        <button class="row-btn" onclick="editQuickLink('${q.id}')">Edit</button>
+        <button class="row-btn del" onclick="deleteQuickLink('${q.id}')">Delete</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+// ── BOARD MEMBERS ─────────────────────────────────────────────────────────────
+let _bmEditingId = null;
+let _bmPhotoUrl  = '';
+
+function toggleBmForm(forceOpen) {
+  const fields = document.getElementById('bm-form-fields');
+  const show = forceOpen || fields.style.display === 'none';
+  fields.style.display = show ? 'block' : 'none';
+  if (show) {
+    _bmEditingId = null;
+    _bmPhotoUrl  = '';
+    ['bm-name','bm-role','bm-role-lt','bm-email','bm-bio','bm-bio-lt','bm-sort'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value = '';
+    });
+    document.getElementById('bm-published').checked = true;
+    document.getElementById('bm-photo-url').value = '';
+    document.getElementById('bm-photo-preview').style.display = 'none';
+    document.getElementById('bm-form-title').textContent = 'New Board Member';
+  }
+}
+
+function cancelBmEdit() {
+  document.getElementById('bm-form-fields').style.display = 'none';
+  _bmEditingId = null;
+}
+
+async function handleBmPhoto(file) {
+  if (!file) return;
+  const ext  = file.name.split('.').pop().toLowerCase();
+  const name = `board/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+  const res  = await fetch(`${SB_URL}/storage/v1/object/clac-media/${name}`, {
+    method: 'POST',
+    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': file.type, 'x-upsert': 'true' },
+    body: file,
+  });
+  if (!res.ok) { showToast('⚠ Photo upload failed.'); return; }
+  _bmPhotoUrl = `${SB_URL}/storage/v1/object/public/clac-media/${name}`;
+  document.getElementById('bm-photo-url').value = _bmPhotoUrl;
+  document.getElementById('bm-photo-img').src = _bmPhotoUrl;
+  document.getElementById('bm-photo-preview').style.display = 'block';
+}
+
+function removeBmPhoto() {
+  _bmPhotoUrl = '';
+  document.getElementById('bm-photo-url').value = '';
+  document.getElementById('bm-photo-preview').style.display = 'none';
+}
+
+async function editBoardMember(id) {
+  const all = await sbGet('board_members', '?select=*&order=sort_order.asc');
+  const m = all.find(b => b.id === id);
+  if (!m) return;
+  _bmEditingId = id;
+  document.getElementById('bm-editing-id').value = id;
+  document.getElementById('bm-name').value    = m.name     || '';
+  document.getElementById('bm-role').value    = m.role     || '';
+  document.getElementById('bm-role-lt').value = m.role_lt  || '';
+  document.getElementById('bm-email').value   = m.email    || '';
+  document.getElementById('bm-bio').value     = m.bio      || '';
+  document.getElementById('bm-bio-lt').value  = m.bio_lt   || '';
+  document.getElementById('bm-sort').value    = m.sort_order || 0;
+  document.getElementById('bm-published').checked = m.published !== false;
+  _bmPhotoUrl = m.photo || '';
+  document.getElementById('bm-photo-url').value = _bmPhotoUrl;
+  if (_bmPhotoUrl) {
+    document.getElementById('bm-photo-img').src = _bmPhotoUrl;
+    document.getElementById('bm-photo-preview').style.display = 'block';
+  }
+  document.getElementById('bm-form-title').textContent = 'Edit Member';
+  document.getElementById('bm-form-fields').style.display = 'block';
+  document.getElementById('bm-form-fields').scrollIntoView({ behavior: 'smooth' });
+}
+
+async function saveBoardMember() {
+  const name = document.getElementById('bm-name').value.trim();
+  if (!name) { showToast('⚠ Name is required.'); return; }
+  const member = {
+    id:         _bmEditingId || 'bm-' + Date.now().toString(36),
+    name,
+    role:       document.getElementById('bm-role').value.trim(),
+    role_lt:    document.getElementById('bm-role-lt').value.trim(),
+    email:      document.getElementById('bm-email').value.trim(),
+    bio:        document.getElementById('bm-bio').value.trim(),
+    bio_lt:     document.getElementById('bm-bio-lt').value.trim(),
+    photo:      _bmPhotoUrl,
+    sort_order: parseInt(document.getElementById('bm-sort').value) || 0,
+    published:  document.getElementById('bm-published').checked,
+  };
+  await sbUpsert('board_members', member);
+  cancelBmEdit();
+  await renderBmTable();
+  showToast('✓ Board member saved.');
+}
+
+async function deleteBoardMember(id) {
+  if (!confirm('Delete this board member?')) return;
+  await sbDelete('board_members', id);
+  await renderBmTable();
+  showToast('✓ Member deleted.');
+}
+
+async function renderBmTable() {
+  const members = await sbGet('board_members', '?select=*&order=sort_order.asc');
+  const tbody = document.getElementById('bm-tbody');
+  if (!members || !members.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="padding:24px; text-align:center; color:var(--text-muted);">No board members yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = members.map(m => `
+    <tr>
+      <td>
+        <div style="display:flex; align-items:center; gap:10px;">
+          ${m.photo ? `<img src="${m.photo}" style="width:32px; height:32px; border-radius:50%; object-fit:cover;">` : '<div style="width:32px; height:32px; border-radius:50%; background:var(--forest); display:flex; align-items:center; justify-content:center; color:var(--amber); font-size:12px;">${m.name.charAt(0)}</div>'}
+          <div class="td-title">${m.name}</div>
+        </div>
+      </td>
+      <td><span style="font-size:12px; color:var(--text-muted);">${m.role || ''}</span></td>
+      <td><span style="font-size:12px;">${m.sort_order}</span></td>
+      <td><span class="status-pill ${m.published ? 'upcoming' : 'draft'}">${m.published ? 'Visible' : 'Hidden'}</span></td>
+      <td><div class="row-actions">
+        <button class="row-btn" onclick="editBoardMember('${m.id}')">Edit</button>
+        <button class="row-btn del" onclick="deleteBoardMember('${m.id}')">Delete</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+// ── MEDIA LIBRARY ─────────────────────────────────────────────────────────────
+async function handleMediaDrop(event) {
+  event.preventDefault();
+  document.getElementById('media-drop-zone').classList.remove('dragover');
+  const files = Array.from(event.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+  await handleMediaUpload(files);
+}
+
+async function handleMediaUpload(files) {
+  if (!files || !files.length) return;
+  files = Array.from(files);
+  const status = document.getElementById('media-upload-status');
+  status.style.display = 'block';
+  let uploaded = 0;
+  for (const file of files) {
+    try {
+      const ext  = file.name.split('.').pop().toLowerCase();
+      const name = `library/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const res  = await fetch(`${SB_URL}/storage/v1/object/clac-media/${name}`, {
+        method: 'POST',
+        headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': file.type, 'x-upsert': 'true' },
+        body: file,
+      });
+      if (!res.ok) throw new Error(res.statusText);
+      const url = `${SB_URL}/storage/v1/object/public/clac-media/${name}`;
+      await sbUpsert('media', {
+        id: 'med-' + Date.now().toString(36) + Math.random().toString(36).slice(2,5),
+        url, filename: file.name, folder: 'general',
+        created_at: new Date().toISOString().split('T')[0],
+      });
+      uploaded++;
+      status.textContent = `Uploading... ${uploaded}/${files.length}`;
+    } catch(e) {
+      console.error('Media upload error:', e);
+    }
+  }
+  status.textContent = `✓ ${uploaded} photo${uploaded > 1 ? 's' : ''} uploaded`;
+  setTimeout(() => { status.style.display = 'none'; }, 3000);
+  await renderMediaGrid();
+}
+
+async function renderMediaGrid() {
+  const items = await sbGet('media', '?select=*&order=created_at.desc');
+  const grid  = document.getElementById('media-grid');
+  const count = document.getElementById('media-count');
+  if (!items || !items.length) {
+    grid.innerHTML = '<div style="grid-column:span 4; padding:40px; text-align:center; color:var(--text-muted); font-size:13px;">No photos yet. Upload some above.</div>';
+    count.textContent = '';
+    return;
+  }
+  count.textContent = `— ${items.length} photo${items.length !== 1 ? 's' : ''}`;
+  grid.innerHTML = items.map(m => `
+    <div style="position:relative; aspect-ratio:1; overflow:hidden; cursor:pointer;" title="Click to copy URL" onclick="copyMediaUrl('${m.url}', this)">
+      <img src="${m.url}" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
+      <div style="position:absolute; inset:0; background:rgba(0,0,0,0); transition:background 0.2s; display:flex; align-items:center; justify-content:center; gap:6px; opacity:0; transition:all 0.2s;" class="media-overlay" onmouseover="this.style.background='rgba(0,0,0,0.5)';this.style.opacity='1'" onmouseout="this.style.background='rgba(0,0,0,0)';this.style.opacity='0'">
+        <button onclick="event.stopPropagation();copyMediaUrl('${m.url}')" style="background:var(--amber); color:var(--forest); border:none; padding:5px 10px; font-size:11px; cursor:pointer; font-family:'DM Mono',monospace;">Copy URL</button>
+        <button onclick="event.stopPropagation();deleteMedia('${m.id}')" style="background:var(--red); color:white; border:none; padding:5px 8px; font-size:11px; cursor:pointer;">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+async function copyMediaUrl(url) {
+  try {
+    await navigator.clipboard.writeText(url);
+    showToast('✓ URL copied to clipboard.');
+  } catch(e) {
+    showToast('URL: ' + url);
+  }
+}
+
+async function deleteMedia(id) {
+  if (!confirm('Delete this photo from the library?')) return;
+  await sbDelete('media', id);
+  await renderMediaGrid();
+  showToast('✓ Photo deleted.');
 }
 
 // ── TOAST ─────────────────────────────────────────────────
