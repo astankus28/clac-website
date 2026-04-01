@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — CLAC Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root { --forest:#1a2e1e; --forest-mid:#243329; --forest-light:#2f4535; --amber:#c8903a; --amber-light:#e4a84d; --amber-pale:#f5e6c8; --cream:#f2ede4; --linen:#faf7f2; --white:#fff; --text-dark:#1a1a18; --text-body:#3a3a36; --text-muted:#7a7a70; --rule:#d4c9b0; --red:#c0392b; --green:#27ae60; }
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; color:var(--text-body); }
+
+/* ── LAYOUT ── */
+.admin-shell { display:grid; grid-template-columns:240px 1fr; min-height:100vh; }
+
+/* ── SIDEBAR ── */
+.admin-sidebar { background:var(--forest); color:var(--cream); display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; }
+.sidebar-brand { padding:28px 24px 20px; border-bottom:1px solid rgba(255,255,255,0.08); }
+.sb-org { font-family:'Playfair Display',serif; font-size:13px; font-weight:700; color:var(--cream); line-height:1.3; }
+.sb-badge { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber); margin-top:4px; }
+.sidebar-nav { padding:16px 0; flex:1; }
+.snav-section { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.3); padding:10px 24px 6px; }
+.snav-item { display:flex; align-items:center; gap:10px; padding:10px 24px; font-size:13px; color:rgba(242,237,228,0.7); cursor:pointer; transition:all 0.15s; text-decoration:none; border-left:2px solid transparent; }
+.snav-item:hover { color:var(--cream); background:rgba(255,255,255,0.04); }
+.snav-item.active { color:var(--amber-light); background:rgba(200,144,58,0.1); border-left-color:var(--amber); }
+.snav-icon { font-size:14px; width:18px; text-align:center; }
+.sidebar-user { padding:16px 24px; border-top:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:10px; }
+.su-avatar { width:32px; height:32px; border-radius:50%; background:var(--amber); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; color:var(--forest); flex-shrink:0; }
+.su-name { font-size:13px; font-weight:500; color:var(--cream); }
+.su-role { font-family:'DM Mono',monospace; font-size:10px; color:rgba(255,255,255,0.4); }
+.su-logout { margin-left:auto; font-size:11px; color:rgba(255,255,255,0.4); cursor:pointer; background:none; border:none; color:rgba(242,237,228,0.4); font-family:'DM Mono',monospace; letter-spacing:0.08em; }
+.su-logout:hover { color:var(--amber); }
+
+/* ── MAIN AREA ── */
+.admin-main { overflow-y:auto; }
+.admin-topbar { background:var(--white); border-bottom:1px solid var(--rule); padding:16px 36px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:50; }
+.at-title { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--text-dark); }
+.at-actions { display:flex; gap:10px; }
+.btn-sm { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; padding:9px 18px; border:1px solid var(--rule); background:transparent; color:var(--text-muted); cursor:pointer; transition:all 0.15s; }
+.btn-sm:hover { border-color:var(--amber); color:var(--amber); }
+.btn-sm.primary { background:var(--amber); color:var(--forest); border-color:var(--amber); }
+.btn-sm.primary:hover { background:var(--amber-light); }
+.btn-sm.danger { color:var(--red); border-color:rgba(192,57,43,0.3); }
+.btn-sm.danger:hover { background:rgba(192,57,43,0.08); }
+
+/* ── PAGES ── */
+.page { display:none; padding:36px; }
+.page.active { display:block; }
+
+/* ── STATS ── */
+.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:32px; }
+.stat-card { background:var(--white); border:1px solid var(--rule); padding:20px 22px; }
+.sc-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber); margin-bottom:8px; }
+.sc-value { font-family:'Playfair Display',serif; font-size:32px; font-weight:700; color:var(--text-dark); }
+.sc-sub { font-size:12px; color:var(--text-muted); margin-top:4px; }
+.sc-link { font-family:'DM Mono',monospace; font-size:11px; color:var(--amber); text-decoration:none; display:block; margin-top:12px; }
+
+/* ── TABLES ── */
+.data-table { width:100%; border-collapse:collapse; background:var(--white); }
+.data-table th { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-muted); padding:10px 16px; text-align:left; border-bottom:1px solid var(--rule); background:#faf7f2; font-weight:400; }
+.data-table td { padding:12px 16px; border-bottom:1px solid var(--rule); font-size:13px; vertical-align:middle; }
+.data-table tr:last-child td { border-bottom:none; }
+.data-table tr:hover td { background:rgba(200,144,58,0.03); }
+.td-title { font-weight:500; color:var(--text-dark); }
+.td-meta { color:var(--text-muted); font-size:12px; margin-top:2px; font-family:'DM Mono',monospace; }
+.status-pill { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; padding:3px 9px; border:1px solid; display:inline-block; }
+.status-pill.upcoming { color:#27ae60; border-color:#27ae60; background:rgba(39,174,96,0.08); }
+.status-pill.past { color:var(--text-muted); border-color:var(--rule); }
+.status-pill.draft { color:#e67e22; border-color:#e67e22; background:rgba(230,126,34,0.08); }
+.row-actions { display:flex; gap:6px; }
+.row-btn { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.08em; padding:5px 10px; border:1px solid var(--rule); background:transparent; cursor:pointer; color:var(--text-muted); transition:all 0.15s; }
+.row-btn:hover { border-color:var(--amber); color:var(--amber); }
+.row-btn.del:hover { border-color:var(--red); color:var(--red); }
+.featured-star { color:var(--amber); font-size:14px; }
+
+/* ── FORM ── */
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.form-group { margin-bottom:20px; }
+.form-group.full { grid-column:1/-1; }
+.form-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber); display:block; margin-bottom:8px; }
+.form-input, .form-select, .form-textarea { width:100%; padding:10px 14px; border:1px solid var(--rule); background:var(--white); font-family:'DM Sans',sans-serif; font-size:14px; color:var(--text-dark); outline:none; transition:border-color 0.2s; }
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color:var(--amber); }
+.form-textarea { min-height:160px; resize:vertical; line-height:1.6; }
+.form-select { cursor:pointer; }
+.form-hint { font-size:11px; color:var(--text-muted); margin-top:5px; }
+.color-input-row { display:flex; gap:10px; align-items:center; }
+.color-swatch { width:40px; height:38px; border:1px solid var(--rule); cursor:pointer; flex-shrink:0; }
+.color-grid { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+.color-opt { width:28px; height:28px; border:2px solid transparent; cursor:pointer; transition:transform 0.15s; border-radius:2px; }
+.color-opt:hover { transform:scale(1.1); }
+.color-opt.selected { border-color:var(--text-dark); }
+
+/* ── AI ASSIST ── */
+.ai-assist-box { background:var(--forest); color:var(--cream); padding:20px 24px; margin-top:8px; border-left:3px solid var(--amber); }
+.ai-assist-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--amber); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+.ai-status { font-size:11px; color:rgba(242,237,228,0.5); }
+.ai-result { font-size:14px; line-height:1.7; color:rgba(242,237,228,0.85); white-space:pre-wrap; margin:12px 0; min-height:60px; }
+.ai-use-btn { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; padding:7px 14px; background:var(--amber); color:var(--forest); border:none; cursor:pointer; transition:background 0.2s; }
+.ai-use-btn:hover { background:var(--amber-light); }
+
+/* ── PHOTO UPLOADER ── */
+.photo-upload-area { border:2px dashed var(--rule); padding:32px; text-align:center; cursor:pointer; transition:border-color 0.2s; background:var(--white); }
+.photo-upload-area:hover { border-color:var(--amber); }
+.photo-upload-area.dragover { border-color:var(--amber); background:rgba(200,144,58,0.04); }
+.upload-icon { font-size:28px; color:var(--text-faint); margin-bottom:10px; }
+.upload-text { font-size:13px; color:var(--text-muted); }
+.upload-hint { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.1em; color:var(--text-faint); margin-top:6px; }
+.photo-preview-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:16px; }
+.pp-item { position:relative; aspect-ratio:1; overflow:hidden; }
+.pp-item img { width:100%; height:100%; object-fit:cover; }
+.pp-remove { position:absolute; top:4px; right:4px; background:rgba(0,0,0,0.7); color:white; border:none; width:22px; height:22px; cursor:pointer; font-size:12px; display:flex; align-items:center; justify-content:center; }
+
+/* ── ANNOUNCEMENT FORM ── */
+.ann-form-mini { background:var(--white); border:1px solid var(--rule); padding:24px; margin-bottom:20px; }
+.ann-form-title { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; color:var(--text-dark); margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; }
+.toggle-form-btn { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.1em; color:var(--amber); cursor:pointer; background:none; border:1px solid rgba(200,144,58,0.3); padding:5px 12px; }
+
+/* ── SETTINGS ── */
+.settings-section { background:var(--white); border:1px solid var(--rule); padding:28px; margin-bottom:20px; }
+.settings-section-title { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; color:var(--text-dark); margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--rule); }
+
+/* ── TOAST ── */
+.toast { position:fixed; bottom:28px; right:28px; background:var(--forest); color:var(--cream); padding:14px 22px; font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.08em; z-index:999; transform:translateY(80px); opacity:0; transition:all 0.3s; border-left:3px solid var(--amber); }
+.toast.show { transform:translateY(0); opacity:1; }
+
+/* ── VIEW LINK ── */
+.view-site-link { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.1em; color:var(--amber); text-decoration:none; display:flex; align-items:center; gap:5px; }
+.view-site-link:hover { color:var(--amber-light); }
+
+@media (max-width:900px) { .admin-shell { grid-template-columns:1fr; } .admin-sidebar { position:fixed; left:-240px; z-index:200; transition:left 0.3s; height:100%; } .admin-sidebar.open { left:0; } .stats-grid { grid-template-columns:1fr 1fr; } .form-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="admin-shell">
+
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar" id="admin-sidebar">
+    <div class="sidebar-brand">
+      <div class="sb-org">Cleveland Lithuanian<br>American Community</div>
+      <div class="sb-badge">Admin Portal</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="snav-section">Content</div>
+      <a class="snav-item active" onclick="showPage('dashboard')" href="#"><span class="snav-icon">◈</span> Dashboard</a>
+      <a class="snav-item" onclick="showPage('events')" href="#"><span class="snav-icon">◆</span> Events</a>
+      <a class="snav-item" onclick="showPage('announcements')" href="#"><span class="snav-icon">✦</span> Announcements</a>
+      <div class="snav-section">Site</div>
+      <a class="snav-item" onclick="showPage('settings')" href="#"><span class="snav-icon">⚙</span> Site Settings</a>
+      <div class="snav-section">Public</div>
+      <a class="snav-item" href="../index.html" target="_blank"><span class="snav-icon">↗</span> View Public Site</a>
+    </nav>
+    <div class="sidebar-user" id="sidebar-user">
+      <div class="su-avatar" id="su-avatar">A</div>
+      <div>
+        <div class="su-name" id="su-name">Loading...</div>
+        <div class="su-role" id="su-role">editor</div>
+      </div>
+      <button class="su-logout" onclick="doLogout()">Sign out</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div class="at-title" id="page-title">Dashboard</div>
+      <div class="at-actions">
+        <a href="../index.html" target="_blank" class="view-site-link">↗ View Site</a>
+        <button class="btn-sm primary" id="topbar-action" onclick="newEventClick()">+ New Event</button>
+      </div>
+    </div>
+
+    <!-- DASHBOARD PAGE -->
+    <div class="page active" id="page-dashboard">
+      <div style="margin-bottom:24px;">
+        <div style="font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--text-dark); margin-bottom:4px;">Good to see you, <span id="welcome-name">board member</span>.</div>
+        <div style="font-size:13px; color:var(--text-muted);">Manage your community's digital presence from here.</div>
+      </div>
+      <div class="stats-grid" id="stats-grid"></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <div>
+          <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber); margin-bottom:12px;">Upcoming Events</div>
+          <div id="dash-upcoming" style="background:var(--white); border:1px solid var(--rule);"></div>
+        </div>
+        <div>
+          <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber); margin-bottom:12px;">Recent Announcements</div>
+          <div id="dash-anns" style="background:var(--white); border:1px solid var(--rule);"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EVENTS PAGE -->
+    <div class="page" id="page-events">
+      <div style="margin-bottom:24px; display:flex; justify-content:space-between; align-items:start;">
+        <div>
+          <div style="font-size:13px; color:var(--text-muted); margin-top:4px;">Create and manage event pages, photos, and details.</div>
+        </div>
+      </div>
+      <!-- EVENT FORM -->
+      <div id="event-form-wrap" style="display:none; background:var(--white); border:1px solid var(--rule); padding:32px; margin-bottom:28px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--rule);">
+          <div style="font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--text-dark);" id="form-mode-title">New Event</div>
+          <button class="btn-sm" onclick="hideEventForm()">Cancel ✕</button>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Event Title (English)</label>
+            <input class="form-input" type="text" id="f-title" placeholder="Spring Community Gathering">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Title (Lithuanian) — optional</label>
+            <input class="form-input" type="text" id="f-title-lt" placeholder="Pavasario Susirinkimas">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date</label>
+            <input class="form-input" type="date" id="f-date">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select class="form-select" id="f-category">
+              <option>Cultural</option><option>Religious</option><option>Festival</option>
+              <option>Celebration</option><option>Civic</option><option>Community</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Start Time</label>
+            <input class="form-input" type="text" id="f-time" placeholder="2:00 PM">
+          </div>
+          <div class="form-group">
+            <label class="form-label">End Time — optional</label>
+            <input class="form-input" type="text" id="f-end-time" placeholder="6:00 PM">
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Location / Venue Name</label>
+            <input class="form-input" type="text" id="f-location" placeholder="Lithuanian Cultural Garden, Rockefeller Park">
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Street Address — optional (used for map link)</label>
+            <input class="form-input" type="text" id="f-address" placeholder="750 E 88th St, Cleveland, OH 44108">
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Cover Color — displayed when no photo is set</label>
+            <div class="color-grid" id="color-grid"></div>
+            <input type="hidden" id="f-cover-color" value="#2d4a33">
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Description</label>
+            <textarea class="form-textarea" id="f-description" placeholder="Describe the event..."></textarea>
+            <div class="form-hint">Use blank lines to separate paragraphs.</div>
+            <!-- AI ASSIST -->
+            <div class="ai-assist-box" style="margin-top:12px;">
+              <div class="ai-assist-label">✦ AI Writing Assistant <span class="ai-status" id="ai-status"></span></div>
+              <div style="display:flex; gap:8px; margin-bottom:10px;">
+                <input class="form-input" type="text" id="ai-prompt" placeholder="e.g. Spring gathering at Lithuanian Cultural Garden, potluck, all welcome" style="flex:1; font-size:13px; padding:8px 12px; background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.15); color:var(--cream);">
+                <button class="ai-use-btn" onclick="aiWrite()" style="white-space:nowrap;">Write It →</button>
+              </div>
+              <div class="ai-result" id="ai-result" style="display:none;"></div>
+              <button class="ai-use-btn" id="ai-insert-btn" onclick="insertAiText()" style="display:none;">Use This Text ↑</button>
+            </div>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Tags — comma separated</label>
+            <input class="form-input" type="text" id="f-tags" placeholder="Annual, Potluck, Family-Friendly">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select class="form-select" id="f-status">
+              <option value="upcoming">Upcoming</option>
+              <option value="past">Past</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">RSVP Link — optional</label>
+            <input class="form-input" type="url" id="f-rsvp" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Attendance Count — optional (past events)</label>
+            <input class="form-input" type="number" id="f-attendees" placeholder="50">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contact Email</label>
+            <input class="form-input" type="email" id="f-contact-email" placeholder="info@clevelandlietuviai.org">
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Event Recap — optional (for past events)</label>
+            <textarea class="form-textarea" id="f-recap" style="min-height:80px;" placeholder="Brief summary of how the event went..."></textarea>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Photos — URL list (one per line)</label>
+            <textarea class="form-textarea" id="f-photos" style="min-height:80px;" placeholder="https://example.com/photo1.jpg&#10;https://example.com/photo2.jpg&#10;(Paste photo URLs, one per line)"></textarea>
+            <div class="form-hint">Paste image URLs from Facebook, Google Drive (shared), Dropbox, etc. Each URL on its own line.</div>
+          </div>
+          <div style="grid-column:1/-1; display:flex; align-items:center; gap:12px;">
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:14px; color:var(--text-body);">
+              <input type="checkbox" id="f-published" checked style="width:16px; height:16px; accent-color:var(--amber);">
+              Published (visible on public site)
+            </label>
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:14px; color:var(--text-body); margin-left:20px;">
+              <input type="checkbox" id="f-featured" style="width:16px; height:16px; accent-color:var(--amber);">
+              Featured (show prominently on homepage)
+            </label>
+          </div>
+        </div>
+        <div style="margin-top:24px; padding-top:20px; border-top:1px solid var(--rule); display:flex; gap:12px;">
+          <button class="btn-sm primary" onclick="saveEvent()" style="padding:11px 24px;">Save Event →</button>
+          <button class="btn-sm" onclick="hideEventForm()">Cancel</button>
+          <button class="btn-sm" id="preview-btn" onclick="previewEvent()" style="margin-left:auto;">Preview ↗</button>
+        </div>
+      </div>
+      <!-- EVENTS TABLE -->
+      <div style="background:var(--white); border:1px solid var(--rule);">
+        <div style="padding:16px 20px; border-bottom:1px solid var(--rule); display:flex; gap:10px; align-items:center;">
+          <span style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-muted);">Filter:</span>
+          <button class="btn-sm active" id="filter-all" onclick="filterEvents('all')" style="background:var(--forest); color:var(--amber); border-color:var(--forest);">All</button>
+          <button class="btn-sm" id="filter-upcoming" onclick="filterEvents('upcoming')">Upcoming</button>
+          <button class="btn-sm" id="filter-past" onclick="filterEvents('past')">Past</button>
+        </div>
+        <table class="data-table" id="events-table">
+          <thead><tr>
+            <th>Event</th><th>Date</th><th>Category</th><th>Status</th><th>Featured</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="events-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ANNOUNCEMENTS PAGE -->
+    <div class="page" id="page-announcements">
+      <div style="margin-bottom:24px;">
+        <div style="font-size:13px; color:var(--text-muted); margin-top:4px;">Manage news and announcements shown on the public site.</div>
+      </div>
+      <!-- ANN FORM -->
+      <div class="ann-form-mini" id="ann-form-wrap">
+        <div class="ann-form-title">
+          <span id="ann-form-title">New Announcement</span>
+          <button class="toggle-form-btn" onclick="toggleAnnForm()">+ Add New</button>
+        </div>
+        <div id="ann-form-fields" style="display:none;">
+          <div class="form-grid" style="grid-template-columns:1fr 1fr;">
+            <div class="form-group">
+              <label class="form-label">Type / Category</label>
+              <select class="form-select" id="ann-type">
+                <option>Community Update</option><option>National Organization</option>
+                <option>Heritage</option><option>Membership</option><option>Religious</option><option>Civic</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Date</label>
+              <input class="form-input" type="date" id="ann-date">
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Headline</label>
+              <input class="form-input" type="text" id="ann-title-input" placeholder="Announcement headline...">
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Body Text</label>
+              <textarea class="form-textarea" id="ann-body-input" style="min-height:80px;" placeholder="Details of the announcement..."></textarea>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <button class="btn-sm primary" onclick="saveAnnouncement()">Save Announcement →</button>
+            <button class="btn-sm" onclick="cancelAnnEdit()">Cancel</button>
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:14px; margin-left:10px;">
+              <input type="checkbox" id="ann-published" checked style="accent-color:var(--amber);">Published
+            </label>
+          </div>
+          <input type="hidden" id="ann-editing-id">
+        </div>
+      </div>
+      <!-- ANN TABLE -->
+      <div style="background:var(--white); border:1px solid var(--rule);">
+        <table class="data-table">
+          <thead><tr><th>Announcement</th><th>Type</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="ann-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SETTINGS PAGE -->
+    <div class="page" id="page-settings">
+      <div style="margin-bottom:24px;">
+        <div style="font-size:13px; color:var(--text-muted); margin-top:4px;">Control site-wide content like the hero headline, ticker, and contact info.</div>
+      </div>
+      <div class="settings-section">
+        <div class="settings-section-title">Site Identity</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Site Name (English)</label>
+            <input class="form-input" type="text" id="s-name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Site Name (Lithuanian)</label>
+            <input class="form-input" type="text" id="s-name-lt">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contact Email</label>
+            <input class="form-input" type="email" id="s-email">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Facebook URL</label>
+            <input class="form-input" type="url" id="s-facebook">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Instagram URL</label>
+            <input class="form-input" type="url" id="s-instagram">
+          </div>
+          <div class="form-group">
+            <label class="form-label">National LAC URL</label>
+            <input class="form-input" type="url" id="s-national">
+          </div>
+        </div>
+      </div>
+      <div class="settings-section">
+        <div class="settings-section-title">Homepage Content</div>
+        <div class="form-group">
+          <label class="form-label">Hero Headline</label>
+          <input class="form-input" type="text" id="s-hero-headline">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Hero Subtext</label>
+          <textarea class="form-textarea" style="min-height:80px;" id="s-hero-sub"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">News Ticker Text</label>
+          <textarea class="form-textarea" style="min-height:60px;" id="s-ticker"></textarea>
+          <div class="form-hint">Supplemental text for the scrolling ticker. Upcoming events are added automatically.</div>
+        </div>
+      </div>
+      <button class="btn-sm primary" onclick="saveSettings()" style="padding:12px 28px;">Save Settings →</button>
+    </div>
+
+  </main>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+//  CLAC DATA LAYER
+//  Cleveland Lithuanian American Community — clacleveland.org
+//  All site data stored in localStorage under "clac_*" keys.
+//  To migrate to a real backend, swap the save()/all() methods in each module
+//  to API calls — the frontend pages require no changes.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const CLAC = {
+
+  // ── AUTH ─────────────────────────────────────────────────────────────────
+  // Production: replace this with a real auth service (Supabase, Firebase, etc.)
+  auth: {
+    users: [
+      { username: 'admin',   password: 'clac2025!', name: 'Board Admin',     role: 'admin'  },
+      { username: 'richard', password: 'clac2025!', name: 'Richard (Chair)', role: 'editor' },
+      { username: 'editor',  password: 'clac2025!', name: 'Board Editor',    role: 'editor' }
+    ],
+    login(username, password) {
+      const user = this.users.find(u => u.username === username && u.password === password);
+      if (!user) return null;
+      const session = { username: user.username, name: user.name, role: user.role, ts: Date.now() };
+      localStorage.setItem('clac_session', JSON.stringify(session));
+      return session;
+    },
+    logout() {
+      localStorage.removeItem('clac_session');
+    },
+    current() {
+      const raw = localStorage.getItem('clac_session');
+      if (!raw) return null;
+      const session = JSON.parse(raw);
+      // 8-hour session timeout
+      if (Date.now() - session.ts > 8 * 60 * 60 * 1000) { this.logout(); return null; }
+      return session;
+    },
+    require() {
+      const s = this.current();
+      if (!s) { window.location.href = '/admin/index.html'; return null; }
+      return s;
+    }
+  },
+
+  // ── EVENTS ───────────────────────────────────────────────────────────────
+  events: {
+    _key: 'clac_events',
+
+    _defaults: [
+      {
+        id: 'spring-gathering-2025',
+        title: 'Spring Community Gathering',
+        titleLt: 'Pavasario Bendruomenės Susirinkimas',
+        date: '2025-04-19',
+        time: '2:00 PM',
+        endTime: '6:00 PM',
+        location: 'Lithuanian Cultural Garden, Rockefeller Park',
+        address: '750 E 88th St, Cleveland, OH 44108',
+        category: 'Cultural',
+        status: 'upcoming',
+        featured: true,
+        coverColor: '#2d4a33',
+        description: `Our annual spring gathering returns to the Lithuanian Cultural Garden in Rockefeller Park. This beloved tradition brings together Cleveland's Lithuanian community for an afternoon of food, music, and fellowship beneath the open sky.\n\nBring a dish to share — traditional Lithuanian recipes always welcome, but anything goes. We'll have music, time for children to run around, and plenty of good conversation.\n\nAll members, families, and friends are warmly welcome. No RSVP required — just show up!`,
+        descriptionLt: 'Mūsų metinis pavasario susirinkimas grįžta į Lietuvių kultūros sodą Rokfelerio parke.',
+        photos: [],
+        contactName: 'Board Contact',
+        contactEmail: 'info@clacleveland.org',
+        rsvpLink: '',
+        tags: ['Annual', 'Potluck', 'Family-Friendly', 'Outdoors'],
+        attendees: null,
+        recap: '',
+        published: true,
+        createdAt: '2025-03-01',
+        updatedAt: '2025-03-28'
+      },
+      {
+        id: 'mothers-day-mass-2025',
+        title: "Mother's Day Mass",
+        titleLt: 'Motinos Dienos Mišios',
+        date: '2025-05-11',
+        time: '10:00 AM',
+        endTime: '12:00 PM',
+        location: 'St. George Lithuanian Church',
+        address: 'E. 185th Street, Cleveland, OH',
+        category: 'Religious',
+        status: 'upcoming',
+        featured: false,
+        coverColor: '#1e2e3a',
+        description: `Annual Mother's Day Lithuanian Mass at St. George's, the heart of Cleveland's Lithuanian heritage. Mass in Lithuanian with reception to follow in the parish hall.\n\nAll are welcome — bring your mothers, grandmothers, and families.`,
+        descriptionLt: '',
+        photos: [],
+        contactName: 'Board Contact',
+        contactEmail: 'info@clacleveland.org',
+        rsvpLink: '',
+        tags: ['Annual', 'Religious', 'Family'],
+        attendees: null,
+        recap: '',
+        published: true,
+        createdAt: '2025-03-01',
+        updatedAt: '2025-03-01'
+      },
+      {
+        id: 'one-world-day-2024',
+        title: 'One World Day 2024',
+        titleLt: 'Viso Pasaulio Diena 2024',
+        date: '2024-09-08',
+        time: '11:00 AM',
+        endTime: '5:00 PM',
+        location: 'Rockefeller Park, Cleveland',
+        address: '750 E 88th St, Cleveland, OH 44108',
+        category: 'Festival',
+        status: 'past',
+        featured: true,
+        coverColor: '#3d2e1a',
+        description: `Cleveland's beloved One World Day returned to Rockefeller Park and the Lithuanian community showed up in force — our largest presence in recent memory.\n\nVolunteers in traditional dress staffed the Lithuanian booth with food, crafts, and information about our community. Thousands of Clevelanders stopped by to learn about Lithuania.\n\nThank you to all who volunteered, cooked, and represented our heritage with such pride.`,
+        descriptionLt: '',
+        photos: [],
+        contactName: 'Board Contact',
+        contactEmail: 'info@clacleveland.org',
+        rsvpLink: '',
+        tags: ['Annual', 'Multicultural', 'Outreach'],
+        attendees: 200,
+        recap: 'Record attendance. Lithuanian booth drew strong interest. Traditional dress and food were highlights.',
+        published: true,
+        createdAt: '2024-09-20',
+        updatedAt: '2024-09-20'
+      },
+      {
+        id: 'mindaugas-picnic-2024',
+        title: 'Mindaugas Day Picnic',
+        titleLt: 'Mindaugo Dienos Piknikas',
+        date: '2024-07-06',
+        time: '1:00 PM',
+        endTime: '5:00 PM',
+        location: 'Community Grounds, Greater Cleveland',
+        address: 'Cleveland, OH',
+        category: 'Celebration',
+        status: 'past',
+        featured: false,
+        coverColor: '#2a1e2e',
+        description: `Celebrating Lithuania's national holiday — the Coronation of King Mindaugas — with our annual summer picnic. Food, games, and great company under the summer sun.`,
+        descriptionLt: '',
+        photos: [],
+        contactName: 'Board Contact',
+        contactEmail: 'info@clacleveland.org',
+        rsvpLink: '',
+        tags: ['Annual', 'National Holiday', 'Picnic'],
+        attendees: 45,
+        recap: '',
+        published: true,
+        createdAt: '2024-07-10',
+        updatedAt: '2024-07-10'
+      }
+    ],
+
+    _init() {
+      if (!localStorage.getItem(this._key)) {
+        localStorage.setItem(this._key, JSON.stringify(this._defaults));
+      }
+    },
+    all() {
+      this._init();
+      return JSON.parse(localStorage.getItem(this._key));
+    },
+    get(id) {
+      return this.all().find(e => e.id === id) || null;
+    },
+    upcoming() {
+      return this.all()
+        .filter(e => e.status === 'upcoming' && e.published)
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
+    },
+    past() {
+      return this.all()
+        .filter(e => e.status === 'past' && e.published)
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+    },
+    save(event) {
+      const all = this.all();
+      const idx = all.findIndex(e => e.id === event.id);
+      event.updatedAt = new Date().toISOString().split('T')[0];
+      if (idx >= 0) { all[idx] = event; } else { all.unshift(event); }
+      localStorage.setItem(this._key, JSON.stringify(all));
+      return event;
+    },
+    delete(id) {
+      localStorage.setItem(this._key, JSON.stringify(this.all().filter(e => e.id !== id)));
+    },
+    slugify(title) {
+      return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+        + '-' + Date.now().toString(36);
+    }
+  },
+
+  // ── ANNOUNCEMENTS ────────────────────────────────────────────────────────
+  announcements: {
+    _key: 'clac_announcements',
+
+    _defaults: [
+      { id: 'ann-1', type: 'Community Update',     title: 'Spring 2025 Gathering Confirmed for April 19',       body: 'Our annual spring gathering returns to the Lithuanian Cultural Garden in Rockefeller Park. Potluck format — bring a dish. All welcome.',                                          date: '2025-03-28', published: true },
+      { id: 'ann-2', type: 'National Organization', title: 'LAC Newsletter Spring Edition Now Available',         body: 'The national Lithuanian American Community newsletter for Spring 2025 is now available at javlb.lt/en/naujienlaiskiui.',                                                        date: '2025-03-15', published: true },
+      { id: 'ann-3', type: 'Heritage',              title: 'Cultural Garden Spring Cleanup — Volunteers Needed',  body: 'Volunteers needed for the annual spring cleanup of the Lithuanian Cultural Garden at Rockefeller Park. Contact us via Facebook to sign up.',                                  date: '2025-03-10', published: true },
+      { id: 'ann-4', type: 'Membership',            title: '2025 Membership Renewal — Open Now',                 body: 'Annual membership renewal is open. Supporting the community through membership helps fund our events and cultural programming. Contact the board for details.',               date: '2025-01-05', published: true }
+    ],
+
+    _init() {
+      if (!localStorage.getItem(this._key)) {
+        localStorage.setItem(this._key, JSON.stringify(this._defaults));
+      }
+    },
+    all() {
+      this._init();
+      return JSON.parse(localStorage.getItem(this._key));
+    },
+    published() {
+      return this.all()
+        .filter(a => a.published)
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+    },
+    save(ann) {
+      const all = this.all();
+      const idx = all.findIndex(a => a.id === ann.id);
+      if (idx >= 0) { all[idx] = ann; } else { all.unshift(ann); }
+      localStorage.setItem(this._key, JSON.stringify(all));
+    },
+    delete(id) {
+      localStorage.setItem(this._key, JSON.stringify(this.all().filter(a => a.id !== id)));
+    }
+  },
+
+  // ── SETTINGS ─────────────────────────────────────────────────────────────
+  settings: {
+    _key: 'clac_settings',
+
+    _defaults: {
+      siteName:      'Cleveland Lithuanian American Community',
+      siteNameLt:    'Clevelando Lietuvių Bendruomenė',
+      email:         'info@clacleveland.org',
+      facebook:      'https://www.facebook.com/profile.php?id=61565856471983',
+      instagram:     'https://www.instagram.com/cleveland_lietuviu_bendruomene',
+      nationalUrl:   'https://javlb.lt/en/',
+      tickerText:    'St. George Lithuanian Church — Sundays at 10:00 AM · Lithuanian Cultural Garden — Rockefeller Park · Follow us on Facebook & Instagram',
+      heroHeadline:  'One community. Many stories. One Cleveland.',
+      heroSub:       'The heartbeat of Lithuanian culture in Northeast Ohio — celebrating our heritage, connecting generations, and building a living community here on the shores of Lake Erie.'
+    },
+
+    get() {
+      const stored = localStorage.getItem(this._key);
+      return stored ? { ...this._defaults, ...JSON.parse(stored) } : { ...this._defaults };
+    },
+    save(data) {
+      localStorage.setItem(this._key, JSON.stringify(data));
+    }
+  },
+
+  // ── HELPERS ──────────────────────────────────────────────────────────────
+  formatDate(dateStr) {
+    return new Date(dateStr + 'T12:00:00').toLocaleDateString('en-US', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+  },
+  formatDateShort(dateStr) {
+    return new Date(dateStr + 'T12:00:00').toLocaleDateString('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric'
+    });
+  },
+  monthDay(dateStr) {
+    const d = new Date(dateStr + 'T12:00:00');
+    return {
+      month: d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase(),
+      day:   d.getDate()
+    };
+  }
+};
+
+</script>
+<script>
+// ── AUTH ──────────────────────────────────────────────────
+const session = CLAC.auth.current();
+if (!session) { window.location.href = 'index.html'; }
+let currentUser = session;
+
+document.getElementById('su-name').textContent = session.name;
+document.getElementById('su-role').textContent = session.role;
+document.getElementById('su-avatar').textContent = session.name.charAt(0).toUpperCase();
+document.getElementById('welcome-name').textContent = session.name.split(' ')[0];
+
+function doLogout() { CLAC.auth.logout(); window.location.href = 'index.html'; }
+
+// ── NAVIGATION ────────────────────────────────────────────
+const pages = ['dashboard','events','announcements','settings'];
+const pageTitles = { dashboard:'Dashboard', events:'Events', announcements:'Announcements', settings:'Site Settings' };
+const topbarActions = { dashboard:'+ New Event', events:'+ New Event', announcements:'+ New Announcement', settings:'Save Settings' };
+
+function showPage(name) {
+  pages.forEach(p => {
+    document.getElementById('page-'+p).classList.toggle('active', p === name);
+    document.querySelectorAll('.snav-item').forEach((el,i) => el.classList.remove('active'));
+  });
+  document.querySelectorAll('.snav-item').forEach(el => {
+    if (el.getAttribute('onclick') && el.getAttribute('onclick').includes(`'${name}'`)) el.classList.add('active');
+  });
+  document.getElementById('page-title').textContent = pageTitles[name] || name;
+  if (name === 'events') renderEventsTable('all');
+  if (name === 'announcements') renderAnnouncementsTable();
+  if (name === 'settings') loadSettings();
+  if (name === 'dashboard') renderDashboard();
+  // Update topbar action
+  const btn = document.getElementById('topbar-action');
+  btn.textContent = topbarActions[name] || '+ New';
+  btn.onclick = name === 'announcements' ? () => { showPage('announcements'); toggleAnnForm(true); } : newEventClick;
+  return false;
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────
+function renderDashboard() {
+  const events = CLAC.events.all();
+  const anns = CLAC.announcements.all();
+  const upcoming = events.filter(e => e.status === 'upcoming').length;
+  const past = events.filter(e => e.status === 'past').length;
+  document.getElementById('stats-grid').innerHTML = `
+    <div class="stat-card"><div class="sc-label">Total Events</div><div class="sc-value">${events.length}</div><div class="sc-sub">${upcoming} upcoming, ${past} past</div><a class="sc-link" onclick="showPage('events')">Manage Events →</a></div>
+    <div class="stat-card"><div class="sc-label">Upcoming Events</div><div class="sc-value">${upcoming}</div><div class="sc-sub">On public calendar</div><a class="sc-link" href="../index.html#upcoming" target="_blank">View on site ↗</a></div>
+    <div class="stat-card"><div class="sc-label">Announcements</div><div class="sc-value">${anns.filter(a=>a.published).length}</div><div class="sc-sub">${anns.length} total</div><a class="sc-link" onclick="showPage('announcements')">Manage →</a></div>
+    <div class="stat-card"><div class="sc-label">Past Events</div><div class="sc-value">${past}</div><div class="sc-sub">In photo journal</div><a class="sc-link" href="../index.html#journal" target="_blank">View Journal ↗</a></div>`;
+
+  const upcomingItems = CLAC.events.upcoming().slice(0,5);
+  document.getElementById('dash-upcoming').innerHTML = upcomingItems.length
+    ? upcomingItems.map(e => `<div style="padding:12px 16px; border-bottom:1px solid var(--rule); display:flex; justify-content:space-between; align-items:center; font-size:13px;">
+        <div><div style="font-weight:500; color:var(--text-dark);">${e.title}</div><div style="font-size:11px; color:var(--text-muted); font-family:'DM Mono',monospace; margin-top:2px;">${CLAC.formatDateShort(e.date)}</div></div>
+        <a onclick="editEvent('${e.id}')" style="font-family:'DM Mono',monospace; font-size:10px; color:var(--amber); cursor:pointer;">Edit</a>
+      </div>`).join('')
+    : '<div style="padding:20px; color:var(--text-muted); font-size:13px;">No upcoming events. <a onclick="newEventClick()" style="color:var(--amber); cursor:pointer;">Add one →</a></div>';
+
+  const recentAnns = CLAC.announcements.published().slice(0,4);
+  document.getElementById('dash-anns').innerHTML = recentAnns.length
+    ? recentAnns.map(a => `<div style="padding:12px 16px; border-bottom:1px solid var(--rule); font-size:13px;">
+        <div style="font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber); margin-bottom:3px;">${a.type}</div>
+        <div style="font-weight:500; color:var(--text-dark);">${a.title}</div>
+        <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">${CLAC.formatDateShort(a.date)}</div>
+      </div>`).join('')
+    : '<div style="padding:20px; color:var(--text-muted); font-size:13px;">No announcements yet.</div>';
+}
+
+// ── EVENTS ────────────────────────────────────────────────
+const COLORS = ['#2d4a33','#3d2e1a','#1e2e3a','#2a1e2e','#2e3a1e','#3a3010','#1a3038','#38281a','#1a3022','#2e1a38'];
+let editingEventId = null;
+let filterStatus = 'all';
+
+function buildColorGrid() {
+  const selected = document.getElementById('f-cover-color').value;
+  document.getElementById('color-grid').innerHTML = COLORS.map(c =>
+    `<div class="color-opt${c===selected?' selected':''}" style="background:${c};" onclick="selectColor('${c}')"></div>`
+  ).join('');
+}
+
+function selectColor(c) {
+  document.getElementById('f-cover-color').value = c;
+  document.querySelectorAll('.color-opt').forEach(el => el.classList.toggle('selected', el.style.background === c || el.style.background === hexToRgb(c)));
+}
+function hexToRgb(hex) { const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16); return `rgb(${r}, ${g}, ${b})`; }
+
+function newEventClick() {
+  showPage('events');
+  editingEventId = null;
+  document.getElementById('form-mode-title').textContent = 'New Event';
+  document.getElementById('preview-btn').style.display = 'none';
+  clearEventForm();
+  document.getElementById('event-form-wrap').style.display = 'block';
+  document.getElementById('event-form-wrap').scrollIntoView({ behavior:'smooth' });
+}
+
+function clearEventForm() {
+  ['f-title','f-title-lt','f-date','f-time','f-end-time','f-location','f-address','f-description','f-tags','f-rsvp','f-recap','f-photos','f-contact-email'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  document.getElementById('f-status').value = 'upcoming';
+  document.getElementById('f-category').value = 'Cultural';
+  document.getElementById('f-attendees').value = '';
+  document.getElementById('f-published').checked = true;
+  document.getElementById('f-featured').checked = false;
+  document.getElementById('f-cover-color').value = '#2d4a33';
+  document.getElementById('ai-result').style.display = 'none';
+  document.getElementById('ai-insert-btn').style.display = 'none';
+  buildColorGrid();
+}
+
+function editEvent(id) {
+  showPage('events');
+  const e = CLAC.events.get(id);
+  if (!e) return;
+  editingEventId = id;
+  document.getElementById('form-mode-title').textContent = 'Edit Event';
+  document.getElementById('preview-btn').style.display = 'block';
+  document.getElementById('f-title').value = e.title;
+  document.getElementById('f-title-lt').value = e.titleLt || '';
+  document.getElementById('f-date').value = e.date;
+  document.getElementById('f-time').value = e.time;
+  document.getElementById('f-end-time').value = e.endTime || '';
+  document.getElementById('f-location').value = e.location;
+  document.getElementById('f-address').value = e.address || '';
+  document.getElementById('f-description').value = e.description;
+  document.getElementById('f-tags').value = (e.tags || []).join(', ');
+  document.getElementById('f-status').value = e.status;
+  document.getElementById('f-category').value = e.category;
+  document.getElementById('f-attendees').value = e.attendees || '';
+  document.getElementById('f-rsvp').value = e.rsvpLink || '';
+  document.getElementById('f-recap').value = e.recap || '';
+  document.getElementById('f-published').checked = e.published;
+  document.getElementById('f-featured').checked = e.featured;
+  document.getElementById('f-cover-color').value = e.coverColor || '#2d4a33';
+  document.getElementById('f-contact-email').value = e.contactEmail || '';
+  document.getElementById('f-photos').value = (e.photos || []).join('\n');
+  buildColorGrid();
+  document.getElementById('event-form-wrap').style.display = 'block';
+  document.getElementById('event-form-wrap').scrollIntoView({ behavior:'smooth' });
+}
+
+function hideEventForm() {
+  document.getElementById('event-form-wrap').style.display = 'none';
+  editingEventId = null;
+}
+
+function saveEvent() {
+  const title = document.getElementById('f-title').value.trim();
+  const date = document.getElementById('f-date').value;
+  if (!title || !date) { showToast('⚠ Title and Date are required.'); return; }
+  const photosRaw = document.getElementById('f-photos').value.trim();
+  const photos = photosRaw ? photosRaw.split('\n').map(p=>p.trim()).filter(Boolean) : [];
+  const event = {
+    id: editingEventId || CLAC.events.slugify(title),
+    title, date,
+    titleLt: document.getElementById('f-title-lt').value.trim(),
+    time: document.getElementById('f-time').value.trim(),
+    endTime: document.getElementById('f-end-time').value.trim(),
+    location: document.getElementById('f-location').value.trim(),
+    address: document.getElementById('f-address').value.trim(),
+    category: document.getElementById('f-category').value,
+    status: document.getElementById('f-status').value,
+    description: document.getElementById('f-description').value.trim(),
+    tags: document.getElementById('f-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
+    attendees: document.getElementById('f-attendees').value ? parseInt(document.getElementById('f-attendees').value) : null,
+    rsvpLink: document.getElementById('f-rsvp').value.trim(),
+    recap: document.getElementById('f-recap').value.trim(),
+    coverColor: document.getElementById('f-cover-color').value,
+    contactEmail: document.getElementById('f-contact-email').value.trim(),
+    contactName: 'Board Contact',
+    published: document.getElementById('f-published').checked,
+    featured: document.getElementById('f-featured').checked,
+    photos,
+    createdAt: editingEventId ? (CLAC.events.get(editingEventId)||{}).createdAt || new Date().toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+    updatedAt: new Date().toISOString().split('T')[0]
+  };
+  CLAC.events.save(event);
+  hideEventForm();
+  renderEventsTable(filterStatus);
+  renderDashboard();
+  showToast(`✓ Event "${title}" saved successfully.`);
+}
+
+function previewEvent() {
+  if (editingEventId) window.open(`../event.html?id=${editingEventId}`, '_blank');
+}
+
+function deleteEvent(id) {
+  if (!confirm('Delete this event? This cannot be undone.')) return;
+  CLAC.events.delete(id);
+  renderEventsTable(filterStatus);
+  renderDashboard();
+  showToast('✓ Event deleted.');
+}
+
+function toggleEventPublished(id) {
+  const e = CLAC.events.get(id);
+  if (!e) return;
+  e.published = !e.published;
+  CLAC.events.save(e);
+  renderEventsTable(filterStatus);
+  showToast(e.published ? '✓ Event published.' : '✓ Event unpublished.');
+}
+
+function filterEvents(status) {
+  filterStatus = status;
+  ['all','upcoming','past'].forEach(s => {
+    const btn = document.getElementById('filter-'+s);
+    if (btn) { btn.style.background = s===status ? 'var(--forest)' : ''; btn.style.color = s===status ? 'var(--amber)' : ''; btn.style.borderColor = s===status ? 'var(--forest)' : ''; }
+  });
+  renderEventsTable(status);
+}
+
+function renderEventsTable(status) {
+  let events = CLAC.events.all();
+  if (status !== 'all') events = events.filter(e => e.status === status);
+  events.sort((a,b) => {
+    if (a.status === 'upcoming' && b.status === 'past') return -1;
+    if (a.status === 'past' && b.status === 'upcoming') return 1;
+    return a.status === 'upcoming' ? new Date(a.date)-new Date(b.date) : new Date(b.date)-new Date(a.date);
+  });
+  const tbody = document.getElementById('events-tbody');
+  if (!events.length) { tbody.innerHTML = '<tr><td colspan="6" style="padding:32px; text-align:center; color:var(--text-muted); font-size:13px;">No events found. <a onclick="newEventClick()" style="color:var(--amber); cursor:pointer;">Add your first event →</a></td></tr>'; return; }
+  tbody.innerHTML = events.map(e => `
+    <tr>
+      <td><div class="td-title">${e.title}</div><div class="td-meta">${e.location}</div></td>
+      <td><div style="font-family:'DM Mono',monospace; font-size:12px;">${CLAC.formatDateShort(e.date)}</div></td>
+      <td><span style="font-size:12px; color:var(--text-muted);">${e.category}</span></td>
+      <td><span class="status-pill ${e.status}">${e.status}</span>${!e.published ? ' <span class="status-pill draft">draft</span>' : ''}</td>
+      <td><span class="${e.featured ? 'featured-star' : ''}" style="font-size:16px;">${e.featured ? '★' : '☆'}</span></td>
+      <td><div class="row-actions">
+        <button class="row-btn" onclick="editEvent('${e.id}')">Edit</button>
+        <a class="row-btn" href="../event.html?id=${e.id}" target="_blank">View ↗</a>
+        <button class="row-btn" onclick="toggleEventPublished('${e.id}')">${e.published ? 'Unpublish' : 'Publish'}</button>
+        <button class="row-btn del" onclick="deleteEvent('${e.id}')">Delete</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+// ── AI ASSIST ─────────────────────────────────────────────
+let aiGeneratedText = '';
+async function aiWrite() {
+  const prompt = document.getElementById('ai-prompt').value.trim();
+  const title = document.getElementById('f-title').value.trim();
+  const location = document.getElementById('f-location').value.trim();
+  const date = document.getElementById('f-date').value;
+  if (!prompt && !title) { showToast('⚠ Add a title or description hint first.'); return; }
+
+  document.getElementById('ai-status').textContent = '— generating...';
+  document.getElementById('ai-result').style.display = 'block';
+  document.getElementById('ai-result').textContent = '...';
+  document.getElementById('ai-insert-btn').style.display = 'none';
+
+  const context = [title && `Event: ${title}`, location && `Location: ${location}`, date && `Date: ${CLAC.formatDate(date)}`, prompt && `Details: ${prompt}`].filter(Boolean).join('. ');
+  const systemPrompt = `You are a warm, community-focused writer for the Cleveland Lithuanian American Community (CLAC), a chapter of the Lithuanian American Community Inc. Write event descriptions that feel welcoming, culturally grounded, and genuine. Keep descriptions to 2-3 short paragraphs. Write in English. Be specific, warm, and concise. Do not use bullet points.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 400,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: `Write an event description for: ${context}` }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || 'Could not generate text. Please try again.';
+    aiGeneratedText = text;
+    document.getElementById('ai-result').textContent = text;
+    document.getElementById('ai-insert-btn').style.display = 'inline-block';
+    document.getElementById('ai-status').textContent = '— ready';
+  } catch(e) {
+    document.getElementById('ai-result').textContent = 'AI assistant unavailable right now. You can still write the description manually above.';
+    document.getElementById('ai-status').textContent = '— offline';
+  }
+}
+function insertAiText() {
+  document.getElementById('f-description').value = aiGeneratedText;
+  document.getElementById('ai-result').style.display = 'none';
+  document.getElementById('ai-insert-btn').style.display = 'none';
+  showToast('✓ Text inserted into description field.');
+}
+
+// ── ANNOUNCEMENTS ─────────────────────────────────────────
+function toggleAnnForm(forceOpen) {
+  const fields = document.getElementById('ann-form-fields');
+  const show = forceOpen || fields.style.display === 'none';
+  fields.style.display = show ? 'block' : 'none';
+  if (show) {
+    document.getElementById('ann-date').value = new Date().toISOString().split('T')[0];
+    document.getElementById('ann-editing-id').value = '';
+    document.getElementById('ann-form-title').textContent = 'New Announcement';
+  }
+}
+
+function cancelAnnEdit() {
+  document.getElementById('ann-form-fields').style.display = 'none';
+  document.getElementById('ann-editing-id').value = '';
+  document.getElementById('ann-form-title').textContent = 'New Announcement';
+  ['ann-title-input','ann-body-input'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
+}
+
+function editAnn(id) {
+  const a = CLAC.announcements.all().find(a => a.id === id);
+  if (!a) return;
+  document.getElementById('ann-editing-id').value = id;
+  document.getElementById('ann-type').value = a.type;
+  document.getElementById('ann-date').value = a.date;
+  document.getElementById('ann-title-input').value = a.title;
+  document.getElementById('ann-body-input').value = a.body;
+  document.getElementById('ann-published').checked = a.published;
+  document.getElementById('ann-form-title').textContent = 'Edit Announcement';
+  document.getElementById('ann-form-fields').style.display = 'block';
+  document.getElementById('ann-form-fields').scrollIntoView({ behavior:'smooth' });
+}
+
+function saveAnnouncement() {
+  const title = document.getElementById('ann-title-input').value.trim();
+  if (!title) { showToast('⚠ Title is required.'); return; }
+  const editId = document.getElementById('ann-editing-id').value;
+  const ann = {
+    id: editId || 'ann-' + Date.now().toString(36),
+    type: document.getElementById('ann-type').value,
+    title,
+    body: document.getElementById('ann-body-input').value.trim(),
+    date: document.getElementById('ann-date').value,
+    published: document.getElementById('ann-published').checked
+  };
+  CLAC.announcements.save(ann);
+  cancelAnnEdit();
+  renderAnnouncementsTable();
+  renderDashboard();
+  showToast('✓ Announcement saved.');
+}
+
+function deleteAnn(id) {
+  if (!confirm('Delete this announcement?')) return;
+  CLAC.announcements.delete(id);
+  renderAnnouncementsTable();
+  renderDashboard();
+  showToast('✓ Announcement deleted.');
+}
+
+function renderAnnouncementsTable() {
+  const anns = CLAC.announcements.all();
+  const tbody = document.getElementById('ann-tbody');
+  if (!anns.length) { tbody.innerHTML = '<tr><td colspan="5" style="padding:24px; text-align:center; color:var(--text-muted); font-size:13px;">No announcements yet.</td></tr>'; return; }
+  tbody.innerHTML = anns.sort((a,b) => new Date(b.date)-new Date(a.date)).map(a => `
+    <tr>
+      <td><div class="td-title">${a.title}</div><div class="td-meta" style="margin-top:3px; display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden;">${a.body}</div></td>
+      <td><span style="font-size:12px; color:var(--text-muted);">${a.type}</span></td>
+      <td><span style="font-family:'DM Mono',monospace; font-size:12px;">${CLAC.formatDateShort(a.date)}</span></td>
+      <td><span class="status-pill ${a.published ? 'upcoming' : 'draft'}">${a.published ? 'Published' : 'Draft'}</span></td>
+      <td><div class="row-actions">
+        <button class="row-btn" onclick="editAnn('${a.id}')">Edit</button>
+        <button class="row-btn del" onclick="deleteAnn('${a.id}')">Delete</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+// ── SETTINGS ──────────────────────────────────────────────
+function loadSettings() {
+  const s = CLAC.settings.get();
+  document.getElementById('s-name').value = s.siteName;
+  document.getElementById('s-name-lt').value = s.siteNameLt;
+  document.getElementById('s-email').value = s.email;
+  document.getElementById('s-facebook').value = s.facebook;
+  document.getElementById('s-instagram').value = s.instagram;
+  document.getElementById('s-national').value = s.nationalUrl;
+  document.getElementById('s-hero-headline').value = s.heroHeadline;
+  document.getElementById('s-hero-sub').value = s.heroSub;
+  document.getElementById('s-ticker').value = s.tickerText;
+}
+
+function saveSettings() {
+  CLAC.settings.save({
+    siteName: document.getElementById('s-name').value.trim(),
+    siteNameLt: document.getElementById('s-name-lt').value.trim(),
+    email: document.getElementById('s-email').value.trim(),
+    facebook: document.getElementById('s-facebook').value.trim(),
+    instagram: document.getElementById('s-instagram').value.trim(),
+    nationalUrl: document.getElementById('s-national').value.trim(),
+    heroHeadline: document.getElementById('s-hero-headline').value.trim(),
+    heroSub: document.getElementById('s-hero-sub').value.trim(),
+    tickerText: document.getElementById('s-ticker').value.trim()
+  });
+  showToast('✓ Settings saved. Refresh the public site to see changes.');
+}
+
+// ── TOAST ─────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ── INIT ──────────────────────────────────────────────────
+renderDashboard();
+</script>
+</body>
+</html>

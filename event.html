@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event — Cleveland Lithuanian American Community</title>
+  <meta name="description" content="Event details — Cleveland Lithuanian American Community.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+/* ─────────────────────────────────────────────────────────────────────────────
+   CLAC SHARED STYLES
+   Cleveland Lithuanian American Community — clacleveland.org
+   Imported by: index.html, event.html
+   Admin pages (admin/) have their own self-contained styles.
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ── TOKENS ─────────────────────────────────────────────────────────────── */
+:root {
+  --forest:       #1a2e1e;
+  --forest-mid:   #243329;
+  --forest-light: #2f4535;
+  --amber:        #c8903a;
+  --amber-light:  #e4a84d;
+  --amber-pale:   #f5e6c8;
+  --cream:        #f2ede4;
+  --cream-dark:   #e8e0d0;
+  --linen:        #faf7f2;
+  --white:        #ffffff;
+  --text-dark:    #1a1a18;
+  --text-body:    #3a3a36;
+  --text-muted:   #7a7a70;
+  --text-faint:   #adadA0;
+  --rule:         #d4c9b0;
+  --red:          #c0392b;
+}
+
+/* ── RESET ───────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html  { font-size: 16px; scroll-behavior: smooth; }
+body  { font-family: 'DM Sans', sans-serif; background: var(--linen); color: var(--text-body); overflow-x: hidden; }
+
+/* ── TOPBAR ──────────────────────────────────────────────────────────────── */
+.topbar {
+  background: var(--forest);
+  color: var(--amber-pale);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  padding: 7px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.topbar a               { color: var(--amber-light); text-decoration: none; }
+.topbar a:hover         { color: var(--white); }
+.topbar-social          { display: flex; gap: 18px; }
+
+/* ── NAV ─────────────────────────────────────────────────────────────────── */
+nav.main-nav {
+  background: var(--linen);
+  border-bottom: 1px solid var(--rule);
+  padding: 0 40px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+}
+.nav-logo         { display: flex; flex-direction: column; justify-content: center; padding: 14px 0; text-decoration: none; }
+.nav-logo-en      { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; color: var(--text-dark); letter-spacing: 0.04em; text-transform: uppercase; }
+.nav-logo-lt      { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: var(--amber); margin-top: 2px; }
+.nav-links        { display: flex; list-style: none; align-items: stretch; }
+.nav-links li     { display: flex; align-items: stretch; }
+.nav-links a      { display: flex; align-items: center; padding: 0 16px; font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); text-decoration: none; border-bottom: 2px solid transparent; transition: color 0.2s, border-color 0.2s; }
+.nav-links a:hover,
+.nav-links a.active { color: var(--forest); border-bottom-color: var(--amber); }
+.nav-right        { display: flex; align-items: center; gap: 12px; }
+.nav-lang         { display: flex; align-items: center; gap: 6px; padding-left: 20px; border-left: 1px solid var(--rule); }
+.lang-btn         { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; padding: 4px 8px; border: 1px solid var(--rule); background: transparent; color: var(--text-muted); cursor: pointer; border-radius: 2px; transition: all 0.2s; }
+.lang-btn:hover,
+.lang-btn.active  { background: var(--forest); color: var(--amber-pale); border-color: var(--forest); }
+.hamburger        { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 16px 0; }
+.hamburger span   { display: block; width: 24px; height: 1.5px; background: var(--text-dark); }
+
+/* ── BUTTONS ─────────────────────────────────────────────────────────────── */
+.btn-primary {
+  background: var(--amber); color: var(--forest);
+  font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 13px 28px; border: none; cursor: pointer;
+  text-decoration: none; display: inline-block;
+  font-family: 'DM Sans', sans-serif;
+  transition: background 0.2s, transform 0.15s;
+}
+.btn-primary:hover   { background: var(--amber-light); transform: translateY(-1px); }
+
+.btn-ghost {
+  background: transparent; color: var(--forest);
+  font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 12px 28px; border: 1px solid var(--rule); cursor: pointer;
+  text-decoration: none; display: inline-block;
+  font-family: 'DM Sans', sans-serif;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-ghost:hover     { border-color: var(--amber); color: var(--amber); }
+
+.btn-ghost-inv {
+  background: transparent; color: var(--cream);
+  font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 12px 28px; border: 1px solid rgba(255,255,255,0.25); cursor: pointer;
+  text-decoration: none; display: inline-block;
+  font-family: 'DM Sans', sans-serif;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-ghost-inv:hover { border-color: var(--amber); color: var(--amber-light); }
+
+/* ── SECTION HEADERS ─────────────────────────────────────────────────────── */
+.section-header {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 36px; padding-bottom: 16px; border-bottom: 1px solid var(--rule);
+}
+.section-title    { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--text-dark); }
+.section-title-lt { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--amber); letter-spacing: 0.12em; margin-top: 3px; }
+.section-link     { font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--amber); text-decoration: none; transition: opacity 0.2s; }
+.section-link:hover { opacity: 0.75; }
+
+/* ── LAYOUT ──────────────────────────────────────────────────────────────── */
+.container { max-width: 1280px; margin: 0 auto; padding: 0 40px; }
+.two-col   { display: grid; grid-template-columns: 1fr 340px; gap: 60px; }
+
+/* ── TICKER ──────────────────────────────────────────────────────────────── */
+.ticker       { background: var(--amber); color: var(--forest); padding: 10px 0; overflow: hidden; white-space: nowrap; }
+.ticker-inner { display: inline-block; animation: ticker-scroll 35s linear infinite; font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.08em; }
+@keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+.ticker-sep   { margin: 0 28px; opacity: 0.4; }
+
+/* ── SIDEBAR WIDGETS ─────────────────────────────────────────────────────── */
+.sidebar-widget       { background: var(--forest); color: var(--cream); padding: 32px 28px; margin-bottom: 24px; }
+.sidebar-widget-title { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--amber-light); padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 18px; }
+.sidebar-link-list    { list-style: none; }
+.sidebar-link-list li { padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.07); font-size: 13px; }
+.sidebar-link-list li:last-child { border-bottom: none; }
+.sidebar-link-list a  { color: rgba(242,237,228,0.75); text-decoration: none; display: flex; justify-content: space-between; align-items: center; transition: color 0.15s; }
+.sidebar-link-list a:hover { color: var(--amber-light); }
+
+/* ── NEWSLETTER STRIP ────────────────────────────────────────────────────── */
+.newsletter-strip   { background: var(--amber); padding: 56px 0; }
+.newsletter-inner   { max-width: 1280px; margin: 0 auto; padding: 0 40px; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center; }
+.newsletter-heading { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 900; color: var(--forest); line-height: 1.1; }
+.newsletter-sub     { font-size: 14px; color: var(--forest-light); margin-top: 8px; font-weight: 300; }
+.newsletter-form    { display: flex; }
+.newsletter-input   { padding: 14px 20px; border: none; background: var(--forest); color: var(--cream); font-family: 'DM Sans', sans-serif; font-size: 14px; width: 280px; outline: none; }
+.newsletter-input::placeholder { color: rgba(242,237,228,0.4); }
+.newsletter-submit  { background: var(--forest); color: var(--amber); border: none; padding: 14px 24px; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+.newsletter-submit:hover { background: var(--forest-light); }
+
+/* ── FOOTER ──────────────────────────────────────────────────────────────── */
+footer.main-footer    { background: #111810; color: rgba(242,237,228,0.5); padding: 60px 0 28px; }
+.footer-grid          { max-width: 1280px; margin: 0 auto; padding: 0 40px; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+.footer-brand-name    { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--cream); margin-bottom: 4px; }
+.footer-brand-lt      { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.12em; color: var(--amber); }
+.footer-desc          { font-size: 13px; line-height: 1.7; margin-top: 16px; color: rgba(242,237,228,0.45); font-weight: 300; max-width: 280px; }
+.footer-col-title     { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--amber); margin-bottom: 16px; }
+.footer-links         { list-style: none; }
+.footer-links li      { margin-bottom: 10px; }
+.footer-links a       { font-size: 13px; color: rgba(242,237,228,0.5); text-decoration: none; transition: color 0.15s; }
+.footer-links a:hover { color: var(--cream); }
+.footer-bottom        { max-width: 1280px; margin: 0 auto; padding: 20px 40px 0; border-top: 1px solid rgba(255,255,255,0.07); display: flex; justify-content: space-between; align-items: center; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.06em; }
+.footer-bottom a      { color: var(--amber); text-decoration: none; }
+
+/* ── ANIMATIONS ──────────────────────────────────────────────────────────── */
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { animation: fadeInUp 0.5s ease both; }
+
+/* ── RESPONSIVE ──────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .two-col      { grid-template-columns: 1fr; }
+  .footer-grid  { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  .topbar           { padding: 7px 20px; font-size: 10px; }
+  .topbar-social    { gap: 12px; }
+  nav.main-nav      { padding: 0 20px; }
+  .nav-links        { display: none; }
+  .nav-links.open   {
+    display: flex; flex-direction: column;
+    position: absolute; top: 100%; left: 0; right: 0;
+    background: var(--linen); border-bottom: 1px solid var(--rule);
+    padding: 10px 0; z-index: 200;
+  }
+  .nav-links.open a { padding: 12px 20px; border-bottom: none; }
+  .hamburger        { display: flex; }
+  .container        { padding: 0 20px; }
+  .newsletter-inner { grid-template-columns: 1fr; padding: 0 20px; }
+  .newsletter-form  { flex-direction: column; }
+  .newsletter-input { width: 100%; }
+  .footer-grid      { grid-template-columns: 1fr; gap: 32px; padding: 0 20px; }
+  .footer-bottom    { flex-direction: column; gap: 10px; text-align: center; padding: 20px 20px 0; }
+}
+
+</style>
+  <style>
+    /* ── EVENT HERO ───────────────────────────────────────────────────────── */
+    .event-hero { background: var(--forest); color: var(--cream); position: relative; min-height: 60vh; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; }
+    .event-hero-bg { position: absolute; inset: 0; }
+    .event-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,18,11,0.97) 0%, rgba(10,18,11,0.5) 50%, rgba(10,18,11,0.2) 100%); }
+    .event-hero-content { position: relative; z-index: 2; padding: 60px 80px; max-width: 900px; }
+    .breadcrumb { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.12em; color: rgba(242,237,228,0.45); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .breadcrumb a { color: var(--amber); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--amber-light); }
+    .event-status-badge { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; padding: 5px 12px; border: 1px solid; display: inline-block; margin-bottom: 16px; }
+    .event-status-badge.upcoming { color: #6db87a; border-color: #6db87a; background: rgba(109,184,122,0.1); }
+    .event-status-badge.past { color: rgba(242,237,228,0.4); border-color: rgba(242,237,228,0.2); }
+    .event-hero-title { font-family: 'Playfair Display', serif; font-size: clamp(32px, 4.5vw, 58px); font-weight: 900; line-height: 1.05; color: var(--cream); margin-bottom: 12px; }
+    .event-hero-title-lt { font-family: 'Playfair Display', serif; font-size: clamp(16px, 2vw, 22px); font-weight: 400; font-style: italic; color: rgba(242,237,228,0.45); margin-bottom: 24px; }
+    .event-hero-meta { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 28px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.12); }
+    .ehm-item { display: flex; flex-direction: column; gap: 3px; }
+    .ehm-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--amber); }
+    .ehm-value { font-size: 15px; font-weight: 500; color: var(--cream); }
+
+    /* ── EVENT BODY ───────────────────────────────────────────────────────── */
+    .event-body { padding: 72px 0; }
+    .event-layout { display: grid; grid-template-columns: 1fr 340px; gap: 64px; }
+    .event-description { font-size: 17px; line-height: 1.85; color: var(--text-body); font-weight: 300; }
+    .event-description p { margin-bottom: 1.4em; }
+    .event-description p:last-child { margin-bottom: 0; }
+    .event-section-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--amber); margin-bottom: 16px; margin-top: 40px; padding-top: 28px; border-top: 1px solid var(--rule); }
+    .event-section-label:first-child { margin-top: 0; border-top: none; padding-top: 0; }
+
+    /* ── TAGS ─────────────────────────────────────────────────────────────── */
+    .tags-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .tag-pill { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; padding: 5px 12px; border: 1px solid var(--rule); color: var(--text-muted); background: var(--white); }
+
+    /* ── PHOTOS ───────────────────────────────────────────────────────────── */
+    .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 12px; }
+    .photo-cell { aspect-ratio: 1; overflow: hidden; cursor: pointer; position: relative; }
+    .photo-cell img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+    .photo-cell:hover img { transform: scale(1.05); }
+    .photo-empty { grid-column: span 3; padding: 48px; background: var(--cream-dark); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 8px; }
+    .photo-empty-icon { font-size: 32px; color: var(--text-faint); }
+    .photo-empty-text { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.12em; color: var(--text-faint); }
+    .photo-empty-hint { font-size: 12px; color: var(--text-faint); }
+
+    /* ── RECAP ────────────────────────────────────────────────────────────── */
+    .recap-block { background: var(--forest); color: var(--cream); padding: 28px 32px; border-left: 3px solid var(--amber); margin-top: 12px; }
+    .recap-block p { font-size: 15px; line-height: 1.7; color: rgba(242,237,228,0.8); font-style: italic; }
+
+    /* ── DETAIL CARD ──────────────────────────────────────────────────────── */
+    .detail-card { background: var(--white); border: 1px solid var(--rule); padding: 28px; margin-bottom: 20px; }
+    .detail-card-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--text-dark); margin-bottom: 16px; }
+    .detail-row { display: flex; flex-direction: column; gap: 3px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+    .detail-row:first-of-type { padding-top: 0; }
+    .detail-row:last-of-type { border-bottom: none; padding-bottom: 0; }
+    .dr-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--amber); }
+    .dr-value { font-size: 14px; color: var(--text-dark); font-weight: 500; line-height: 1.4; }
+    .dr-value a { color: var(--amber); text-decoration: none; }
+    .dr-value a:hover { text-decoration: underline; }
+    .rsvp-btn { display: block; background: var(--amber); color: var(--forest); font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; text-align: center; padding: 14px; text-decoration: none; transition: background 0.2s; margin-top: 20px; width: 100%; border: none; cursor: pointer; }
+    .rsvp-btn:hover { background: var(--amber-light); }
+
+    /* ── SHARE BUTTONS ────────────────────────────────────────────────────── */
+    .share-btn { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); color: var(--cream); font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-align: center; padding: 11px; text-decoration: none; display: block; transition: background 0.2s; width: 100%; cursor: pointer; margin-bottom: 8px; }
+    .share-btn:hover { background: rgba(200,144,58,0.2); color: var(--amber-light); }
+
+    /* ── RELATED ──────────────────────────────────────────────────────────── */
+    .related-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .related-card { background: var(--white); border: 1px solid var(--rule); text-decoration: none; display: block; transition: border-color 0.2s, transform 0.2s; }
+    .related-card:hover { border-color: var(--amber); transform: translateY(-2px); }
+    .rc-top { height: 140px; overflow: hidden; }
+    .rc-img { width: 100%; height: 100%; }
+    .rc-body { padding: 16px 18px; }
+    .rc-cat { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--amber); margin-bottom: 6px; }
+    .rc-title { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: var(--text-dark); line-height: 1.3; }
+    .rc-date { font-size: 12px; color: var(--text-muted); margin-top: 6px; font-family: 'DM Mono', monospace; }
+
+    /* ── LIGHTBOX ─────────────────────────────────────────────────────────── */
+    .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 999; align-items: center; justify-content: center; }
+    .lightbox.open { display: flex; }
+    .lb-img { max-width: 90vw; max-height: 90vh; object-fit: contain; }
+    .lb-close { position: absolute; top: 24px; right: 32px; color: white; font-size: 32px; cursor: pointer; line-height: 1; background: none; border: none; }
+
+    /* ── RESPONSIVE ───────────────────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .event-layout  { grid-template-columns: 1fr; }
+      .related-grid  { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .event-hero-content { padding: 40px 20px; }
+      .photo-grid    { grid-template-columns: 1fr 1fr; }
+      .photo-empty   { grid-column: span 2; }
+      .related-grid  { grid-template-columns: 1fr; }
+      .event-hero-meta { gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div>Cleveland, Ohio — Est. 1951 &nbsp;·&nbsp; <a href="https://javlb.lt/en/" target="_blank">Part of Lithuanian American Community, Inc.</a></div>
+  <div class="topbar-social">
+    <a href="https://www.facebook.com/profile.php?id=61565856471983" target="_blank">Facebook</a>
+    <a href="https://www.instagram.com/cleveland_lietuviu_bendruomene" target="_blank">Instagram</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="main-nav" id="main-nav">
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-en">Cleveland Lithuanian American Community</div>
+    <div class="nav-logo-lt">Clevelando Lietuvių Bendruomenė</div>
+  </a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html#upcoming" class="active">Events</a></li>
+    <li><a href="index.html#journal">Journal</a></li>
+    <li><a href="index.html#announcements">News</a></li>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="nav-lang">
+      <button class="lang-btn active">EN</button>
+      <button class="lang-btn">LT</button>
+    </div>
+    <div class="hamburger" onclick="document.getElementById('nav-links').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- EVENT HERO -->
+<div class="event-hero" id="event-hero">
+  <div class="event-hero-bg" id="hero-bg"></div>
+  <div class="event-hero-overlay"></div>
+  <div class="event-hero-content fade-in">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span>/</span>
+      <a href="index.html#upcoming">Events</a>
+      <span>/</span>
+      <span id="bc-title">Event</span>
+    </div>
+    <div class="event-status-badge upcoming" id="status-badge">Upcoming</div>
+    <h1 class="event-hero-title" id="event-title">Loading...</h1>
+    <div class="event-hero-title-lt" id="event-title-lt"></div>
+    <div class="event-hero-meta" id="event-meta"></div>
+  </div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker"><div class="ticker-inner" id="ticker-inner">Loading...</div></div>
+
+<!-- EVENT BODY -->
+<section class="event-body">
+  <div class="container">
+    <div class="event-layout">
+
+      <!-- MAIN CONTENT -->
+      <div id="event-main">
+        <div class="event-section-label">About This Event</div>
+        <div class="event-description" id="event-desc">Loading...</div>
+
+        <div id="tags-section" style="display:none;">
+          <div class="event-section-label">Tags</div>
+          <div class="tags-row" id="event-tags"></div>
+        </div>
+
+        <div id="recap-section" style="display:none;">
+          <div class="event-section-label">Event Recap</div>
+          <div class="recap-block"><p id="event-recap"></p></div>
+        </div>
+
+        <div id="photos-section">
+          <div class="event-section-label">Photos</div>
+          <div class="photo-grid" id="photo-grid">
+            <div class="photo-empty">
+              <div class="photo-empty-icon">◈</div>
+              <div class="photo-empty-text">Photos coming soon</div>
+              <div class="photo-empty-hint">Board members can upload photos via the admin dashboard</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div>
+        <div class="detail-card" id="detail-card">
+          <div class="detail-card-title">Event Details</div>
+          <div id="detail-rows">Loading...</div>
+          <a class="rsvp-btn" id="rsvp-btn" href="#" style="display:none;">RSVP / Register →</a>
+        </div>
+
+        <div class="sidebar-widget" style="margin-bottom:20px;">
+          <div class="sidebar-widget-title">Share This Event</div>
+          <div style="margin-top:4px;">
+            <button class="share-btn" onclick="shareEvent('facebook')">Share on Facebook</button>
+            <button class="share-btn" id="copy-btn" onclick="copyLink()">Copy Event Link</button>
+          </div>
+        </div>
+
+        <div class="sidebar-widget">
+          <div class="sidebar-widget-title">Other Events</div>
+          <ul class="sidebar-link-list" id="other-events">
+            <li style="color:rgba(242,237,228,0.4); font-size:13px;">Loading...</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- RELATED EVENTS -->
+<section style="background:var(--cream); padding: 60px 0;">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-title">More Events</div>
+        <div class="section-title-lt">Kiti Renginiai</div>
+      </div>
+      <a href="index.html#upcoming" class="section-link">All Events →</a>
+    </div>
+    <div class="related-grid" id="related-grid">
+      <div style="color:var(--text-muted);">Loading...</div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<div class="newsletter-strip">
+  <div class="newsletter-inner">
+    <div>
+      <div class="newsletter-heading">Stay in the loop.<br>Likite prisijungę.</div>
+      <div class="newsletter-sub">Get event updates delivered to your inbox.</div>
+    </div>
+    <div class="newsletter-form">
+      <input type="email" class="newsletter-input" placeholder="Your email address">
+      <button class="newsletter-submit">Subscribe →</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="main-footer">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-name">Cleveland Lithuanian American Community</div>
+      <div class="footer-brand-lt">Clevelando Lietuvių Bendruomenė</div>
+      <div class="footer-desc">A chapter of the Lithuanian American Community, Inc. — preserving Lithuanian culture and heritage in Northeast Ohio since 1951.</div>
+    </div>
+    <div>
+      <div class="footer-col-title">Navigate</div>
+      <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#upcoming">Events</a></li>
+        <li><a href="index.html#journal">Photo Journal</a></li>
+        <li><a href="index.html#announcements">News</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Connect</div>
+      <ul class="footer-links">
+        <li><a href="https://www.facebook.com/profile.php?id=61565856471983" target="_blank">Facebook</a></li>
+        <li><a href="https://www.instagram.com/cleveland_lietuviu_bendruomene" target="_blank">Instagram</a></li>
+        <li><a href="https://javlb.lt/en/" target="_blank">National LAC</a></li>
+        <li><a href="admin/index.html">Board Login</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Heritage Sites</div>
+      <ul class="footer-links">
+        <li><a href="#">St. George Lithuanian Church</a></li>
+        <li><a href="#">Lithuanian Cultural Garden</a></li>
+        <li><a href="#">E. 185th Corridor</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2025 Cleveland Lithuanian American Community, Inc.</div>
+    <div style="font-family:'DM Mono',monospace; font-size:11px; color:rgba(242,237,228,0.3);">Vienybėje Mūsų Stiprybė</div>
+  </div>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lb-close" onclick="closeLightbox()">✕</button>
+  <img class="lb-img" id="lb-img" src="" alt="Event photo">
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+//  CLAC DATA LAYER
+//  Cleveland Lithuanian American Community — clacleveland.org
+//  All site data stored in localStorage under "clac_*" keys.
+//  To migrate to a real backend, swap the save()/all() methods in each module
+//  to API calls — the frontend pages require no changes.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const CLAC = {
+
+  // ── AUTH ─────────────────────────────────────────────────────────────────
+  // Production: replace this with a real auth service (Supabase, Firebase, etc.)
+  auth: {
+    users: [
+      { username: 'admin',   password: 'clac2025!', name: 'Board Admin',     role: 'admin'  },
+      { username: 'richard', password: 'clac2025!', name: 'Richard (Chair)', role: 'editor' },
+      { username: 'editor',  password: 'clac2025!', name: 'Board Editor',    role: 'editor' }
+    ],
+    login(username, password) {
+      const user = this.users.find(u => u.username === username && u.password === password);
+      if (!user) return null;
+      const session = { username: user.username, name: user.name, role: user.role, ts: Date.now() };
+      localStorage.setItem('clac_session', JSON.stringify(session));
+      return session;
+    },
+    logout() {
+      localStorage.removeItem('clac_session');
+    },
+    current() {
+      const raw = localStorage.getItem('clac_session');
+      if (!raw) return null;
+      const session = JSON.parse(raw);
+      // 8-hour session timeout
+      if (Date.now() - session.ts > 8 * 60 * 60 * 1000) { this.logout(); return null; }
+      return session;
+    },
+    require() {
+      const s = this.current();
+      if (!s) { window.location.href = '/admin/index.html'; return null; }
+      return s;
+    }
+  },
+
+  // ── EVENTS ───────────────────────────────────────────────────────────────
+  events: {
+    _key: 'clac_events',
+
+    _defaults: [
+      {
+        id: 'spring-gathering-2025',
+        title: 'Spring Community Gathering',
+        titleLt: 'Pavasario Bendruomenės Susirinkimas',
+        date: '2025-04-19',
+        time: '2:00 PM',
+        endTime: '6:00 PM',
+        location: 'Lithuanian Cultural Garden, Rockefeller Park',
+        address: '750 E 88th St, Cleveland, OH 44108',
+        category: 'Cultural',
+        status: 'upcoming',
+        featured: true,
+        coverColor: '#2d4a33',
+        description: `Our annual spring gathering returns to the Lithuanian Cultural Garden in Rockefeller Park. This beloved tradition brings together Cleveland's Lithuanian community for an afternoon of food, music, and fellowship beneath the open sky.\n\nBring a dish to share — traditional Lithuanian recipes always welcome, but anything goes. We'll have music, time for children to run around, and plenty of good conversation.\n\nAll members, families, and friends are warmly welcome. No RSVP required — just show up!`,
+        descriptionLt: 'Mūsų metinis pavasario susirinkimas grįžta į Lietuvių kultūros sodą Rokfelerio parke.',
+        photos: [],
+        contactName: 'Board Contact',
+        contactEmail: 'info@clacleveland.org',
+        rsvpLink: '',
+        tags: ['Annual', 'Potluck', 'Family-Friendly', 'Outdoors'],
+        attendees: null,
+        recap: '',
+        published: true,
+        createdAt: '2025-03-01',
+        updatedAt: '2025-03-28'
+      },
+      {
+        id: 'mothers-day-mass-2025',
+        title: "Mother's Day Mass",
+        titleLt: 'Motinos Dienos Mišios',
+        date: '2025-05-11',
+        time: '10:00 AM',
+        endTime: '12:00 PM',
+        location: 'St. George Lithuanian Church',
+        address: 'E. 185th Street, Cleveland, OH',
+        category: 'Religious',
+        status: 'upcoming',
+        featured: false,
+        coverColor: '#1e2e3a',
+        description: `Annual Mother's Day Lithuanian Mass at St. George's, the heart of Cleveland's Lithuanian heritage. Mass in Lithuanian with reception to follow in the parish hall.\n\nAll are welcome — bring your mothers, grandmothers, and families.`,
+        descriptionLt: '',
+        photos: [],
+        contactName: 'Board Contact',
+        contactEmail: 'info@clacleveland.org',
+        rsvpLink: '',
+        tags: ['Annual', 'Religious', 'Family'],
+        attendees: null,
+        recap: '',
+        published: true,
+        createdAt: '2025-03-01',
+        updatedAt: '2025-03-01'
+      },
+      {
+        id: 'one-world-day-2024',
+        title: 'One World Day 2024',
+        titleLt: 'Viso Pasaulio Diena 2024',
+        date: '2024-09-08',
+        time: '11:00 AM',
+        endTime: '5:00 PM',
+        location: 'Rockefeller Park, Cleveland',
+        address: '750 E 88th St, Cleveland, OH 44108',
+        category: 'Festival',
+        status: 'past',
+        featured: true,
+        coverColor: '#3d2e1a',
+        description: `Cleveland's beloved One World Day returned to Rockefeller Park and the Lithuanian community showed up in force — our largest presence in recent memory.\n\nVolunteers in traditional dress staffed the Lithuanian booth with food, crafts, and information about our community. Thousands of Clevelanders stopped by to learn about Lithuania.\n\nThank you to all who volunteered, cooked, and represented our heritage with such pride.`,
+        descriptionLt: '',
+        photos: [],
+        contactName: 'Board Contact',
+        contactEmail: 'info@clacleveland.org',
+        rsvpLink: '',
+        tags: ['Annual', 'Multicultural', 'Outreach'],
+        attendees: 200,
+        recap: 'Record attendance. Lithuanian booth drew strong interest. Traditional dress and food were highlights.',
+        published: true,
+        createdAt: '2024-09-20',
+        updatedAt: '2024-09-20'
+      },
+      {
+        id: 'mindaugas-picnic-2024',
+        title: 'Mindaugas Day Picnic',
+        titleLt: 'Mindaugo Dienos Piknikas',
+        date: '2024-07-06',
+        time: '1:00 PM',
+        endTime: '5:00 PM',
+        location: 'Community Grounds, Greater Cleveland',
+        address: 'Cleveland, OH',
+        category: 'Celebration',
+        status: 'past',
+        featured: false,
+        coverColor: '#2a1e2e',
+        description: `Celebrating Lithuania's national holiday — the Coronation of King Mindaugas — with our annual summer picnic. Food, games, and great company under the summer sun.`,
+        descriptionLt: '',
+        photos: [],
+        contactName: 'Board Contact',
+        contactEmail: 'info@clacleveland.org',
+        rsvpLink: '',
+        tags: ['Annual', 'National Holiday', 'Picnic'],
+        attendees: 45,
+        recap: '',
+        published: true,
+        createdAt: '2024-07-10',
+        updatedAt: '2024-07-10'
+      }
+    ],
+
+    _init() {
+      if (!localStorage.getItem(this._key)) {
+        localStorage.setItem(this._key, JSON.stringify(this._defaults));
+      }
+    },
+    all() {
+      this._init();
+      return JSON.parse(localStorage.getItem(this._key));
+    },
+    get(id) {
+      return this.all().find(e => e.id === id) || null;
+    },
+    upcoming() {
+      return this.all()
+        .filter(e => e.status === 'upcoming' && e.published)
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
+    },
+    past() {
+      return this.all()
+        .filter(e => e.status === 'past' && e.published)
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+    },
+    save(event) {
+      const all = this.all();
+      const idx = all.findIndex(e => e.id === event.id);
+      event.updatedAt = new Date().toISOString().split('T')[0];
+      if (idx >= 0) { all[idx] = event; } else { all.unshift(event); }
+      localStorage.setItem(this._key, JSON.stringify(all));
+      return event;
+    },
+    delete(id) {
+      localStorage.setItem(this._key, JSON.stringify(this.all().filter(e => e.id !== id)));
+    },
+    slugify(title) {
+      return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+        + '-' + Date.now().toString(36);
+    }
+  },
+
+  // ── ANNOUNCEMENTS ────────────────────────────────────────────────────────
+  announcements: {
+    _key: 'clac_announcements',
+
+    _defaults: [
+      { id: 'ann-1', type: 'Community Update',     title: 'Spring 2025 Gathering Confirmed for April 19',       body: 'Our annual spring gathering returns to the Lithuanian Cultural Garden in Rockefeller Park. Potluck format — bring a dish. All welcome.',                                          date: '2025-03-28', published: true },
+      { id: 'ann-2', type: 'National Organization', title: 'LAC Newsletter Spring Edition Now Available',         body: 'The national Lithuanian American Community newsletter for Spring 2025 is now available at javlb.lt/en/naujienlaiskiui.',                                                        date: '2025-03-15', published: true },
+      { id: 'ann-3', type: 'Heritage',              title: 'Cultural Garden Spring Cleanup — Volunteers Needed',  body: 'Volunteers needed for the annual spring cleanup of the Lithuanian Cultural Garden at Rockefeller Park. Contact us via Facebook to sign up.',                                  date: '2025-03-10', published: true },
+      { id: 'ann-4', type: 'Membership',            title: '2025 Membership Renewal — Open Now',                 body: 'Annual membership renewal is open. Supporting the community through membership helps fund our events and cultural programming. Contact the board for details.',               date: '2025-01-05', published: true }
+    ],
+
+    _init() {
+      if (!localStorage.getItem(this._key)) {
+        localStorage.setItem(this._key, JSON.stringify(this._defaults));
+      }
+    },
+    all() {
+      this._init();
+      return JSON.parse(localStorage.getItem(this._key));
+    },
+    published() {
+      return this.all()
+        .filter(a => a.published)
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+    },
+    save(ann) {
+      const all = this.all();
+      const idx = all.findIndex(a => a.id === ann.id);
+      if (idx >= 0) { all[idx] = ann; } else { all.unshift(ann); }
+      localStorage.setItem(this._key, JSON.stringify(all));
+    },
+    delete(id) {
+      localStorage.setItem(this._key, JSON.stringify(this.all().filter(a => a.id !== id)));
+    }
+  },
+
+  // ── SETTINGS ─────────────────────────────────────────────────────────────
+  settings: {
+    _key: 'clac_settings',
+
+    _defaults: {
+      siteName:      'Cleveland Lithuanian American Community',
+      siteNameLt:    'Clevelando Lietuvių Bendruomenė',
+      email:         'info@clacleveland.org',
+      facebook:      'https://www.facebook.com/profile.php?id=61565856471983',
+      instagram:     'https://www.instagram.com/cleveland_lietuviu_bendruomene',
+      nationalUrl:   'https://javlb.lt/en/',
+      tickerText:    'St. George Lithuanian Church — Sundays at 10:00 AM · Lithuanian Cultural Garden — Rockefeller Park · Follow us on Facebook & Instagram',
+      heroHeadline:  'One community. Many stories. One Cleveland.',
+      heroSub:       'The heartbeat of Lithuanian culture in Northeast Ohio — celebrating our heritage, connecting generations, and building a living community here on the shores of Lake Erie.'
+    },
+
+    get() {
+      const stored = localStorage.getItem(this._key);
+      return stored ? { ...this._defaults, ...JSON.parse(stored) } : { ...this._defaults };
+    },
+    save(data) {
+      localStorage.setItem(this._key, JSON.stringify(data));
+    }
+  },
+
+  // ── HELPERS ──────────────────────────────────────────────────────────────
+  formatDate(dateStr) {
+    return new Date(dateStr + 'T12:00:00').toLocaleDateString('en-US', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+  },
+  formatDateShort(dateStr) {
+    return new Date(dateStr + 'T12:00:00').toLocaleDateString('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric'
+    });
+  },
+  monthDay(dateStr) {
+    const d = new Date(dateStr + 'T12:00:00');
+    return {
+      month: d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase(),
+      day:   d.getDate()
+    };
+  }
+};
+
+</script>
+<script>
+  const params  = new URLSearchParams(window.location.search);
+  const eventId = params.get('id');
+  const PALETTES = ['#2d4a33','#3d2e1a','#1e2e3a','#2a1e2e','#2e3a1e','#3a3010','#1a3038','#38281a'];
+
+  function buildPage() {
+    const event = eventId ? CLAC.events.get(eventId) : null;
+    if (!event) {
+      document.getElementById('event-title').textContent = 'Event Not Found';
+      document.getElementById('event-desc').innerHTML   = '<p>This event could not be found. <a href="index.html" style="color:var(--amber);">Return to the homepage.</a></p>';
+      return;
+    }
+
+    // Meta
+    document.title                                      = event.title + ' — Cleveland Lithuanian American Community';
+    document.getElementById('bc-title').textContent    = event.title;
+    document.querySelector('meta[name="description"]').setAttribute('content', event.title + ' — ' + event.location + ' — ' + CLAC.formatDate(event.date));
+
+    // Hero background
+    const bg = document.getElementById('hero-bg');
+    bg.style.background      = event.coverColor || '#2d4a33';
+    bg.style.backgroundImage = 'repeating-linear-gradient(45deg,transparent,transparent 20px,rgba(255,255,255,0.015) 20px,rgba(255,255,255,0.015) 21px)';
+
+    // Status badge
+    const badge         = document.getElementById('status-badge');
+    badge.textContent   = event.status === 'upcoming' ? 'Upcoming Event' : 'Past Event';
+    badge.className     = 'event-status-badge ' + event.status;
+
+    // Title
+    document.getElementById('event-title').textContent = event.title;
+    if (event.titleLt) {
+      document.getElementById('event-title-lt').textContent = event.titleLt;
+    }
+
+    // Meta row
+    document.getElementById('event-meta').innerHTML = [
+      { label: 'Date',     value: CLAC.formatDate(event.date) },
+      { label: 'Time',     value: event.time + (event.endTime ? ' – ' + event.endTime : '') },
+      { label: 'Location', value: event.location },
+      event.category  ? { label: 'Category',  value: event.category }       : null,
+      event.attendees ? { label: 'Attendees', value: event.attendees + '+' } : null,
+    ].filter(Boolean).map(m =>
+      `<div class="ehm-item"><div class="ehm-label">${m.label}</div><div class="ehm-value">${m.value}</div></div>`
+    ).join('');
+
+    // Description
+    document.getElementById('event-desc').innerHTML =
+      event.description.split('\n').filter(p => p.trim()).map(p => `<p>${p}</p>`).join('');
+
+    // Tags
+    if (event.tags && event.tags.length) {
+      document.getElementById('tags-section').style.display = 'block';
+      document.getElementById('event-tags').innerHTML =
+        event.tags.map(t => `<span class="tag-pill">${t}</span>`).join('');
+    }
+
+    // Recap
+    if (event.recap) {
+      document.getElementById('recap-section').style.display = 'block';
+      document.getElementById('event-recap').textContent = event.recap;
+    }
+
+    // Photos
+    if (event.photos && event.photos.length) {
+      document.getElementById('photo-grid').innerHTML =
+        event.photos.map((p, i) =>
+          `<div class="photo-cell" onclick="openLightbox('${p}')"><img src="${p}" alt="Event photo ${i + 1}" loading="lazy"></div>`
+        ).join('');
+    }
+
+    // Detail sidebar
+    const detailRows = [
+      { label: 'Date',    value: CLAC.formatDate(event.date) },
+      { label: 'Time',    value: event.time + (event.endTime ? ' – ' + event.endTime : '') },
+      { label: 'Location', value: event.location },
+      event.address      ? { label: 'Address',  value: `<a href="https://maps.google.com?q=${encodeURIComponent(event.address)}" target="_blank">${event.address} ↗</a>` } : null,
+      { label: 'Category', value: event.category },
+      event.contactEmail ? { label: 'Contact',  value: `<a href="mailto:${event.contactEmail}">${event.contactName || event.contactEmail}</a>` } : null,
+    ].filter(Boolean);
+
+    document.getElementById('detail-rows').innerHTML =
+      detailRows.map(r =>
+        `<div class="detail-row"><div class="dr-label">${r.label}</div><div class="dr-value">${r.value}</div></div>`
+      ).join('');
+
+    if (event.rsvpLink) {
+      const btn  = document.getElementById('rsvp-btn');
+      btn.href   = event.rsvpLink;
+      btn.style.display = 'block';
+    }
+
+    // Other events sidebar
+    const others = [...CLAC.events.upcoming(), ...CLAC.events.past()]
+      .filter(e => e.id !== eventId)
+      .slice(0, 5);
+    document.getElementById('other-events').innerHTML = others.length
+      ? others.map(e =>
+          `<li><a href="event.html?id=${e.id}">${e.title}
+            <span style="opacity:0.4; font-size:11px;">${CLAC.formatDateShort(e.date)}</span>
+          </a></li>`
+        ).join('')
+      : '<li style="color:rgba(242,237,228,0.4); font-size:13px;">No other events</li>';
+
+    // Related grid
+    document.getElementById('related-grid').innerHTML = others.slice(0, 3).length
+      ? others.slice(0, 3).map((e, i) => {
+          const color = e.coverColor || PALETTES[i % PALETTES.length];
+          return `<a class="related-card" href="event.html?id=${e.id}">
+            <div class="rc-top">
+              <div class="rc-img" style="background:${color}; background-image:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(255,255,255,0.02) 10px,rgba(255,255,255,0.02) 11px);"></div>
+            </div>
+            <div class="rc-body">
+              <div class="rc-cat">${e.category}</div>
+              <div class="rc-title">${e.title}</div>
+              <div class="rc-date">${CLAC.formatDateShort(e.date)} · ${e.location.split(',')[0]}</div>
+            </div>
+          </a>`;
+        }).join('')
+      : '<div style="color:var(--text-muted);">No other events at this time.</div>';
+
+    // Ticker
+    const tickerItems = CLAC.events.upcoming().slice(0, 4)
+      .map(e => 'Upcoming: ' + e.title + ' — ' + CLAC.formatDateShort(e.date));
+    const tickerText  = tickerItems.join(' ◆ ') + ' ◆ Follow us on Facebook and Instagram · St. George Lithuanian Church — Sundays at 10AM';
+    document.getElementById('ticker-inner').textContent = tickerText + '  ◆  ' + tickerText;
+  }
+
+  function shareEvent(platform) {
+    const url = window.location.href;
+    if (platform === 'facebook') {
+      window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url), '_blank', 'width=600,height=400');
+    }
+  }
+
+  function copyLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      const btn       = document.getElementById('copy-btn');
+      btn.textContent = 'Copied! ✓';
+      setTimeout(() => { btn.textContent = 'Copy Event Link'; }, 2500);
+    });
+  }
+
+  function openLightbox(src) {
+    document.getElementById('lb-img').src = src;
+    document.getElementById('lightbox').classList.add('open');
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+
+  window.addEventListener('scroll', () => {
+    document.getElementById('main-nav').style.boxShadow =
+      window.scrollY > 60 ? '0 1px 20px rgba(0,0,0,0.08)' : 'none';
+  });
+
+  buildPage();
+</script>
+</body>
+</html>
