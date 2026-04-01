@@ -315,8 +315,8 @@
   </div>
 </footer>
 
-<script src="assets/feed.js"></script>
 <script src="assets/data.js"></script>
+<script src="assets/feed.js"></script>
 <script>
   const ICONS    = ['◆','✶','⬡','◈','◇','✦','◉','▲','✿','◊'];
   const PALETTES = ['#2d4a33','#3d2e1a','#1e2e3a','#2a1e2e','#2e3a1e','#3a3010','#1a3038','#38281a','#1a3022','#2e1a38'];
@@ -469,6 +469,7 @@
 
   /* ── COMMUNITY FEED PREVIEW ── */
   (async () => {
+    await CLAC.ready();
     const BADGE = {
       clac:      { text:'#6db87a', border:'#6db87a', bg:'rgba(109,184,122,0.1)' },
       ltcle:     { text:'#7aace0', border:'#7aace0', bg:'rgba(122,172,224,0.1)' },
