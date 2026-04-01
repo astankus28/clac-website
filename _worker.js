@@ -38,7 +38,7 @@ export default {
           return json({ error: 'Missing fields' }, 400);
         }
 
-        const toEmail = env.CONTACT_TO_EMAIL || 'info@clacleveland.org';
+        const toEmail = env.CONTACT_TO_EMAIL || 'astankus28@gmail.com';
         const apiKey  = env.RESEND_API_KEY;
 
         if (!apiKey) {
