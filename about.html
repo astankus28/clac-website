@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — Cleveland Lithuanian American Community</title>
+  <meta name="description" content="Learn about the Cleveland Lithuanian American Community — our history, mission, board members, and heritage sites along E. 185th Street.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    /* ── PAGE HERO ── */
+    .page-hero { background: var(--forest); padding: 60px 0 52px; position: relative; overflow: hidden; }
+    .page-hero::before { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(255,255,255,0.012) 60px,rgba(255,255,255,0.012) 61px),repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(255,255,255,0.012) 60px,rgba(255,255,255,0.012) 61px); pointer-events: none; }
+    .page-hero-inner { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 0 40px; }
+    .ph-overline { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--amber); display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .ph-overline::before { content: ''; width: 28px; height: 1px; background: var(--amber); display: block; }
+    .ph-title { font-family: 'Playfair Display', serif; font-size: clamp(32px, 4vw, 54px); font-weight: 900; color: var(--cream); line-height: 1.05; }
+    .ph-sub { font-size: 15px; color: rgba(242,237,228,0.6); margin-top: 12px; font-weight: 300; max-width: 600px; line-height: 1.65; }
+
+    /* ── ABOUT COLUMNS ── */
+    .about-body { padding: 80px 0; }
+    .about-cols { display: grid; grid-template-columns: 1fr 1px 1fr 1px 1fr; gap: 48px; align-items: start; }
+    .ab-divider { background: var(--rule); align-self: stretch; }
+    .ab-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--amber); margin-bottom: 14px; }
+    .ab-heading { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text-dark); line-height: 1.25; margin-bottom: 14px; }
+    .ab-body { font-size: 14px; line-height: 1.8; color: var(--text-body); font-weight: 300; }
+
+    /* ── BOARD MEMBERS ── */
+    .board-section { background: var(--forest); color: var(--cream); padding: 80px 0; }
+    .board-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 40px; }
+    .board-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); padding: 28px 24px; text-align: center; transition: background 0.2s; }
+    .board-card:hover { background: rgba(255,255,255,0.08); }
+    .board-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin: 0 auto 16px; display: block; }
+    .board-avatar-placeholder { width: 80px; height: 80px; border-radius: 50%; background: var(--amber); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--forest); }
+    .board-name { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: var(--cream); margin-bottom: 4px; }
+    .board-role { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--amber); margin-bottom: 10px; }
+    .board-bio { font-size: 13px; color: rgba(242,237,228,0.6); line-height: 1.6; font-weight: 300; }
+    .board-email { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--amber-light); text-decoration: none; margin-top: 10px; display: block; }
+    .board-email:hover { color: var(--amber); }
+
+    /* ── HERITAGE SITES ── */
+    .heritage-section { padding: 80px 0; background: var(--linen); }
+    .heritage-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 40px; }
+    .heritage-card { background: var(--white); border: 1px solid var(--rule); padding: 32px 28px; transition: border-color 0.2s; }
+    .heritage-card:hover { border-color: var(--amber); }
+    .heritage-icon { font-size: 28px; margin-bottom: 14px; }
+    .heritage-name { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px; }
+    .heritage-desc { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
+    .heritage-link { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); text-decoration: none; margin-top: 14px; display: inline-block; }
+    .heritage-link:hover { opacity: 0.75; }
+
+    /* ── CONTACT ── */
+    .contact-section { padding: 80px 0; background: var(--forest); color: var(--cream); }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; margin-top: 40px; }
+    .contact-item { display: flex; gap: 20px; align-items: flex-start; margin-bottom: 28px; }
+    .contact-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+    .contact-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--amber); margin-bottom: 4px; }
+    .contact-value { font-size: 15px; color: var(--cream); }
+    .contact-value a { color: var(--amber-light); text-decoration: none; }
+    .contact-value a:hover { color: var(--amber); }
+    .national-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 32px; }
+    .national-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--amber); margin-bottom: 12px; }
+    .national-heading { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--cream); margin-bottom: 10px; }
+    .national-body { font-size: 13px; color: rgba(242,237,228,0.6); line-height: 1.7; }
+    .national-link { display: inline-block; margin-top: 16px; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); text-decoration: none; border: 1px solid rgba(200,144,58,0.4); padding: 8px 16px; transition: all 0.2s; }
+    .national-link:hover { background: rgba(200,144,58,0.1); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .about-cols { grid-template-columns: 1fr; }
+      .ab-divider { display: none; }
+      .board-grid { grid-template-columns: repeat(2, 1fr); }
+      .heritage-grid { grid-template-columns: 1fr 1fr; }
+      .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+    }
+    @media (max-width: 768px) {
+      .page-hero-inner { padding: 0 20px; }
+      .board-grid { grid-template-columns: 1fr; }
+      .heritage-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div><span data-en="Cleveland, Ohio — Est. 1951" data-lt="Klivlandas, Ohajas — Įkurta 1951 m.">Cleveland, Ohio — Est. 1951</span> &nbsp;·&nbsp; <a href="https://javlb.lt/en/" target="_blank"><span data-en="Part of Lithuanian American Community, Inc." data-lt="JAV Lietuvių Bendruomenės narys">Part of Lithuanian American Community, Inc.</span></a></div>
+  <div class="topbar-social">
+    <a href="https://www.facebook.com/profile.php?id=61565856471983" target="_blank">Facebook</a>
+    <a href="https://www.instagram.com/cleveland_lietuviu_bendruomene" target="_blank">Instagram</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="main-nav" id="main-nav">
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-en">Cleveland Lithuanian American Community</div>
+    <div class="nav-logo-lt">Clevelando Lietuvių Bendruomenė</div>
+  </a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="index.html" data-en="Home" data-lt="Pradžia">Home</a></li>
+    <li><a href="index.html#upcoming" data-en="Events" data-lt="Renginiai">Events</a></li>
+    <li><a href="community.html" data-en="Community Calendar" data-lt="Bendruomenės Kalendorius">Community Calendar</a></li>
+    <li><a href="index.html#journal" data-en="Journal" data-lt="Archyvas">Journal</a></li>
+    <li><a href="index.html#announcements" data-en="News" data-lt="Žinios">News</a></li>
+    <li><a href="about.html" class="active" data-en="About" data-lt="Apie Mus">About</a></li>
+    <li><a href="#contact" data-en="Contact" data-lt="Susisiekti">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="nav-lang">
+      <button class="lang-btn active" data-lang="en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" data-lang="lt" onclick="setLang('lt')">LT</button>
+    </div>
+    <div class="hamburger" onclick="document.getElementById('nav-links').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="ph-overline" data-en="Cleveland · Ohio · Est. 1951" data-lt="Klivlandas · Ohajas · Įkurta 1951 m.">Cleveland · Ohio · Est. 1951</div>
+    <h1 class="ph-title" id="about-title" data-en="About Our Community" data-lt="Apie Mūsų Bendruomenę">About Our Community</h1>
+    <p class="ph-sub" id="about-sub" data-en="A chapter of the Lithuanian American Community, Inc. — preserving heritage and building connections in Northeast Ohio since 1951." data-lt="JAV Lietuvių Bendruomenės skyrius — saugome paveldą ir kuriame ryšius Šiaurės Rytų Ohajuje nuo 1951 m.">A chapter of the Lithuanian American Community, Inc. — preserving heritage and building connections in Northeast Ohio since 1951.</p>
+  </div>
+</div>
+
+<!-- ABOUT COLUMNS -->
+<section class="about-body">
+  <div class="container">
+    <div class="about-cols">
+      <div>
+        <div class="ab-label" id="ab1-label">Who We Are</div>
+        <div class="ab-heading" id="ab1-heading">Clevelando Lietuvių Bendruomenė</div>
+        <div class="ab-body" id="ab1-body">We are the Cleveland chapter of the Lithuanian American Community, Inc. — a national nonprofit active since 1951. Our roots run deep along Cleveland's E. 185th Street corridor, where generations of Lithuanian immigrants built a church, a community, and a lasting legacy.</div>
+      </div>
+      <div class="ab-divider"></div>
+      <div>
+        <div class="ab-label" id="ab2-label">What We Do</div>
+        <div class="ab-heading" id="ab2-heading">Celebrating Culture & Building Connections</div>
+        <div class="ab-body" id="ab2-body">We organize cultural events throughout the year — spring gatherings, summer picnics, Christmas Eve Kūčios, and appearances at One World Day. We connect members to the national and global Lithuanian diaspora.</div>
+      </div>
+      <div class="ab-divider"></div>
+      <div>
+        <div class="ab-label" id="ab3-label">Get Involved</div>
+        <div class="ab-heading" id="ab3-heading">Everyone with Lithuanian Roots is Welcome</div>
+        <div class="ab-body" id="ab3-body">Whether you speak Lithuanian at home or are just discovering your heritage — you belong here. Follow us on Facebook and Instagram, or reach out to join as a member.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOARD MEMBERS -->
+<section class="board-section">
+  <div class="container">
+    <div class="section-header" style="border-color: rgba(255,255,255,0.12);">
+      <div>
+        <div class="section-title" style="color:var(--cream);" data-en="Board of Directors" data-lt="Valdyba">Board of Directors</div>
+        <div class="section-title-lt">Valdyba</div>
+      </div>
+    </div>
+    <div class="board-grid" id="board-grid">
+      <!-- Populated by JS -->
+      <div style="grid-column:span 4; padding:40px; text-align:center; color:rgba(242,237,228,0.4); font-size:13px;">Loading board members...</div>
+    </div>
+  </div>
+</section>
+
+<!-- HERITAGE SITES -->
+<section class="heritage-section">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-title" data-en="Lithuanian Heritage in Cleveland" data-lt="Lietuviškas Paveldas Klivlande">Lithuanian Heritage in Cleveland</div>
+        <div class="section-title-lt">Lietuviškas Paveldas Klivlande</div>
+      </div>
+    </div>
+    <div class="heritage-grid">
+      <div class="heritage-card">
+        <div class="heritage-icon">⛪</div>
+        <div class="heritage-name" data-en="St. George Lithuanian Church" data-lt="Šv. Jurgio Lietuvių Bažnyčia">St. George Lithuanian Church</div>
+        <div class="heritage-desc" data-en="The spiritual heart of Cleveland's Lithuanian community, located on E. 185th Street. Lithuanian Mass is held weekly." data-lt="Klivlando lietuvių bendruomenės dvasinė širdis, esanti E. 185-ojoje gatvėje. Lietuviškos Mišios laikomos kas savaitę.">The spiritual heart of Cleveland's Lithuanian community, located on E. 185th Street. Lithuanian Mass is held weekly.</div>
+        <a href="https://stgeorgelithuanian.org/" target="_blank" class="heritage-link">Visit ↗</a>
+      </div>
+      <div class="heritage-card">
+        <div class="heritage-icon">🌿</div>
+        <div class="heritage-name" data-en="Lithuanian Cultural Garden" data-lt="Lietuvių Kultūros Sodas">Lithuanian Cultural Garden</div>
+        <div class="heritage-desc" data-en="Part of Cleveland's renowned Cultural Gardens in Rockefeller Park — a beautiful outdoor space celebrating Lithuanian heritage." data-lt="Klivlando garsiųjų kultūros sodų Rokfelerio parke dalis — graži lauko erdvė, švenčianti lietuvišką paveldą.">Part of Cleveland's renowned Cultural Gardens in Rockefeller Park — a beautiful outdoor space celebrating Lithuanian heritage.</div>
+        <a href="https://culturalgardensncleveland.org/" target="_blank" class="heritage-link">Visit ↗</a>
+      </div>
+      <div class="heritage-card">
+        <div class="heritage-icon">🏛</div>
+        <div class="heritage-name" data-en="Our Lady of Perpetual Help" data-lt="Nuolatinės Pagalbos Dievo Motina">Our Lady of Perpetual Help</div>
+        <div class="heritage-desc" data-en="Historic Lithuanian parish church that served generations of Cleveland's Lithuanian immigrant community." data-lt="Istorinė lietuvių parapijos bažnyčia, tarnavusi Klivlando lietuvių imigrantų bendruomenės kartoms.">Historic Lithuanian parish church that served generations of Cleveland's Lithuanian immigrant community.</div>
+        <a href="#" class="heritage-link">Learn More →</a>
+      </div>
+      <div class="heritage-card">
+        <div class="heritage-icon">🛣</div>
+        <div class="heritage-name" data-en="E. 185th Heritage Corridor" data-lt="E. 185-osios gatvės paveldo koridorius">E. 185th Heritage Corridor</div>
+        <div class="heritage-desc" data-en="The historic corridor where Cleveland's Lithuanian immigrant community established businesses, churches, and cultural institutions." data-lt="Istorinis koridorius, kuriame Klivlando lietuvių imigrantų bendruomenė įkūrė verslus, bažnyčias ir kultūrines institucijas.">The historic corridor where Cleveland's Lithuanian immigrant community established businesses, churches, and cultural institutions.</div>
+        <a href="#" class="heritage-link">Explore →</a>
+      </div>
+      <div class="heritage-card">
+        <div class="heritage-icon">📰</div>
+        <div class="heritage-name" data-en="Dirva — Lithuanian Newspaper" data-lt="Dirva — Lietuvių laikraštis">Dirva — Lithuanian Newspaper</div>
+        <div class="heritage-desc" data-en="Founded in Cleveland in 1916, Dirva was one of the longest-running Lithuanian-language newspapers in America." data-lt="Įkurta Klivlande 1916 m., Dirva buvo vienas iš ilgiausiai leidžiamų lietuviškų laikraščių Amerikoje.">Founded in Cleveland in 1916, Dirva was one of the longest-running Lithuanian-language newspapers in America.</div>
+        <a href="#" class="heritage-link">History →</a>
+      </div>
+      <div class="heritage-card">
+        <div class="heritage-icon">🌍</div>
+        <div class="heritage-name" data-en="One World Day" data-lt="One World Day">One World Day</div>
+        <div class="heritage-desc" data-en="CLAC participates annually in Cleveland's One World Day celebration at Rockefeller Park, representing Lithuanian culture to thousands of visitors." data-lt="CLAC kasmet dalyvauja Klivlando One World Day šventėje Rokfelerio parke, pristatydamas lietuvių kultūrą tūkstančiams lankytojų.">CLAC participates annually in Cleveland's One World Day celebration at Rockefeller Park, representing Lithuanian culture to thousands of visitors.</div>
+        <a href="https://oneworldohio.org/" target="_blank" class="heritage-link">Visit ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="container">
+    <div class="section-header" style="border-color: rgba(255,255,255,0.12);">
+      <div>
+        <div class="section-title" style="color:var(--cream);" data-en="Get in Touch" data-lt="Susisiekite">Get in Touch</div>
+        <div class="section-title-lt">Susisiekite</div>
+      </div>
+    </div>
+    <div class="contact-grid">
+      <div>
+        <div class="contact-item">
+          <div class="contact-icon">✉</div>
+          <div>
+            <div class="contact-label" data-en="Email" data-lt="El. paštas">Email</div>
+            <div class="contact-value"><a href="mailto:info@clacleveland.org" id="contact-email">info@clacleveland.org</a></div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">f</div>
+          <div>
+            <div class="contact-label">Facebook</div>
+            <div class="contact-value"><a href="https://www.facebook.com/profile.php?id=61565856471983" target="_blank" id="contact-fb">Cleveland Lithuanian American Community</a></div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">◉</div>
+          <div>
+            <div class="contact-label">Instagram</div>
+            <div class="contact-value"><a href="https://www.instagram.com/cleveland_lietuviu_bendruomene" target="_blank" id="contact-ig">@cleveland_lietuviu_bendruomene</a></div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📍</div>
+          <div>
+            <div class="contact-label" data-en="Location" data-lt="Vieta">Location</div>
+            <div class="contact-value" data-en="Cleveland, Ohio" data-lt="Klivlandas, Ohajas">Cleveland, Ohio</div>
+          </div>
+        </div>
+      </div>
+      <div class="national-box">
+        <div class="national-label" data-en="National Organization" data-lt="Nacionalinė Organizacija">National Organization</div>
+        <div class="national-heading" data-en="Lithuanian American Community, Inc." data-lt="JAV Lietuvių Bendruomenė">Lithuanian American Community, Inc.</div>
+        <div class="national-body" data-en="CLAC is a proud chapter of the Lithuanian American Community, Inc. (JAV Lietuvių Bendruomenė) — a national nonprofit with 50 chapters across 26 states, preserving Lithuanian culture and heritage throughout the United States." data-lt="CLAC yra JAV Lietuvių Bendruomenės skyrius — nacionalinė ne pelno organizacija su 50 skyrių 26 valstijose, sauganti lietuvių kultūrą ir paveldą visose Jungtinėse Valstijose.">CLAC is a proud chapter of the Lithuanian American Community, Inc. (JAV Lietuvių Bendruomenė) — a national nonprofit with 50 chapters across 26 states, preserving Lithuanian culture and heritage throughout the United States.</div>
+        <a href="https://javlb.lt/en/" target="_blank" class="national-link" data-en="Visit javlb.lt ↗" data-lt="Apsilankykite javlb.lt ↗">Visit javlb.lt ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="main-footer">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-name">Cleveland Lithuanian American Community</div>
+      <div class="footer-brand-lt">Clevelando Lietuvių Bendruomenė</div>
+      <div class="footer-desc" data-en="A chapter of the Lithuanian American Community, Inc. — preserving Lithuanian culture and heritage in Northeast Ohio since 1951." data-lt="JAV Lietuvių Bendruomenės skyrius — saugome lietuvių kultūrą ir paveldą Šiaurės Rytų Ohajuje nuo 1951 m.">A chapter of the Lithuanian American Community, Inc. — preserving Lithuanian culture and heritage in Northeast Ohio since 1951.</div>
+    </div>
+    <div>
+      <div class="footer-col-title" data-en="Navigate" data-lt="Naršyti">Navigate</div>
+      <ul class="footer-links">
+        <li><a href="index.html" data-en="Home" data-lt="Pradžia">Home</a></li>
+        <li><a href="index.html#upcoming" data-en="Events" data-lt="Renginiai">Events</a></li>
+        <li><a href="community.html" data-en="Community Calendar" data-lt="Bendruomenės Kalendorius">Community Calendar</a></li>
+        <li><a href="about.html" data-en="About" data-lt="Apie Mus">About</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title" data-en="Heritage Sites" data-lt="Paveldo Vietos">Heritage Sites</div>
+      <ul class="footer-links">
+        <li><a href="https://stgeorgelithuanian.org/" target="_blank">St. George Lithuanian Church</a></li>
+        <li><a href="https://culturalgardensncleveland.org/" target="_blank">Lithuanian Cultural Garden</a></li>
+        <li><a href="https://javlb.lt/en/" target="_blank">National LAC ↗</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title" data-en="Connect" data-lt="Ryšiai">Connect</div>
+      <ul class="footer-links">
+        <li><a href="https://www.facebook.com/profile.php?id=61565856471983" target="_blank">Facebook</a></li>
+        <li><a href="https://www.instagram.com/cleveland_lietuviu_bendruomene" target="_blank">Instagram</a></li>
+        <li><a href="dashboard.html" data-en="Board Login" data-lt="Valdybos Prisijungimas">Board Login</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2025 Cleveland Lithuanian American Community, Inc.</div>
+    <div style="font-family:'DM Mono',monospace; font-size:11px; color:rgba(242,237,228,0.3);">Vienybėje Mūsų Stiprybė</div>
+  </div>
+</footer>
+
+<script src="assets/data.js"></script>
+<script>
+  CLAC.ready().then(() => {
+    buildAbout();
+    buildBoard();
+    buildContact();
+  });
+
+  function buildAbout() {
+    const s    = CLAC.settings.get();
+    const lang = localStorage.getItem('clac_lang') || 'en';
+    const cols = [
+      { ids: ['ab1-label','ab1-heading','ab1-body'], label: s.ab1Label, labelLt: s.ab1LabelLt, heading: s.ab1Heading, headingLt: s.ab1HeadingLt, body: s.ab1Body, bodyLt: s.ab1BodyLt },
+      { ids: ['ab2-label','ab2-heading','ab2-body'], label: s.ab2Label, labelLt: s.ab2LabelLt, heading: s.ab2Heading, headingLt: s.ab2HeadingLt, body: s.ab2Body, bodyLt: s.ab2BodyLt },
+      { ids: ['ab3-label','ab3-heading','ab3-body'], label: s.ab3Label, labelLt: s.ab3LabelLt, heading: s.ab3Heading, headingLt: s.ab3HeadingLt, body: s.ab3Body, bodyLt: s.ab3BodyLt },
+    ];
+    cols.forEach(col => {
+      const [lid, hid, bid] = col.ids;
+      const lEl = document.getElementById(lid);
+      const hEl = document.getElementById(hid);
+      const bEl = document.getElementById(bid);
+      if (lEl && col.label) { lEl.dataset.en = col.label; lEl.dataset.lt = col.labelLt || col.label; lEl.textContent = lang === 'lt' ? (col.labelLt || col.label) : col.label; }
+      if (hEl && col.heading) { hEl.dataset.en = col.heading; hEl.dataset.lt = col.headingLt || col.heading; hEl.textContent = lang === 'lt' ? (col.headingLt || col.heading) : col.heading; }
+      if (bEl && col.body) { bEl.dataset.en = col.body; bEl.dataset.lt = col.bodyLt || col.body; bEl.textContent = lang === 'lt' ? (col.bodyLt || col.body) : col.body; }
+    });
+  }
+
+  function buildBoard() {
+    const lang    = localStorage.getItem('clac_lang') || 'en';
+    const members = CLAC.boardMembers.all();
+    const grid    = document.getElementById('board-grid');
+    if (!members.length) {
+      grid.innerHTML = '<div style="grid-column:span 4; padding:40px; text-align:center; color:rgba(242,237,228,0.4); font-size:13px;">Board information coming soon.</div>';
+      return;
+    }
+    grid.innerHTML = members.map(m => {
+      const role  = (lang === 'lt' && m.role_lt) ? m.role_lt : (m.role || '');
+      const bio   = (lang === 'lt' && m.bio_lt)  ? m.bio_lt  : (m.bio || '');
+      const photo = m.photo
+        ? `<img src="${m.photo}" class="board-avatar" alt="${m.name}">`
+        : `<div class="board-avatar-placeholder">${m.name.charAt(0)}</div>`;
+      return `<div class="board-card">
+        ${photo}
+        <div class="board-name">${m.name}</div>
+        ${role ? `<div class="board-role">${role}</div>` : ''}
+        ${bio  ? `<div class="board-bio">${bio}</div>`   : ''}
+        ${m.email ? `<a href="mailto:${m.email}" class="board-email">${m.email}</a>` : ''}
+      </div>`;
+    }).join('');
+  }
+
+  function buildContact() {
+    const s = CLAC.settings.get();
+    const emailEl = document.getElementById('contact-email');
+    const fbEl    = document.getElementById('contact-fb');
+    const igEl    = document.getElementById('contact-ig');
+    if (emailEl && s.contactEmail) { emailEl.href = 'mailto:' + s.contactEmail; emailEl.textContent = s.contactEmail; }
+    if (fbEl    && s.facebookUrl)  { fbEl.href = s.facebookUrl; }
+    if (igEl    && s.instagramUrl) { igEl.href = s.instagramUrl; }
+  }
+
+  // Sticky nav
+  window.addEventListener('scroll', () => {
+    document.getElementById('main-nav').style.boxShadow =
+      window.scrollY > 60 ? '0 1px 20px rgba(0,0,0,0.08)' : 'none';
+  });
+</script>
+<script>
+(function() {
+  const LANG_KEY = 'clac_lang';
+  function setLang(lang) {
+    localStorage.setItem(LANG_KEY, lang);
+    document.documentElement.setAttribute('lang', lang);
+    document.querySelectorAll('[data-en]').forEach(el => {
+      el.innerHTML = lang === 'lt' ? el.dataset.lt : el.dataset.en;
+    });
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    // Rebuild dynamic sections
+    if (window.CLAC) {
+      buildAbout();
+      buildBoard();
+    }
+  }
+  function initLang() {
+    const saved = localStorage.getItem(LANG_KEY) || 'en';
+    setLang(saved);
+  }
+  window.setLang = setLang;
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLang);
+  } else {
+    initLang();
+  }
+})();
+</script>
+</body>
+</html>
