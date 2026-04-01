@@ -413,12 +413,21 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
       <div class="settings-section">
         <div class="settings-section-title">Homepage Content</div>
         <div class="form-group">
-          <label class="form-label">Hero Headline</label>
+          <label class="form-label">Hero Headline (English)</label>
           <input class="form-input" type="text" id="s-hero-headline">
         </div>
         <div class="form-group">
-          <label class="form-label">Hero Subtext</label>
+          <label class="form-label">Hero Headline (Lithuanian)</label>
+          <input class="form-input" type="text" id="s-hero-headline-lt">
+          <div class="form-hint">e.g. Viena bendruomenė. Daug istorijų. Vienas Klivlandas.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Hero Subtext (English)</label>
           <textarea class="form-textarea" style="min-height:80px;" id="s-hero-sub"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Hero Subtext (Lithuanian)</label>
+          <textarea class="form-textarea" style="min-height:80px;" id="s-hero-sub-lt"></textarea>
         </div>
         <div class="form-group">
           <label class="form-label">News Ticker Text</label>
@@ -1025,8 +1034,10 @@ async function loadSettings() {
   document.getElementById('s-facebook').value = s.facebook;
   document.getElementById('s-instagram').value = s.instagram;
   document.getElementById('s-national').value = s.nationalUrl;
-  document.getElementById('s-hero-headline').value = s.heroHeadline;
-  document.getElementById('s-hero-sub').value = s.heroSub;
+  document.getElementById('s-hero-headline').value = s.heroHeadline || '';
+  document.getElementById('s-hero-headline-lt').value = s.heroHeadlineLt || '';
+  document.getElementById('s-hero-sub').value = s.heroSub || '';
+  document.getElementById('s-hero-sub-lt').value = s.heroSubLt || '';
   document.getElementById('s-ticker').value = s.tickerText;
 }
 
@@ -1039,7 +1050,9 @@ async function saveSettings() {
     instagram: document.getElementById('s-instagram').value.trim(),
     nationalUrl: document.getElementById('s-national').value.trim(),
     heroHeadline: document.getElementById('s-hero-headline').value.trim(),
+    heroHeadlineLt: document.getElementById('s-hero-headline-lt').value.trim(),
     heroSub: document.getElementById('s-hero-sub').value.trim(),
+    heroSubLt: document.getElementById('s-hero-sub-lt').value.trim(),
     tickerText: document.getElementById('s-ticker').value.trim()
   });
   showToast('✓ Settings saved. Refresh the public site to see changes.');
