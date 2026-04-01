@@ -150,6 +150,7 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
       <a class="snav-item" onclick="showPage('quick-links')" href="#"><span class="snav-icon">⬡</span> Quick Links</a>
       <a class="snav-item" onclick="showPage('board')" href="#"><span class="snav-icon">◉</span> Board Members</a>
       <a class="snav-item" onclick="showPage('media')" href="#"><span class="snav-icon">▲</span> Media Library</a>
+      <a class="snav-item" onclick="showPage('users')" href="#"><span class="snav-icon">◈</span> Users</a>
       <a class="snav-item" onclick="showPage('settings')" href="#"><span class="snav-icon">⚙</span> Settings</a>
       <div class="snav-section">Public</div>
       <a class="snav-item" href="index.html" target="_blank"><span class="snav-icon">↗</span> View Public Site</a>
@@ -468,6 +469,59 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
     </div>
 
 
+
+    <!-- USERS PAGE -->
+    <div class="page" id="page-users">
+      <div style="margin-bottom:24px;"><div style="font-size:13px; color:var(--text-muted);">Manage who can log into the dashboard. Change passwords here.</div></div>
+      <div class="ann-form-mini" id="usr-form-wrap">
+        <div class="ann-form-title">
+          <span id="usr-form-title">Change Password</span>
+          <button class="toggle-form-btn" onclick="toggleUsrForm()">+ Add / Edit</button>
+        </div>
+        <div id="usr-form-fields" style="display:none;">
+          <div class="form-grid" style="grid-template-columns:1fr 1fr;">
+            <div class="form-group">
+              <label class="form-label">Username</label>
+              <input class="form-input" type="text" id="usr-username" placeholder="richard">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Display Name</label>
+              <input class="form-input" type="text" id="usr-name" placeholder="Richard (Chair)">
+            </div>
+            <div class="form-group">
+              <label class="form-label">New Password</label>
+              <input class="form-input" type="password" id="usr-password" placeholder="Leave blank to keep current">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Role</label>
+              <select class="form-select" id="usr-role">
+                <option value="admin">Admin (full access)</option>
+                <option value="editor">Editor (content only)</option>
+              </select>
+            </div>
+            <div class="form-group" style="display:flex; align-items:center; gap:8px; padding-top:24px;">
+              <input type="checkbox" id="usr-active" checked style="accent-color:var(--amber);">
+              <label class="form-label" style="margin:0;">Active</label>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-sm primary" onclick="saveUser()">Save User →</button>
+            <button class="btn-sm" onclick="cancelUsrEdit()">Cancel</button>
+          </div>
+          <input type="hidden" id="usr-editing-id">
+        </div>
+      </div>
+      <div style="background:var(--white); border:1px solid var(--rule);">
+        <table class="data-table">
+          <thead><tr><th>Username</th><th>Name</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="usr-tbody"></tbody>
+        </table>
+      </div>
+      <div style="margin-top:20px; background:rgba(192,57,43,0.06); border:1px solid rgba(192,57,43,0.2); padding:16px 20px; font-size:13px; color:var(--text-muted);">
+        ⚠ Passwords are stored as SHA-256 hashes — never visible to anyone, including admins. After changing a password, notify the user directly.
+      </div>
+    </div>
+
     <!-- PAGE CONTENT -->
     <div class="page" id="page-page-content">
       <div style="margin-bottom:24px;"><div style="font-size:13px; color:var(--text-muted);">Edit homepage hero, about section, and ticker text.</div></div>
@@ -759,8 +813,6 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
 <script>
 const SB_URL = 'https://pipgdibeustnvbiayixg.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBpcGdkaWJldXN0bnZiaWF5aXhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMDczODMsImV4cCI6MjA5MDU4MzM4M30.dkzUwPGg4q3bF9MfjLmc0Huf69Y1sadXXojuA62005w';
-const DASHBOARD_PASSWORD = 'clac2025!';
-
 const SB_HEADERS = {
   'apikey': SB_KEY,
   'Authorization': 'Bearer ' + SB_KEY,
@@ -822,12 +874,39 @@ function unmapEvent(e) {
 // ── AUTH ─────────────────────────────────────────────────────────────────────
 const CLAC = {
   auth: {
-    login(username, password) {
-      if (password !== DASHBOARD_PASSWORD) return null;
-      const names = { admin: 'Board Admin', richard: 'Richard (Chair)', editor: 'Board Editor' };
-      const roles = { admin: 'admin', richard: 'editor', editor: 'editor' };
-      if (!names[username]) return null;
-      const session = { username, name: names[username], role: roles[username], ts: Date.now() };
+    async login(username, password) {
+      // Rate limit check — max 5 failed attempts in 15 minutes
+      const cutoff = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+      const attempts = await sbGet('login_attempts',
+        `?username=eq.${encodeURIComponent(username)}&success=eq.false&attempted_at=gte.${cutoff}&select=id`
+      );
+      if (attempts && attempts.length >= 5) {
+        return { error: 'Too many failed attempts. Please wait 15 minutes and try again.' };
+      }
+
+      // Hash the password
+      const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(password));
+      const hashArray  = Array.from(new Uint8Array(hashBuffer));
+      const hash       = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+      // Look up user
+      const users = await sbGet('admin_users',
+        `?username=eq.${encodeURIComponent(username)}&active=eq.true&select=*`
+      );
+
+      const user    = users && users[0];
+      const success = user && user.pw_hash === hash;
+
+      // Log the attempt
+      await sbUpsert('login_attempts', {
+        id: 'att-' + Date.now().toString(36),
+        username, success,
+        ip_hint: 'browser',
+      });
+
+      if (!success) return null;
+
+      const session = { username, name: user.name, role: user.role, ts: Date.now() };
       sessionStorage.setItem('clac_session', JSON.stringify(session));
       return session;
     },
@@ -934,14 +1013,38 @@ const CLAC = {
 
 
 // ── BOOTSTRAP ────────────────────────────────────────────────────────────────
-function doLogin() {
-  const u = document.getElementById('login-user').value.trim();
-  const p = document.getElementById('login-pass').value;
-  const sess = CLAC.auth.login(u, p);
-  if (!sess) { document.getElementById('login-error').style.display = 'block'; return; }
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app-shell').style.display = 'grid';
-  initApp(sess);
+async function doLogin() {
+  const u    = document.getElementById('login-user').value.trim();
+  const p    = document.getElementById('login-pass').value;
+  const btn  = document.querySelector('#login-screen button');
+  const errEl = document.getElementById('login-error');
+
+  if (!u || !p) { errEl.textContent = 'Please enter username and password.'; errEl.style.display = 'block'; return; }
+
+  btn.textContent = 'Signing in...';
+  btn.disabled = true;
+  errEl.style.display = 'none';
+
+  try {
+    const sess = await CLAC.auth.login(u, p);
+    if (!sess) {
+      errEl.textContent = 'Incorrect username or password.';
+      errEl.style.display = 'block';
+    } else if (sess.error) {
+      errEl.textContent = sess.error;
+      errEl.style.display = 'block';
+    } else {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app-shell').style.display = 'grid';
+      initApp(sess);
+    }
+  } catch(e) {
+    errEl.textContent = 'Login failed. Please check your connection and try again.';
+    errEl.style.display = 'block';
+  }
+
+  btn.textContent = 'Sign In →';
+  btn.disabled = false;
 }
 
 let currentUser = null;
@@ -968,9 +1071,9 @@ if (_existingSession) {
 function doLogout() { CLAC.auth.logout(); window.location.href = 'index.html'; }
 
 // ── NAVIGATION ────────────────────────────────────────────
-const pages = ['dashboard','events','announcements','settings','page-content','quick-links','board','media'];
-const pageTitles = { dashboard:'Dashboard', events:'Events', announcements:'Announcements', settings:'Settings', 'page-content':'Page Content', 'quick-links':'Quick Links', board:'Board Members', media:'Media Library' };
-const topbarActions = { dashboard:'+ New Event', events:'+ New Event', announcements:'+ New Announcement', settings:'Save Settings', 'page-content':'Save Content', 'quick-links':'+ New Link', board:'+ New Member', media:'Upload Photos' };
+const pages = ['dashboard','events','announcements','settings','page-content','quick-links','board','media','users'];
+const pageTitles = { dashboard:'Dashboard', events:'Events', announcements:'Announcements', settings:'Settings', 'page-content':'Page Content', 'quick-links':'Quick Links', board:'Board Members', media:'Media Library', users:'Users & Security' };
+const topbarActions = { dashboard:'+ New Event', events:'+ New Event', announcements:'+ New Announcement', settings:'Save Settings', 'page-content':'Save Content', 'quick-links':'+ New Link', board:'+ New Member', media:'Upload Photos', users:'+ Add User' };
 
 async function showPage(name) {
   pages.forEach(p => {
@@ -989,6 +1092,7 @@ async function showPage(name) {
   if (name === 'quick-links') await renderQlTable();
   if (name === 'board') await renderBmTable();
   if (name === 'media') await renderMediaGrid();
+  if (name === 'users') await renderUsersTable();
   // Update topbar action
   const btn = document.getElementById('topbar-action');
   btn.textContent = topbarActions[name] || '+ New';
@@ -996,6 +1100,7 @@ async function showPage(name) {
   else if (name === 'quick-links') btn.onclick = () => toggleQlForm(true);
   else if (name === 'board') btn.onclick = () => toggleBmForm(true);
   else if (name === 'media') btn.onclick = () => document.getElementById('media-file-input').click();
+  else if (name === 'users') btn.onclick = () => toggleUsrForm(true);
   else if (name === 'page-content') btn.onclick = savePageContent;
   else btn.onclick = newEventClick;
   return false;
@@ -1507,6 +1612,102 @@ function loadPhotoPreviews(photos) {
 }
 
 
+
+
+// ── USER MANAGEMENT ───────────────────────────────────────────────────────────
+let _usrEditingId = null;
+
+function toggleUsrForm(forceOpen) {
+  const fields = document.getElementById('usr-form-fields');
+  const show = forceOpen || fields.style.display === 'none';
+  fields.style.display = show ? 'block' : 'none';
+  if (show) {
+    _usrEditingId = null;
+    ['usr-username','usr-name','usr-password'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value = '';
+    });
+    document.getElementById('usr-role').value = 'editor';
+    document.getElementById('usr-active').checked = true;
+    document.getElementById('usr-form-title').textContent = 'New User';
+  }
+}
+
+function cancelUsrEdit() {
+  document.getElementById('usr-form-fields').style.display = 'none';
+  _usrEditingId = null;
+}
+
+async function editUser(id) {
+  const users = await sbGet('admin_users', '?select=*');
+  const u = users.find(x => x.id === id);
+  if (!u) return;
+  _usrEditingId = id;
+  document.getElementById('usr-editing-id').value = id;
+  document.getElementById('usr-username').value = u.username;
+  document.getElementById('usr-name').value     = u.name;
+  document.getElementById('usr-password').value = '';
+  document.getElementById('usr-role').value     = u.role;
+  document.getElementById('usr-active').checked = u.active;
+  document.getElementById('usr-form-title').textContent = 'Edit User';
+  document.getElementById('usr-form-fields').style.display = 'block';
+  document.getElementById('usr-form-fields').scrollIntoView({ behavior: 'smooth' });
+}
+
+async function saveUser() {
+  const username = document.getElementById('usr-username').value.trim();
+  const name     = document.getElementById('usr-name').value.trim();
+  const password = document.getElementById('usr-password').value;
+  if (!username || !name) { showToast('⚠ Username and name are required.'); return; }
+
+  const user = {
+    id:       _usrEditingId || 'usr-' + Date.now().toString(36),
+    username, name,
+    role:     document.getElementById('usr-role').value,
+    active:   document.getElementById('usr-active').checked,
+  };
+
+  // Hash new password if provided
+  if (password) {
+    const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(password));
+    const hashArray  = Array.from(new Uint8Array(hashBuffer));
+    user.pw_hash     = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  } else if (!_usrEditingId) {
+    showToast('⚠ Password is required for new users.'); return;
+  }
+
+  await sbUpsert('admin_users', user);
+  cancelUsrEdit();
+  await renderUsersTable();
+  showToast('✓ User saved.');
+}
+
+async function deleteUser(id) {
+  if (id === 'usr-admin') { showToast('⚠ Cannot delete the main admin account.'); return; }
+  if (!confirm('Delete this user? They will no longer be able to log in.')) return;
+  await sbDelete('admin_users', id);
+  await renderUsersTable();
+  showToast('✓ User deleted.');
+}
+
+async function renderUsersTable() {
+  const users = await sbGet('admin_users', '?select=id,username,name,role,active&order=created_at.asc');
+  const tbody = document.getElementById('usr-tbody');
+  if (!users || !users.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="padding:24px; text-align:center; color:var(--text-muted);">No users found.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = users.map(u => `
+    <tr>
+      <td><div class="td-title">${u.username}</div></td>
+      <td><div style="font-size:13px;">${u.name}</div></td>
+      <td><span style="font-family:'DM Mono',monospace; font-size:11px; color:var(--text-muted);">${u.role}</span></td>
+      <td><span class="status-pill ${u.active ? 'upcoming' : 'draft'}">${u.active ? 'Active' : 'Inactive'}</span></td>
+      <td><div class="row-actions">
+        <button class="row-btn" onclick="editUser('${u.id}')">Edit</button>
+        <button class="row-btn del" onclick="deleteUser('${u.id}')">Delete</button>
+      </div></td>
+    </tr>`).join('');
+}
 
 // ── PAGE CONTENT ──────────────────────────────────────────────────────────────
 async function loadPageContent() {
