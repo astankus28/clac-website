@@ -239,9 +239,28 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
             <input class="form-input" type="text" id="f-address" placeholder="750 E 88th St, Cleveland, OH 44108">
           </div>
           <div class="form-group full">
-            <label class="form-label">Cover Color — displayed when no photo is set</label>
-            <div class="color-grid" id="color-grid"></div>
-            <input type="hidden" id="f-cover-color" value="#2d4a33">
+            <label class="form-label">Cover Photo</label>
+            <div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap;">
+              <div id="cover-preview-wrap" style="display:none; position:relative; width:180px; height:120px; flex-shrink:0;">
+                <img id="cover-preview-img" src="" style="width:100%; height:100%; object-fit:cover;">
+                <button onclick="removeCoverPhoto()" style="position:absolute; top:4px; right:4px; background:rgba(0,0,0,0.7); color:white; border:none; width:22px; height:22px; cursor:pointer; font-size:12px; display:flex; align-items:center; justify-content:center;">✕</button>
+              </div>
+              <div style="flex:1; min-width:200px;">
+                <div class="photo-upload-area" id="cover-drop-zone" style="padding:20px;" onclick="document.getElementById('cover-file-input').click()" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleCoverDrop(event)">
+                  <div class="upload-icon" style="font-size:20px;">🖼</div>
+                  <div class="upload-text" style="font-size:13px;">Click or drag to upload cover photo</div>
+                  <div class="upload-hint">Recommended: landscape, at least 800×500px</div>
+                </div>
+                <input type="file" id="cover-file-input" accept="image/*" style="display:none" onchange="handleCoverSelect(this.files[0])">
+                <div id="cover-upload-status" style="font-size:12px; color:var(--amber); font-family:'DM Mono',monospace; margin-top:6px; display:none;"></div>
+              </div>
+            </div>
+            <input type="hidden" id="f-cover-photo" value="">
+            <div style="margin-top:16px;">
+              <label class="form-label" style="margin-bottom:8px; display:block;">Fallback Color — shown if no cover photo</label>
+              <div class="color-grid" id="color-grid"></div>
+              <input type="hidden" id="f-cover-color" value="#2d4a33">
+            </div>
           </div>
           <div class="form-group full">
             <label class="form-label">Description</label>
@@ -511,7 +530,7 @@ function mapEvent(e) {
     location: e.location, address: e.address,
     category: e.category, status: e.status,
     featured: e.featured, published: e.published,
-    coverColor: e.cover_color, description: e.description,
+    coverColor: e.cover_color, coverPhoto: e.cover_photo || '', description: e.description,
     tags: e.tags || [], attendees: e.attendees,
     rsvpLink: e.rsvp_link, recap: e.recap,
     contactEmail: e.contact_email, photos: e.photos || [],
@@ -526,7 +545,7 @@ function unmapEvent(e) {
     location: e.location, address: e.address,
     category: e.category, status: e.status,
     featured: e.featured, published: e.published,
-    cover_color: e.coverColor, description: e.description,
+    cover_color: e.coverColor, cover_photo: e.coverPhoto || '', description: e.description,
     tags: e.tags || [], attendees: e.attendees || null,
     rsvp_link: e.rsvpLink, recap: e.recap,
     contact_email: e.contactEmail, photos: e.photos || [],
@@ -769,6 +788,7 @@ function clearEventForm() {
   ['f-title','f-title-lt','f-date','f-time','f-end-time','f-location','f-address','f-description','f-tags','f-rsvp','f-recap','f-contact-email'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   _uploadedPhotos = [];
   renderPhotoPreview();
+  loadCoverPhoto('');
   document.getElementById('f-status').value = 'upcoming';
   document.getElementById('f-category').value = 'Cultural';
   document.getElementById('f-attendees').value = '';
@@ -804,6 +824,7 @@ async function editEvent(id) {
   document.getElementById('f-published').checked = e.published;
   document.getElementById('f-featured').checked = e.featured;
   document.getElementById('f-cover-color').value = e.coverColor || '#2d4a33';
+  loadCoverPhoto(e.coverPhoto || '');
   document.getElementById('f-contact-email').value = e.contactEmail || '';
   loadPhotoPreviews(e.photos || []);
   buildColorGrid();
@@ -837,6 +858,7 @@ async function saveEvent() {
     rsvpLink: document.getElementById('f-rsvp').value.trim(),
     recap: document.getElementById('f-recap').value.trim(),
     coverColor: document.getElementById('f-cover-color').value,
+    coverPhoto: document.getElementById('f-cover-photo').value || '',
     contactEmail: document.getElementById('f-contact-email').value.trim(),
     contactName: 'Board Contact',
     published: document.getElementById('f-published').checked,
@@ -1065,6 +1087,73 @@ async function saveSettings() {
   showToast('✓ Settings saved. Refresh the public site to see changes.');
 }
 
+
+
+// ── COVER PHOTO UPLOAD ────────────────────────────────────────────────────────
+let _coverPhotoUrl = '';
+
+async function handleCoverSelect(file) {
+  if (!file) return;
+  await uploadCoverPhoto(file);
+}
+
+async function handleCoverDrop(event) {
+  event.preventDefault();
+  document.getElementById('cover-drop-zone').classList.remove('dragover');
+  const file = event.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) await uploadCoverPhoto(file);
+}
+
+async function uploadCoverPhoto(file) {
+  const status = document.getElementById('cover-upload-status');
+  status.textContent = 'Uploading cover photo...';
+  status.style.display = 'block';
+  try {
+    const ext  = file.name.split('.').pop().toLowerCase();
+    const name = `covers/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const res  = await fetch(`${SB_URL}/storage/v1/object/clac-media/${name}`, {
+      method:  'POST',
+      headers: {
+        'apikey':        SB_KEY,
+        'Authorization': 'Bearer ' + SB_KEY,
+        'Content-Type':  file.type,
+        'x-upsert':      'true',
+      },
+      body: file,
+    });
+    if (!res.ok) throw new Error(res.statusText);
+    _coverPhotoUrl = `${SB_URL}/storage/v1/object/public/clac-media/${name}`;
+    document.getElementById('f-cover-photo').value = _coverPhotoUrl;
+    document.getElementById('cover-preview-img').src = _coverPhotoUrl;
+    document.getElementById('cover-preview-wrap').style.display = 'block';
+    document.getElementById('cover-drop-zone').style.display = 'none';
+    status.textContent = '✓ Cover photo uploaded';
+    setTimeout(() => { status.style.display = 'none'; }, 3000);
+  } catch(e) {
+    status.textContent = '⚠ Upload failed — ' + e.message;
+    console.error('Cover upload error:', e);
+  }
+}
+
+function removeCoverPhoto() {
+  _coverPhotoUrl = '';
+  document.getElementById('f-cover-photo').value = '';
+  document.getElementById('cover-preview-wrap').style.display = 'none';
+  document.getElementById('cover-drop-zone').style.display = 'block';
+}
+
+function loadCoverPhoto(url) {
+  _coverPhotoUrl = url || '';
+  document.getElementById('f-cover-photo').value = _coverPhotoUrl;
+  if (_coverPhotoUrl) {
+    document.getElementById('cover-preview-img').src = _coverPhotoUrl;
+    document.getElementById('cover-preview-wrap').style.display = 'block';
+    document.getElementById('cover-drop-zone').style.display = 'none';
+  } else {
+    document.getElementById('cover-preview-wrap').style.display = 'none';
+    document.getElementById('cover-drop-zone').style.display = 'block';
+  }
+}
 
 // ── PHOTO UPLOAD ──────────────────────────────────────────────────────────────
 let _uploadedPhotos = []; // array of public URLs
