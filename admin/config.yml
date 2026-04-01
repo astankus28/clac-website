@@ -8,7 +8,6 @@ public_folder: "/assets/uploads"
 
 collections:
 
-  # ── EVENTS ────────────────────────────────────────────────────────────────
   - name: "events"
     label: "Events"
     files:
@@ -37,7 +36,6 @@ collections:
               - { label: "Recap / Notes", name: "recap", widget: "text", required: false }
               - { label: "Tags", name: "tags", widget: "list", required: false }
 
-  # ── ANNOUNCEMENTS ──────────────────────────────────────────────────────────
   - name: "announcements"
     label: "Announcements"
     files:
@@ -56,7 +54,6 @@ collections:
               - { label: "Body", name: "body", widget: "text" }
               - { label: "Status", name: "status", widget: "select", options: ["published","draft"], default: "published" }
 
-  # ── SITE SETTINGS ──────────────────────────────────────────────────────────
   - name: "settings"
     label: "Site Settings"
     files:
