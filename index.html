@@ -8,200 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <style>
-/* ─────────────────────────────────────────────────────────────────────────────
-   CLAC SHARED STYLES
-   Cleveland Lithuanian American Community — clacleveland.org
-   Imported by: index.html, event.html
-   Admin pages (admin/) have their own self-contained styles.
-───────────────────────────────────────────────────────────────────────────── */
-
-/* ── TOKENS ─────────────────────────────────────────────────────────────── */
-:root {
-  --forest:       #1a2e1e;
-  --forest-mid:   #243329;
-  --forest-light: #2f4535;
-  --amber:        #c8903a;
-  --amber-light:  #e4a84d;
-  --amber-pale:   #f5e6c8;
-  --cream:        #f2ede4;
-  --cream-dark:   #e8e0d0;
-  --linen:        #faf7f2;
-  --white:        #ffffff;
-  --text-dark:    #1a1a18;
-  --text-body:    #3a3a36;
-  --text-muted:   #7a7a70;
-  --text-faint:   #adadA0;
-  --rule:         #d4c9b0;
-  --red:          #c0392b;
-}
-
-/* ── RESET ───────────────────────────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html  { font-size: 16px; scroll-behavior: smooth; }
-body  { font-family: 'DM Sans', sans-serif; background: var(--linen); color: var(--text-body); overflow-x: hidden; }
-
-/* ── TOPBAR ──────────────────────────────────────────────────────────────── */
-.topbar {
-  background: var(--forest);
-  color: var(--amber-pale);
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  padding: 7px 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.topbar a               { color: var(--amber-light); text-decoration: none; }
-.topbar a:hover         { color: var(--white); }
-.topbar-social          { display: flex; gap: 18px; }
-
-/* ── NAV ─────────────────────────────────────────────────────────────────── */
-nav.main-nav {
-  background: var(--linen);
-  border-bottom: 1px solid var(--rule);
-  padding: 0 40px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  display: flex;
-  align-items: stretch;
-  justify-content: space-between;
-}
-.nav-logo         { display: flex; flex-direction: column; justify-content: center; padding: 14px 0; text-decoration: none; }
-.nav-logo-en      { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; color: var(--text-dark); letter-spacing: 0.04em; text-transform: uppercase; }
-.nav-logo-lt      { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: var(--amber); margin-top: 2px; }
-.nav-links        { display: flex; list-style: none; align-items: stretch; }
-.nav-links li     { display: flex; align-items: stretch; }
-.nav-links a      { display: flex; align-items: center; padding: 0 16px; font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); text-decoration: none; border-bottom: 2px solid transparent; transition: color 0.2s, border-color 0.2s; }
-.nav-links a:hover,
-.nav-links a.active { color: var(--forest); border-bottom-color: var(--amber); }
-.nav-right        { display: flex; align-items: center; gap: 12px; }
-.nav-lang         { display: flex; align-items: center; gap: 6px; padding-left: 20px; border-left: 1px solid var(--rule); }
-.lang-btn         { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; padding: 4px 8px; border: 1px solid var(--rule); background: transparent; color: var(--text-muted); cursor: pointer; border-radius: 2px; transition: all 0.2s; }
-.lang-btn:hover,
-.lang-btn.active  { background: var(--forest); color: var(--amber-pale); border-color: var(--forest); }
-.hamburger        { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 16px 0; }
-.hamburger span   { display: block; width: 24px; height: 1.5px; background: var(--text-dark); }
-
-/* ── BUTTONS ─────────────────────────────────────────────────────────────── */
-.btn-primary {
-  background: var(--amber); color: var(--forest);
-  font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
-  padding: 13px 28px; border: none; cursor: pointer;
-  text-decoration: none; display: inline-block;
-  font-family: 'DM Sans', sans-serif;
-  transition: background 0.2s, transform 0.15s;
-}
-.btn-primary:hover   { background: var(--amber-light); transform: translateY(-1px); }
-
-.btn-ghost {
-  background: transparent; color: var(--forest);
-  font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
-  padding: 12px 28px; border: 1px solid var(--rule); cursor: pointer;
-  text-decoration: none; display: inline-block;
-  font-family: 'DM Sans', sans-serif;
-  transition: border-color 0.2s, color 0.2s;
-}
-.btn-ghost:hover     { border-color: var(--amber); color: var(--amber); }
-
-.btn-ghost-inv {
-  background: transparent; color: var(--cream);
-  font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
-  padding: 12px 28px; border: 1px solid rgba(255,255,255,0.25); cursor: pointer;
-  text-decoration: none; display: inline-block;
-  font-family: 'DM Sans', sans-serif;
-  transition: border-color 0.2s, color 0.2s;
-}
-.btn-ghost-inv:hover { border-color: var(--amber); color: var(--amber-light); }
-
-/* ── SECTION HEADERS ─────────────────────────────────────────────────────── */
-.section-header {
-  display: flex; align-items: baseline; justify-content: space-between;
-  margin-bottom: 36px; padding-bottom: 16px; border-bottom: 1px solid var(--rule);
-}
-.section-title    { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--text-dark); }
-.section-title-lt { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--amber); letter-spacing: 0.12em; margin-top: 3px; }
-.section-link     { font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--amber); text-decoration: none; transition: opacity 0.2s; }
-.section-link:hover { opacity: 0.75; }
-
-/* ── LAYOUT ──────────────────────────────────────────────────────────────── */
-.container { max-width: 1280px; margin: 0 auto; padding: 0 40px; }
-.two-col   { display: grid; grid-template-columns: 1fr 340px; gap: 60px; }
-
-/* ── TICKER ──────────────────────────────────────────────────────────────── */
-.ticker       { background: var(--amber); color: var(--forest); padding: 10px 0; overflow: hidden; white-space: nowrap; }
-.ticker-inner { display: inline-block; animation: ticker-scroll 35s linear infinite; font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.08em; }
-@keyframes ticker-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-.ticker-sep   { margin: 0 28px; opacity: 0.4; }
-
-/* ── SIDEBAR WIDGETS ─────────────────────────────────────────────────────── */
-.sidebar-widget       { background: var(--forest); color: var(--cream); padding: 32px 28px; margin-bottom: 24px; }
-.sidebar-widget-title { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--amber-light); padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 18px; }
-.sidebar-link-list    { list-style: none; }
-.sidebar-link-list li { padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.07); font-size: 13px; }
-.sidebar-link-list li:last-child { border-bottom: none; }
-.sidebar-link-list a  { color: rgba(242,237,228,0.75); text-decoration: none; display: flex; justify-content: space-between; align-items: center; transition: color 0.15s; }
-.sidebar-link-list a:hover { color: var(--amber-light); }
-
-/* ── NEWSLETTER STRIP ────────────────────────────────────────────────────── */
-.newsletter-strip   { background: var(--amber); padding: 56px 0; }
-.newsletter-inner   { max-width: 1280px; margin: 0 auto; padding: 0 40px; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center; }
-.newsletter-heading { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 900; color: var(--forest); line-height: 1.1; }
-.newsletter-sub     { font-size: 14px; color: var(--forest-light); margin-top: 8px; font-weight: 300; }
-.newsletter-form    { display: flex; }
-.newsletter-input   { padding: 14px 20px; border: none; background: var(--forest); color: var(--cream); font-family: 'DM Sans', sans-serif; font-size: 14px; width: 280px; outline: none; }
-.newsletter-input::placeholder { color: rgba(242,237,228,0.4); }
-.newsletter-submit  { background: var(--forest); color: var(--amber); border: none; padding: 14px 24px; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
-.newsletter-submit:hover { background: var(--forest-light); }
-
-/* ── FOOTER ──────────────────────────────────────────────────────────────── */
-footer.main-footer    { background: #111810; color: rgba(242,237,228,0.5); padding: 60px 0 28px; }
-.footer-grid          { max-width: 1280px; margin: 0 auto; padding: 0 40px; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
-.footer-brand-name    { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--cream); margin-bottom: 4px; }
-.footer-brand-lt      { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.12em; color: var(--amber); }
-.footer-desc          { font-size: 13px; line-height: 1.7; margin-top: 16px; color: rgba(242,237,228,0.45); font-weight: 300; max-width: 280px; }
-.footer-col-title     { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--amber); margin-bottom: 16px; }
-.footer-links         { list-style: none; }
-.footer-links li      { margin-bottom: 10px; }
-.footer-links a       { font-size: 13px; color: rgba(242,237,228,0.5); text-decoration: none; transition: color 0.15s; }
-.footer-links a:hover { color: var(--cream); }
-.footer-bottom        { max-width: 1280px; margin: 0 auto; padding: 20px 40px 0; border-top: 1px solid rgba(255,255,255,0.07); display: flex; justify-content: space-between; align-items: center; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.06em; }
-.footer-bottom a      { color: var(--amber); text-decoration: none; }
-
-/* ── ANIMATIONS ──────────────────────────────────────────────────────────── */
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-.fade-in { animation: fadeInUp 0.5s ease both; }
-
-/* ── RESPONSIVE ──────────────────────────────────────────────────────────── */
-@media (max-width: 1024px) {
-  .two-col      { grid-template-columns: 1fr; }
-  .footer-grid  { grid-template-columns: 1fr 1fr; }
-}
-
-@media (max-width: 768px) {
-  .topbar           { padding: 7px 20px; font-size: 10px; }
-  .topbar-social    { gap: 12px; }
-  nav.main-nav      { padding: 0 20px; }
-  .nav-links        { display: none; }
-  .nav-links.open   {
-    display: flex; flex-direction: column;
-    position: absolute; top: 100%; left: 0; right: 0;
-    background: var(--linen); border-bottom: 1px solid var(--rule);
-    padding: 10px 0; z-index: 200;
-  }
-  .nav-links.open a { padding: 12px 20px; border-bottom: none; }
-  .hamburger        { display: flex; }
-  .container        { padding: 0 20px; }
-  .newsletter-inner { grid-template-columns: 1fr; padding: 0 20px; }
-  .newsletter-form  { flex-direction: column; }
-  .newsletter-input { width: 100%; }
-  .footer-grid      { grid-template-columns: 1fr; gap: 32px; padding: 0 20px; }
-  .footer-bottom    { flex-direction: column; gap: 10px; text-align: center; padding: 20px 20px 0; }
-}
-
-</style>
+  <link rel="stylesheet" href="assets/style.css">
   <style>
     /* ── HERO ─────────────────────────────────────────────────────────────── */
     .hero { background: var(--forest); color: var(--cream); position: relative; overflow: hidden; min-height: 88vh; display: grid; grid-template-columns: 1fr 1fr; }
@@ -329,6 +136,7 @@ footer.main-footer    { background: #111810; color: rgba(242,237,228,0.5); paddi
   <ul class="nav-links" id="nav-links">
     <li><a href="index.html" class="active">Home</a></li>
     <li><a href="#upcoming">Events</a></li>
+    <li><a href="community.html">Community Calendar</a></li>
     <li><a href="#journal">Journal</a></li>
     <li><a href="#announcements">News</a></li>
     <li><a href="#about">About</a></li>
@@ -496,6 +304,40 @@ footer.main-footer    { background: #111810; color: rgba(242,237,228,0.5); paddi
   </div>
 </section>
 
+
+<!-- COMMUNITY FEED PREVIEW -->
+<section id="community" style="background: var(--linen); padding: 72px 0;">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Cleveland Lithuanian Community</div>
+        <div class="section-title-lt">Clevelando Lietuvių Renginiai — All Organizations</div>
+      </div>
+      <a href="community.html" class="section-link">Full Calendar →</a>
+    </div>
+    <div style="margin-bottom: 20px; display:flex; gap:12px; flex-wrap:wrap;">
+      <span style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; padding:4px 12px; border:1px solid rgba(109,184,122,0.4); color:#6db87a; background:rgba(109,184,122,0.08);">★ CLAC</span>
+      <span style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; padding:4px 12px; border:1px solid rgba(122,172,224,0.4); color:#7aace0; background:rgba(122,172,224,0.08);">ltcle.org</span>
+      <span style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; padding:4px 12px; border:1px solid rgba(224,176,122,0.4); color:#e0b07a; background:rgba(224,176,122,0.08);">St. Casimir Parish</span>
+      <span id="cf-status" style="font-family:'DM Mono',monospace; font-size:10px; color:var(--text-faint); align-self:center; margin-left:auto;">Loading...</span>
+    </div>
+    <div id="cf-preview" style="display:flex; flex-direction:column;">
+      <!-- Skeleton -->
+      <div id="cf-skeleton">
+        <div style="border-top:1px solid var(--rule);">
+          <div style="display:grid; grid-template-columns:72px 1fr; gap:20px; padding:18px 0; border-bottom:1px solid var(--rule);"><div style="width:56px; height:64px; background:var(--cream-dark);"></div><div><div style="width:60px; height:11px; background:var(--cream-dark); margin-bottom:8px;"></div><div style="width:60%; height:16px; background:var(--cream-dark); margin-bottom:6px;"></div><div style="width:40%; height:11px; background:var(--cream-dark);"></div></div></div>
+          <div style="display:grid; grid-template-columns:72px 1fr; gap:20px; padding:18px 0; border-bottom:1px solid var(--rule);"><div style="width:56px; height:64px; background:var(--cream-dark);"></div><div><div style="width:55px; height:11px; background:var(--cream-dark); margin-bottom:8px;"></div><div style="width:55%; height:16px; background:var(--cream-dark); margin-bottom:6px;"></div><div style="width:35%; height:11px; background:var(--cream-dark);"></div></div></div>
+          <div style="display:grid; grid-template-columns:72px 1fr; gap:20px; padding:18px 0; border-bottom:1px solid var(--rule);"><div style="width:56px; height:64px; background:var(--cream-dark);"></div><div><div style="width:50px; height:11px; background:var(--cream-dark); margin-bottom:8px;"></div><div style="width:65%; height:16px; background:var(--cream-dark); margin-bottom:6px;"></div><div style="width:45%; height:11px; background:var(--cream-dark);"></div></div></div>
+        </div>
+      </div>
+      <div id="cf-list" style="display:none;"></div>
+    </div>
+    <div style="text-align:center; margin-top:32px;">
+      <a href="community.html" class="btn-primary">View Full Community Calendar →</a>
+    </div>
+  </div>
+</section>
+
 <!-- ABOUT -->
 <div class="about-strip" id="about">
   <div class="about-inner">
@@ -546,6 +388,7 @@ footer.main-footer    { background: #111810; color: rgba(242,237,228,0.5); paddi
       <ul class="footer-links">
         <li><a href="index.html">Home</a></li>
         <li><a href="#upcoming">Events</a></li>
+    <li><a href="community.html">Community Calendar</a></li>
         <li><a href="#journal">Photo Journal</a></li>
         <li><a href="#announcements">News</a></li>
         <li><a href="#about">About</a></li>
@@ -577,282 +420,8 @@ footer.main-footer    { background: #111810; color: rgba(242,237,228,0.5); paddi
   </div>
 </footer>
 
-<script>
-// ─────────────────────────────────────────────────────────────────────────────
-//  CLAC DATA LAYER
-//  Cleveland Lithuanian American Community — clacleveland.org
-//  All site data stored in localStorage under "clac_*" keys.
-//  To migrate to a real backend, swap the save()/all() methods in each module
-//  to API calls — the frontend pages require no changes.
-// ─────────────────────────────────────────────────────────────────────────────
-
-const CLAC = {
-
-  // ── AUTH ─────────────────────────────────────────────────────────────────
-  // Production: replace this with a real auth service (Supabase, Firebase, etc.)
-  auth: {
-    users: [
-      { username: 'admin',   password: 'clac2025!', name: 'Board Admin',     role: 'admin'  },
-      { username: 'richard', password: 'clac2025!', name: 'Richard (Chair)', role: 'editor' },
-      { username: 'editor',  password: 'clac2025!', name: 'Board Editor',    role: 'editor' }
-    ],
-    login(username, password) {
-      const user = this.users.find(u => u.username === username && u.password === password);
-      if (!user) return null;
-      const session = { username: user.username, name: user.name, role: user.role, ts: Date.now() };
-      localStorage.setItem('clac_session', JSON.stringify(session));
-      return session;
-    },
-    logout() {
-      localStorage.removeItem('clac_session');
-    },
-    current() {
-      const raw = localStorage.getItem('clac_session');
-      if (!raw) return null;
-      const session = JSON.parse(raw);
-      // 8-hour session timeout
-      if (Date.now() - session.ts > 8 * 60 * 60 * 1000) { this.logout(); return null; }
-      return session;
-    },
-    require() {
-      const s = this.current();
-      if (!s) { window.location.href = '/admin/index.html'; return null; }
-      return s;
-    }
-  },
-
-  // ── EVENTS ───────────────────────────────────────────────────────────────
-  events: {
-    _key: 'clac_events',
-
-    _defaults: [
-      {
-        id: 'spring-gathering-2025',
-        title: 'Spring Community Gathering',
-        titleLt: 'Pavasario Bendruomenės Susirinkimas',
-        date: '2025-04-19',
-        time: '2:00 PM',
-        endTime: '6:00 PM',
-        location: 'Lithuanian Cultural Garden, Rockefeller Park',
-        address: '750 E 88th St, Cleveland, OH 44108',
-        category: 'Cultural',
-        status: 'upcoming',
-        featured: true,
-        coverColor: '#2d4a33',
-        description: `Our annual spring gathering returns to the Lithuanian Cultural Garden in Rockefeller Park. This beloved tradition brings together Cleveland's Lithuanian community for an afternoon of food, music, and fellowship beneath the open sky.\n\nBring a dish to share — traditional Lithuanian recipes always welcome, but anything goes. We'll have music, time for children to run around, and plenty of good conversation.\n\nAll members, families, and friends are warmly welcome. No RSVP required — just show up!`,
-        descriptionLt: 'Mūsų metinis pavasario susirinkimas grįžta į Lietuvių kultūros sodą Rokfelerio parke.',
-        photos: [],
-        contactName: 'Board Contact',
-        contactEmail: 'info@clacleveland.org',
-        rsvpLink: '',
-        tags: ['Annual', 'Potluck', 'Family-Friendly', 'Outdoors'],
-        attendees: null,
-        recap: '',
-        published: true,
-        createdAt: '2025-03-01',
-        updatedAt: '2025-03-28'
-      },
-      {
-        id: 'mothers-day-mass-2025',
-        title: "Mother's Day Mass",
-        titleLt: 'Motinos Dienos Mišios',
-        date: '2025-05-11',
-        time: '10:00 AM',
-        endTime: '12:00 PM',
-        location: 'St. George Lithuanian Church',
-        address: 'E. 185th Street, Cleveland, OH',
-        category: 'Religious',
-        status: 'upcoming',
-        featured: false,
-        coverColor: '#1e2e3a',
-        description: `Annual Mother's Day Lithuanian Mass at St. George's, the heart of Cleveland's Lithuanian heritage. Mass in Lithuanian with reception to follow in the parish hall.\n\nAll are welcome — bring your mothers, grandmothers, and families.`,
-        descriptionLt: '',
-        photos: [],
-        contactName: 'Board Contact',
-        contactEmail: 'info@clacleveland.org',
-        rsvpLink: '',
-        tags: ['Annual', 'Religious', 'Family'],
-        attendees: null,
-        recap: '',
-        published: true,
-        createdAt: '2025-03-01',
-        updatedAt: '2025-03-01'
-      },
-      {
-        id: 'one-world-day-2024',
-        title: 'One World Day 2024',
-        titleLt: 'Viso Pasaulio Diena 2024',
-        date: '2024-09-08',
-        time: '11:00 AM',
-        endTime: '5:00 PM',
-        location: 'Rockefeller Park, Cleveland',
-        address: '750 E 88th St, Cleveland, OH 44108',
-        category: 'Festival',
-        status: 'past',
-        featured: true,
-        coverColor: '#3d2e1a',
-        description: `Cleveland's beloved One World Day returned to Rockefeller Park and the Lithuanian community showed up in force — our largest presence in recent memory.\n\nVolunteers in traditional dress staffed the Lithuanian booth with food, crafts, and information about our community. Thousands of Clevelanders stopped by to learn about Lithuania.\n\nThank you to all who volunteered, cooked, and represented our heritage with such pride.`,
-        descriptionLt: '',
-        photos: [],
-        contactName: 'Board Contact',
-        contactEmail: 'info@clacleveland.org',
-        rsvpLink: '',
-        tags: ['Annual', 'Multicultural', 'Outreach'],
-        attendees: 200,
-        recap: 'Record attendance. Lithuanian booth drew strong interest. Traditional dress and food were highlights.',
-        published: true,
-        createdAt: '2024-09-20',
-        updatedAt: '2024-09-20'
-      },
-      {
-        id: 'mindaugas-picnic-2024',
-        title: 'Mindaugas Day Picnic',
-        titleLt: 'Mindaugo Dienos Piknikas',
-        date: '2024-07-06',
-        time: '1:00 PM',
-        endTime: '5:00 PM',
-        location: 'Community Grounds, Greater Cleveland',
-        address: 'Cleveland, OH',
-        category: 'Celebration',
-        status: 'past',
-        featured: false,
-        coverColor: '#2a1e2e',
-        description: `Celebrating Lithuania's national holiday — the Coronation of King Mindaugas — with our annual summer picnic. Food, games, and great company under the summer sun.`,
-        descriptionLt: '',
-        photos: [],
-        contactName: 'Board Contact',
-        contactEmail: 'info@clacleveland.org',
-        rsvpLink: '',
-        tags: ['Annual', 'National Holiday', 'Picnic'],
-        attendees: 45,
-        recap: '',
-        published: true,
-        createdAt: '2024-07-10',
-        updatedAt: '2024-07-10'
-      }
-    ],
-
-    _init() {
-      if (!localStorage.getItem(this._key)) {
-        localStorage.setItem(this._key, JSON.stringify(this._defaults));
-      }
-    },
-    all() {
-      this._init();
-      return JSON.parse(localStorage.getItem(this._key));
-    },
-    get(id) {
-      return this.all().find(e => e.id === id) || null;
-    },
-    upcoming() {
-      return this.all()
-        .filter(e => e.status === 'upcoming' && e.published)
-        .sort((a, b) => new Date(a.date) - new Date(b.date));
-    },
-    past() {
-      return this.all()
-        .filter(e => e.status === 'past' && e.published)
-        .sort((a, b) => new Date(b.date) - new Date(a.date));
-    },
-    save(event) {
-      const all = this.all();
-      const idx = all.findIndex(e => e.id === event.id);
-      event.updatedAt = new Date().toISOString().split('T')[0];
-      if (idx >= 0) { all[idx] = event; } else { all.unshift(event); }
-      localStorage.setItem(this._key, JSON.stringify(all));
-      return event;
-    },
-    delete(id) {
-      localStorage.setItem(this._key, JSON.stringify(this.all().filter(e => e.id !== id)));
-    },
-    slugify(title) {
-      return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
-        + '-' + Date.now().toString(36);
-    }
-  },
-
-  // ── ANNOUNCEMENTS ────────────────────────────────────────────────────────
-  announcements: {
-    _key: 'clac_announcements',
-
-    _defaults: [
-      { id: 'ann-1', type: 'Community Update',     title: 'Spring 2025 Gathering Confirmed for April 19',       body: 'Our annual spring gathering returns to the Lithuanian Cultural Garden in Rockefeller Park. Potluck format — bring a dish. All welcome.',                                          date: '2025-03-28', published: true },
-      { id: 'ann-2', type: 'National Organization', title: 'LAC Newsletter Spring Edition Now Available',         body: 'The national Lithuanian American Community newsletter for Spring 2025 is now available at javlb.lt/en/naujienlaiskiui.',                                                        date: '2025-03-15', published: true },
-      { id: 'ann-3', type: 'Heritage',              title: 'Cultural Garden Spring Cleanup — Volunteers Needed',  body: 'Volunteers needed for the annual spring cleanup of the Lithuanian Cultural Garden at Rockefeller Park. Contact us via Facebook to sign up.',                                  date: '2025-03-10', published: true },
-      { id: 'ann-4', type: 'Membership',            title: '2025 Membership Renewal — Open Now',                 body: 'Annual membership renewal is open. Supporting the community through membership helps fund our events and cultural programming. Contact the board for details.',               date: '2025-01-05', published: true }
-    ],
-
-    _init() {
-      if (!localStorage.getItem(this._key)) {
-        localStorage.setItem(this._key, JSON.stringify(this._defaults));
-      }
-    },
-    all() {
-      this._init();
-      return JSON.parse(localStorage.getItem(this._key));
-    },
-    published() {
-      return this.all()
-        .filter(a => a.published)
-        .sort((a, b) => new Date(b.date) - new Date(a.date));
-    },
-    save(ann) {
-      const all = this.all();
-      const idx = all.findIndex(a => a.id === ann.id);
-      if (idx >= 0) { all[idx] = ann; } else { all.unshift(ann); }
-      localStorage.setItem(this._key, JSON.stringify(all));
-    },
-    delete(id) {
-      localStorage.setItem(this._key, JSON.stringify(this.all().filter(a => a.id !== id)));
-    }
-  },
-
-  // ── SETTINGS ─────────────────────────────────────────────────────────────
-  settings: {
-    _key: 'clac_settings',
-
-    _defaults: {
-      siteName:      'Cleveland Lithuanian American Community',
-      siteNameLt:    'Clevelando Lietuvių Bendruomenė',
-      email:         'info@clacleveland.org',
-      facebook:      'https://www.facebook.com/profile.php?id=61565856471983',
-      instagram:     'https://www.instagram.com/cleveland_lietuviu_bendruomene',
-      nationalUrl:   'https://javlb.lt/en/',
-      tickerText:    'St. George Lithuanian Church — Sundays at 10:00 AM · Lithuanian Cultural Garden — Rockefeller Park · Follow us on Facebook & Instagram',
-      heroHeadline:  'One community. Many stories. One Cleveland.',
-      heroSub:       'The heartbeat of Lithuanian culture in Northeast Ohio — celebrating our heritage, connecting generations, and building a living community here on the shores of Lake Erie.'
-    },
-
-    get() {
-      const stored = localStorage.getItem(this._key);
-      return stored ? { ...this._defaults, ...JSON.parse(stored) } : { ...this._defaults };
-    },
-    save(data) {
-      localStorage.setItem(this._key, JSON.stringify(data));
-    }
-  },
-
-  // ── HELPERS ──────────────────────────────────────────────────────────────
-  formatDate(dateStr) {
-    return new Date(dateStr + 'T12:00:00').toLocaleDateString('en-US', {
-      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-    });
-  },
-  formatDateShort(dateStr) {
-    return new Date(dateStr + 'T12:00:00').toLocaleDateString('en-US', {
-      month: 'short', day: 'numeric', year: 'numeric'
-    });
-  },
-  monthDay(dateStr) {
-    const d = new Date(dateStr + 'T12:00:00');
-    return {
-      month: d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase(),
-      day:   d.getDate()
-    };
-  }
-};
-
-</script>
+<script src="assets/feed.js"></script>
+<script src="assets/data.js"></script>
 <script>
   const ICONS    = ['◆','✶','⬡','◈','◇','✦','◉','▲','✿','◊'];
   const PALETTES = ['#2d4a33','#3d2e1a','#1e2e3a','#2a1e2e','#2e3a1e','#3a3010','#1a3038','#38281a','#1a3022','#2e1a38'];
@@ -1000,6 +569,53 @@ const CLAC = {
   buildJournal();
   buildHighlights();
   buildAnnouncements();
+
+  /* ── COMMUNITY FEED PREVIEW ── */
+  (async () => {
+    const BADGE = {
+      clac:      { text:'#6db87a', border:'#6db87a', bg:'rgba(109,184,122,0.1)' },
+      ltcle:     { text:'#7aace0', border:'#7aace0', bg:'rgba(122,172,224,0.1)' },
+      stcasimir: { text:'#e0b07a', border:'#e0b07a', bg:'rgba(224,176,122,0.1)' },
+    };
+    try {
+      const events = await CommunityFeed.load();
+      const top    = CommunityFeed.upcoming(6);
+      document.getElementById('cf-skeleton').style.display = 'none';
+      document.getElementById('cf-list').style.display     = 'block';
+      document.getElementById('cf-status').textContent     = events.length + ' upcoming events across all organizations';
+
+      document.getElementById('cf-list').innerHTML = top.map(e => {
+        const md = CLAC.monthDay(e.date);
+        const c  = BADGE[e.source] || BADGE.ltcle;
+        const bs = `color:${c.text}; border-color:${c.border}; background:${c.bg};`;
+        const url = e.url || '#';
+        const tgt = e.source === 'clac' ? '' : 'target="_blank" rel="noopener"';
+        return `<a href="${url}" ${tgt} style="display:grid; grid-template-columns:72px 1fr auto; gap:20px; align-items:start; padding:18px 0; border-bottom:1px solid var(--rule); text-decoration:none; color:inherit; transition:background 0.15s;" onmouseover="this.style.background='rgba(200,144,58,0.04)'" onmouseout="this.style.background=''">
+          <div style="text-align:center;">
+            <div style="background:var(--forest); color:var(--cream); padding:8px 6px; display:inline-block; min-width:56px; text-align:center;">
+              <div style="font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber-light);">${md.month}</div>
+              <div style="font-family:'Playfair Display',serif; font-size:22px; font-weight:900; line-height:1; margin-top:2px;">${md.day}</div>
+            </div>
+          </div>
+          <div>
+            <span style="font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; padding:2px 8px; border:1px solid; display:inline-block; margin-bottom:6px; ${bs}">${e.sourceBadge}</span>
+            <div style="font-family:'Playfair Display',serif; font-size:16px; font-weight:700; color:var(--text-dark); line-height:1.25;">${e.title}</div>
+            <div style="font-size:12px; color:var(--text-muted); margin-top:4px; display:flex; gap:12px; flex-wrap:wrap; font-family:'DM Mono',monospace;">
+              ${e.time ? `<span>🕐 ${e.time}</span>` : ''}
+              ${e.location ? `<span>📍 ${e.location.split(',')[0]}</span>` : ''}
+            </div>
+          </div>
+          <div style="align-self:center; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--amber); white-space:nowrap;">
+            ${e.source === 'clac' ? 'Details →' : 'View ↗'}
+          </div>
+        </a>`;
+      }).join('');
+
+    } catch(err) {
+      document.getElementById('cf-skeleton').style.display = 'none';
+      document.getElementById('cf-status').textContent = 'Could not load community events';
+    }
+  })();
 </script>
 </body>
 </html>

@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cleveland Lithuanian Community Calendar</title>
+  <meta name="description" content="All Cleveland Lithuanian events in one place — CLAC, Lithuanians of Cleveland, St. Casimir Parish, and more.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    /* ── PAGE HERO ── */
+    .page-hero { background: var(--forest); padding: 60px 0 52px; position: relative; overflow: hidden; }
+    .page-hero::before { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(255,255,255,0.012) 60px,rgba(255,255,255,0.012) 61px),repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(255,255,255,0.012) 60px,rgba(255,255,255,0.012) 61px); pointer-events: none; }
+    .page-hero-inner { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 0 40px; display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 40px; }
+    .ph-overline { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--amber); display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .ph-overline::before { content: ''; width: 28px; height: 1px; background: var(--amber); display: block; }
+    .ph-title { font-family: 'Playfair Display', serif; font-size: clamp(32px, 4vw, 54px); font-weight: 900; color: var(--cream); line-height: 1.05; }
+    .ph-sub { font-size: 15px; color: rgba(242,237,228,0.6); margin-top: 12px; font-weight: 300; max-width: 520px; line-height: 1.65; }
+    .ph-sources { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+    .source-pill { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; padding: 5px 12px; border: 1px solid rgba(255,255,255,0.18); color: rgba(242,237,228,0.6); display: flex; align-items: center; gap: 6px; }
+    .source-pill .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .ph-stats { text-align: right; }
+    .ph-stat-num { font-family: 'Playfair Display', serif; font-size: 42px; font-weight: 900; color: var(--amber-light); line-height: 1; }
+    .ph-stat-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(242,237,228,0.4); margin-top: 4px; }
+
+    /* ── CONTROLS ── */
+    .controls-bar { background: var(--white); border-bottom: 1px solid var(--rule); padding: 0 40px; position: sticky; top: 56px; z-index: 90; display: flex; align-items: stretch; gap: 0; justify-content: space-between; }
+    .filter-tabs { display: flex; }
+    .filter-tab { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; padding: 0 20px; height: 48px; display: flex; align-items: center; gap: 8px; cursor: pointer; border-bottom: 2px solid transparent; color: var(--text-muted); background: none; border-top: none; border-left: none; border-right: none; transition: all 0.15s; white-space: nowrap; }
+    .filter-tab:hover { color: var(--text-dark); }
+    .filter-tab.active { color: var(--forest); border-bottom-color: var(--amber); }
+    .filter-tab .count { background: var(--cream-dark); color: var(--text-muted); font-size: 10px; padding: 2px 6px; border-radius: 10px; min-width: 20px; text-align: center; }
+    .filter-tab.active .count { background: var(--amber); color: var(--forest); }
+    .view-toggle { display: flex; align-items: center; gap: 4px; padding: 0 0 0 16px; border-left: 1px solid var(--rule); }
+    .view-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid transparent; color: var(--text-faint); font-size: 16px; background: none; transition: all 0.15s; }
+    .view-btn.active { background: var(--forest); color: var(--amber); border-color: var(--forest); }
+
+    /* ── CONTENT AREA ── */
+    .content-area { max-width: 1280px; margin: 0 auto; padding: 40px 40px; }
+
+    /* ── STATUS BAR ── */
+    .status-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; font-size: 13px; color: var(--text-muted); }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-faint); flex-shrink: 0; }
+    .status-dot.live { background: #27ae60; animation: pulse 2s ease infinite; }
+    .status-dot.loading { background: var(--amber); animation: pulse 1s ease infinite; }
+    .status-dot.error { background: var(--red); }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .refresh-btn { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); cursor: pointer; background: none; border: none; padding: 0; margin-left: auto; }
+    .refresh-btn:hover { opacity: 0.7; }
+
+    /* ── LIST VIEW ── */
+    .event-list { display: flex; flex-direction: column; gap: 0; }
+    .event-row { display: grid; grid-template-columns: 80px 1fr auto; gap: 24px; align-items: start; padding: 20px 0; border-bottom: 1px solid var(--rule); text-decoration: none; color: inherit; transition: background 0.15s, padding-left 0.15s; cursor: pointer; }
+    .event-row:first-child { border-top: 1px solid var(--rule); }
+    .event-row:hover { background: rgba(200,144,58,0.04); padding-left: 6px; }
+    .er-date { text-align: center; }
+    .er-date-box { display: inline-block; background: var(--forest); color: var(--cream); padding: 8px 10px; min-width: 64px; }
+    .er-month { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--amber-light); }
+    .er-day { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 900; line-height: 1; margin-top: 2px; }
+    .er-info {}
+    .er-source-badge { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; padding: 2px 8px; border: 1px solid; display: inline-block; margin-bottom: 6px; }
+    .er-title { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: var(--text-dark); line-height: 1.25; }
+    .er-meta { font-size: 12px; color: var(--text-muted); margin-top: 5px; display: flex; gap: 14px; flex-wrap: wrap; font-family: 'DM Mono', monospace; letter-spacing: 0.02em; }
+    .er-desc { font-size: 13px; color: var(--text-muted); margin-top: 5px; line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .er-actions { display: flex; flex-direction: column; gap: 6px; align-self: center; }
+    .er-link { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 6px 12px; border: 1px solid var(--rule); color: var(--text-muted); text-decoration: none; white-space: nowrap; display: block; text-align: center; transition: all 0.15s; }
+    .er-link:hover { border-color: var(--amber); color: var(--amber); }
+    .er-link.primary { background: var(--amber); color: var(--forest); border-color: var(--amber); }
+
+    /* ── GRID VIEW ── */
+    .event-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+    .event-grid-card { position: relative; overflow: hidden; aspect-ratio: 3/4; display: flex; flex-direction: column; justify-content: flex-end; text-decoration: none; cursor: pointer; }
+    .event-grid-card:hover .egc-bg { transform: scale(1.04); }
+    .egc-bg { position: absolute; inset: 0; transition: transform 0.35s ease; }
+    .egc-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,18,11,0.94) 0%, rgba(10,18,11,0.2) 60%, transparent 100%); }
+    .egc-content { position: relative; z-index: 2; padding: 20px 22px; }
+    .egc-badge { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; padding: 3px 8px; border: 1px solid; display: inline-block; margin-bottom: 8px; }
+    .egc-title { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--cream); line-height: 1.2; }
+    .egc-meta { font-size: 11px; color: rgba(242,237,228,0.5); margin-top: 6px; font-family: 'DM Mono', monospace; }
+
+    /* ── MONTH DIVIDERS ── */
+    .month-divider { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--text-dark); padding: 28px 0 12px; border-bottom: 2px solid var(--forest); margin-bottom: 4px; display: flex; justify-content: space-between; align-items: baseline; }
+    .month-divider span { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-faint); font-weight: 400; }
+
+    /* ── EMPTY / LOADING ── */
+    .feed-state { padding: 80px 40px; text-align: center; }
+    .feed-state-icon { font-size: 40px; color: var(--text-faint); margin-bottom: 16px; }
+    .feed-state-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px; }
+    .feed-state-sub { font-size: 14px; color: var(--text-muted); }
+    .skeleton { background: linear-gradient(90deg, var(--cream-dark) 25%, var(--cream) 50%, var(--cream-dark) 75%); background-size: 200% 100%; animation: shimmer 1.4s ease infinite; border-radius: 2px; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    /* ── SOURCE LEGEND ── */
+    .source-legend { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 24px; padding: 16px 20px; background: var(--white); border: 1px solid var(--rule); }
+    .sl-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); }
+    .sl-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .sl-link { color: var(--amber); text-decoration: none; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.08em; }
+    .sl-link:hover { text-decoration: underline; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) { .event-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 768px) {
+      .page-hero-inner { grid-template-columns: 1fr; }
+      .ph-stats { display: none; }
+      .controls-bar { padding: 0 20px; overflow-x: auto; }
+      .content-area { padding: 24px 20px; }
+      .event-row { grid-template-columns: 64px 1fr; }
+      .er-actions { display: none; }
+      .event-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div>Cleveland, Ohio — Est. 1951 &nbsp;·&nbsp; <a href="https://javlb.lt/en/" target="_blank">Part of Lithuanian American Community, Inc.</a></div>
+  <div class="topbar-social">
+    <a href="https://www.facebook.com/profile.php?id=61565856471983" target="_blank">Facebook</a>
+    <a href="https://www.instagram.com/cleveland_lietuviu_bendruomene" target="_blank">Instagram</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="main-nav" id="main-nav">
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-en">Cleveland Lithuanian American Community</div>
+    <div class="nav-logo-lt">Clevelando Lietuvių Bendruomenė</div>
+  </a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="community.html" class="active">Community Calendar</a></li>
+    <li><a href="index.html#journal">Journal</a></li>
+    <li><a href="index.html#announcements">News</a></li>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="nav-lang">
+      <button class="lang-btn active">EN</button>
+      <button class="lang-btn">LT</button>
+    </div>
+    <div class="hamburger" onclick="document.getElementById('nav-links').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div>
+      <div class="ph-overline">Cleveland Lithuanian Community</div>
+      <h1 class="ph-title">Community Calendar</h1>
+      <p class="ph-sub">All Cleveland Lithuanian events in one place — pulled live from every active organization in our community.</p>
+      <div class="ph-sources">
+        <div class="source-pill"><span class="dot" style="background:#6db87a;"></span>CLAC — Bendruomenė</div>
+        <div class="source-pill"><span class="dot" style="background:#7aace0;"></span>Lithuanians of Cleveland</div>
+        <div class="source-pill"><span class="dot" style="background:#e0b07a;"></span>St. Casimir Parish</div>
+      </div>
+    </div>
+    <div class="ph-stats">
+      <div class="ph-stat-num" id="total-count">—</div>
+      <div class="ph-stat-label">Upcoming Events</div>
+    </div>
+  </div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker"><div class="ticker-inner" id="ticker-inner">Loading community events...</div></div>
+
+<!-- CONTROLS -->
+<div class="controls-bar">
+  <div class="filter-tabs">
+    <button class="filter-tab active" data-filter="all" onclick="setFilter('all', this)">
+      All Sources <span class="count" id="count-all">—</span>
+    </button>
+    <button class="filter-tab" data-filter="clac" onclick="setFilter('clac', this)">
+      ★ CLAC <span class="count" id="count-clac">—</span>
+    </button>
+    <button class="filter-tab" data-filter="ltcle" onclick="setFilter('ltcle', this)">
+      ltcle.org <span class="count" id="count-ltcle">—</span>
+    </button>
+    <button class="filter-tab" data-filter="stcasimir" onclick="setFilter('stcasimir', this)">
+      St. Casimir <span class="count" id="count-stcasimir">—</span>
+    </button>
+  </div>
+  <div class="view-toggle">
+    <button class="view-btn active" id="btn-list" onclick="setView('list')" title="List view">☰</button>
+    <button class="view-btn" id="btn-grid" onclick="setView('grid')" title="Grid view">⊞</button>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content-area">
+
+  <!-- SOURCE LEGEND -->
+  <div class="source-legend">
+    <div class="sl-item"><div class="sl-dot" style="background:#6db87a;"></div> <strong>★ CLAC</strong> — our own events</div>
+    <div class="sl-item"><div class="sl-dot" style="background:#7aace0;"></div> <a href="https://ltcle.org" target="_blank" class="sl-link">ltcle.org ↗</a> — Lithuanians of Cleveland community calendar</div>
+    <div class="sl-item"><div class="sl-dot" style="background:#e0b07a;"></div> <a href="http://www.saintcasimirparish.org" target="_blank" class="sl-link">saintcasimirparish.org ↗</a> — St. Casimir Parish, 18022 Neff Rd</div>
+    <div style="margin-left:auto; font-size:12px; color:var(--text-faint); align-self:center;">Updated every 30 min</div>
+  </div>
+
+  <!-- STATUS -->
+  <div class="status-bar">
+    <div class="status-dot loading" id="status-dot"></div>
+    <span id="status-text">Loading events from all sources...</span>
+    <button class="refresh-btn" onclick="loadFeed(true)">↻ Refresh</button>
+  </div>
+
+  <!-- EVENT FEED -->
+  <div id="feed-container">
+    <!-- Skeleton loading state -->
+    <div id="feed-skeleton">
+      <div style="border-top:1px solid var(--rule);">
+        ${[...Array(5)].map(() => `
+        <div style="display:grid; grid-template-columns:80px 1fr; gap:24px; padding:20px 0; border-bottom:1px solid var(--rule);">
+          <div><div class="skeleton" style="width:64px; height:72px;"></div></div>
+          <div>
+            <div class="skeleton" style="width:80px; height:14px; margin-bottom:10px;"></div>
+            <div class="skeleton" style="width:70%; height:20px; margin-bottom:8px;"></div>
+            <div class="skeleton" style="width:50%; height:14px;"></div>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div id="feed-content" style="display:none;"></div>
+  </div>
+
+</div>
+
+<!-- NEWSLETTER -->
+<div class="newsletter-strip">
+  <div class="newsletter-inner">
+    <div>
+      <div class="newsletter-heading">Stay in the loop.<br>Likite prisijungę.</div>
+      <div class="newsletter-sub">Get community event updates delivered to your inbox.</div>
+    </div>
+    <div class="newsletter-form">
+      <input type="email" class="newsletter-input" placeholder="Your email address">
+      <button class="newsletter-submit">Subscribe →</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="main-footer">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-name">Cleveland Lithuanian American Community</div>
+      <div class="footer-brand-lt">Clevelando Lietuvių Bendruomenė</div>
+      <div class="footer-desc">Community calendar aggregates events from CLAC, <a href="https://ltcle.org" style="color:var(--amber);">ltcle.org</a>, and St. Casimir Parish.</div>
+    </div>
+    <div>
+      <div class="footer-col-title">Navigate</div>
+      <ul class="footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="community.html">Community Calendar</a></li>
+        <li><a href="index.html#journal">Photo Journal</a></li>
+        <li><a href="index.html#announcements">News</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Community Partners</div>
+      <ul class="footer-links">
+        <li><a href="https://ltcle.org" target="_blank">Lithuanians of Cleveland ↗</a></li>
+        <li><a href="http://www.saintcasimirparish.org" target="_blank">St. Casimir Parish ↗</a></li>
+        <li><a href="https://javlb.lt/en/" target="_blank">National LAC ↗</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Connect</div>
+      <ul class="footer-links">
+        <li><a href="https://www.facebook.com/profile.php?id=61565856471983" target="_blank">Facebook</a></li>
+        <li><a href="https://www.instagram.com/cleveland_lietuviu_bendruomene" target="_blank">Instagram</a></li>
+        <li><a href="admin/index.html">Board Login</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2025 Cleveland Lithuanian American Community, Inc.</div>
+    <div style="font-family:'DM Mono',monospace; font-size:11px; color:rgba(242,237,228,0.3);">Vienybėje Mūsų Stiprybė</div>
+  </div>
+</footer>
+
+<script src="assets/data.js"></script>
+<script src="assets/feed.js"></script>
+<script>
+  let currentFilter = 'all';
+  let currentView   = 'list';
+  let allEvents     = [];
+
+  // ── SOURCE BADGE COLORS ──────────────────────────────────────────────────
+  const BADGE_COLORS = {
+    clac:      { text: '#6db87a', border: '#6db87a', bg: 'rgba(109,184,122,0.1)' },
+    ltcle:     { text: '#7aace0', border: '#7aace0', bg: 'rgba(122,172,224,0.1)' },
+    stcasimir: { text: '#e0b07a', border: '#e0b07a', bg: 'rgba(224,176,122,0.1)' },
+  };
+
+  function badgeStyle(source) {
+    const c = BADGE_COLORS[source] || BADGE_COLORS.ltcle;
+    return `color:${c.text}; border-color:${c.border}; background:${c.bg};`;
+  }
+
+  // ── FILTER & VIEW ────────────────────────────────────────────────────────
+  function setFilter(filter, btn) {
+    currentFilter = filter;
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    renderFeed();
+  }
+
+  function setView(view) {
+    currentView = view;
+    document.getElementById('btn-list').classList.toggle('active', view === 'list');
+    document.getElementById('btn-grid').classList.toggle('active', view === 'grid');
+    renderFeed();
+  }
+
+  function getFiltered() {
+    if (currentFilter === 'all') return allEvents;
+    return allEvents.filter(e => e.source === currentFilter);
+  }
+
+  // ── RENDER ───────────────────────────────────────────────────────────────
+  function renderFeed() {
+    const events    = getFiltered();
+    const container = document.getElementById('feed-content');
+
+    if (!events.length) {
+      container.innerHTML = `
+        <div class="feed-state">
+          <div class="feed-state-icon">◈</div>
+          <div class="feed-state-title">No events found</div>
+          <div class="feed-state-sub">${currentFilter === 'all' ? 'Check back soon — events load live from all sources.' : 'No upcoming events from this source right now.'}</div>
+        </div>`;
+      return;
+    }
+
+    if (currentView === 'grid') {
+      renderGrid(events, container);
+    } else {
+      renderList(events, container);
+    }
+  }
+
+  function renderList(events, container) {
+    // Group by month
+    const byMonth = {};
+    events.forEach(e => {
+      const d     = new Date(e.date + 'T12:00:00');
+      const key   = d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+      if (!byMonth[key]) byMonth[key] = [];
+      byMonth[key].push(e);
+    });
+
+    let html = '<div class="event-list">';
+    let first = true;
+
+    Object.entries(byMonth).forEach(([month, evts]) => {
+      html += `<div class="month-divider">${month} <span>${evts.length} event${evts.length !== 1 ? 's' : ''}</span></div>`;
+      evts.forEach(e => {
+        const md      = CLAC.monthDay(e.date);
+        const bstyle  = badgeStyle(e.source);
+        const isOwn   = e.source === 'clac';
+        const linkUrl = e.url || '#';
+        const target  = isOwn ? '' : 'target="_blank" rel="noopener"';
+
+        html += `
+          <a class="event-row" href="${linkUrl}" ${target}>
+            <div class="er-date">
+              <div class="er-date-box">
+                <div class="er-month">${md.month}</div>
+                <div class="er-day">${md.day}</div>
+              </div>
+            </div>
+            <div class="er-info">
+              <span class="er-source-badge" style="${bstyle}">${e.sourceBadge}</span>
+              <div class="er-title">${e.title}</div>
+              <div class="er-meta">
+                ${e.time ? `<span>🕐 ${e.time}${e.endTime ? ' – ' + e.endTime : ''}</span>` : ''}
+                ${e.location ? `<span>📍 ${e.location}</span>` : ''}
+              </div>
+              ${e.description ? `<div class="er-desc">${e.description}</div>` : ''}
+            </div>
+            <div class="er-actions">
+              ${isOwn
+                ? `<a href="${linkUrl}" class="er-link primary">Details →</a>`
+                : `<a href="${linkUrl}" target="_blank" rel="noopener" class="er-link">View on ${e.sourceName.split(' ')[0]} ↗</a>`
+              }
+            </div>
+          </a>`;
+      });
+      first = false;
+    });
+
+    html += '</div>';
+    container.innerHTML = html;
+  }
+
+  function renderGrid(events, container) {
+    container.innerHTML = `
+      <div class="event-grid">
+        ${events.map(e => {
+          const bstyle  = badgeStyle(e.source);
+          const linkUrl = e.url || '#';
+          const target  = e.source === 'clac' ? '' : 'target="_blank" rel="noopener"';
+          const angle   = Math.floor(Math.random() * 60) + 20;
+          return `
+            <a class="event-grid-card" href="${linkUrl}" ${target}>
+              <div class="egc-bg" style="background:${e.coverColor}; background-image:repeating-linear-gradient(${angle}deg,transparent,transparent 12px,rgba(255,255,255,0.018) 12px,rgba(255,255,255,0.018) 13px);"></div>
+              <div class="egc-overlay"></div>
+              <div class="egc-content">
+                <span class="egc-badge" style="${bstyle}">${e.sourceBadge}</span>
+                <div class="egc-title">${e.title}</div>
+                <div class="egc-meta">${CLAC.formatDateShort(e.date)}${e.location ? ' · ' + e.location.split(',')[0] : ''}</div>
+              </div>
+            </a>`;
+        }).join('')}
+      </div>`;
+  }
+
+  // ── UPDATE COUNTS ────────────────────────────────────────────────────────
+  function updateCounts(events) {
+    const counts = { all: events.length, clac: 0, ltcle: 0, stcasimir: 0 };
+    events.forEach(e => { if (counts[e.source] !== undefined) counts[e.source]++; });
+    Object.entries(counts).forEach(([k, v]) => {
+      const el = document.getElementById(`count-${k}`);
+      if (el) el.textContent = v;
+    });
+    document.getElementById('total-count').textContent = events.length;
+  }
+
+  // ── TICKER ───────────────────────────────────────────────────────────────
+  function buildTicker(events) {
+    const items   = events.slice(0, 6).map(e => `${e.sourceBadge}: ${e.title} — ${CLAC.formatDateShort(e.date)}`);
+    const text    = items.join('  ◆  ');
+    const doubled = text + '  ◆  ' + text;
+    document.getElementById('ticker-inner').textContent = doubled;
+  }
+
+  // ── STATUS ───────────────────────────────────────────────────────────────
+  function setStatus(state, msg) {
+    const dot  = document.getElementById('status-dot');
+    const text = document.getElementById('status-text');
+    dot.className  = `status-dot ${state}`;
+    text.textContent = msg;
+  }
+
+  // ── LOAD ─────────────────────────────────────────────────────────────────
+  async function loadFeed(force = false) {
+    setStatus('loading', 'Loading events from all sources...');
+    document.getElementById('feed-skeleton').style.display = 'block';
+    document.getElementById('feed-content').style.display  = 'none';
+
+    try {
+      const events = await CommunityFeed.load(force);
+      allEvents = events;
+
+      document.getElementById('feed-skeleton').style.display = 'none';
+      document.getElementById('feed-content').style.display  = 'block';
+
+      updateCounts(events);
+      renderFeed();
+      buildTicker(events);
+
+      const ltcleCount = events.filter(e => e.source === 'ltcle').length;
+      const clacCount  = events.filter(e => e.source === 'clac').length;
+      const parts = [];
+      if (clacCount)  parts.push(`${clacCount} CLAC`);
+      if (ltcleCount) parts.push(`${ltcleCount} from ltcle.org`);
+
+      setStatus('live', `${events.length} upcoming events — ${parts.join(', ')}. Auto-refreshes every 30 min.`);
+
+    } catch (err) {
+      setStatus('error', 'Some sources could not be loaded. Showing what we have.');
+      document.getElementById('feed-skeleton').style.display = 'none';
+      document.getElementById('feed-content').style.display  = 'block';
+    }
+  }
+
+  // ── STICKY NAV ───────────────────────────────────────────────────────────
+  window.addEventListener('scroll', () => {
+    document.getElementById('main-nav').style.boxShadow =
+      window.scrollY > 60 ? '0 1px 20px rgba(0,0,0,0.08)' : 'none';
+  });
+
+  // ── INIT ─────────────────────────────────────────────────────────────────
+  // Build skeleton HTML inline (template literal above was just for demo)
+  document.getElementById('feed-skeleton').innerHTML = `
+    <div style="border-top:1px solid var(--rule);">
+      ${Array(6).fill('').map(() => `
+      <div style="display:grid; grid-template-columns:80px 1fr; gap:24px; padding:22px 0; border-bottom:1px solid var(--rule);">
+        <div><div class="skeleton" style="width:64px; height:72px;"></div></div>
+        <div>
+          <div class="skeleton" style="width:70px; height:12px; margin-bottom:10px;"></div>
+          <div class="skeleton" style="width:65%; height:18px; margin-bottom:8px;"></div>
+          <div class="skeleton" style="width:45%; height:12px;"></div>
+        </div>
+      </div>`).join('')}
+    </div>`;
+
+  loadFeed();
+</script>
+</body>
+</html>
