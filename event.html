@@ -486,8 +486,8 @@ const CLAC = {
   const eventId = params.get('id');
   const PALETTES = ['#2d4a33','#3d2e1a','#1e2e3a','#2a1e2e','#2e3a1e','#3a3010','#1a3038','#38281a'];
 
-  function buildPage() {
-    const event = eventId ? CLAC.events.get(eventId) : null;
+  async function buildPage() {
+    const event = eventId ? await CLAC.events.get(eventId) : null;
     if (!event) {
       document.getElementById('event-title').textContent = 'Event Not Found';
       document.getElementById('event-desc').innerHTML   = '<p>This event could not be found. <a href="index.html" style="color:var(--amber);">Return to the homepage.</a></p>';
@@ -642,7 +642,7 @@ const CLAC = {
       window.scrollY > 60 ? '0 1px 20px rgba(0,0,0,0.08)' : 'none';
   });
 
-  buildPage();
+  CLAC.ready().then(() => buildPage());
 </script>
 <script>
 (function() {
