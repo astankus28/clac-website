@@ -3884,6 +3884,235 @@ function autoOpenGroupForPage(pageName) {
   document.getElementById('sidebar-overlay').classList.remove('show');
 }
 
+
+// ── GRANT TRACKER ─────────────────────────────────────────────────────────────
+let _grantEditingId = null;
+let _currentGrantId = null;
+
+const GRANT_STATUS_COLORS = {
+  researching:'#6b7280', drafting:'#d97706', submitted:'#2563eb',
+  awarded:'#16a34a', declined:'#dc2626', not_eligible:'#9ca3af', recurring:'#7c3aed'
+};
+const GRANT_STATUS_LABELS = {
+  researching:'Researching', drafting:'Drafting', submitted:'Submitted',
+  awarded:'Awarded', declined:'Declined', not_eligible:'Not Eligible', recurring:'Recurring'
+};
+const GRANT_PRIORITY_COLORS = { high:'#dc2626', medium:'#d97706', low:'#6b7280' };
+
+function toggleGrantForm(forceOpen) {
+  const fields = document.getElementById('grant-form-fields');
+  if (!fields) return;
+  const show = (forceOpen === true) || fields.style.display === 'none';
+  fields.style.display = show ? 'block' : 'none';
+  if (show) {
+    _grantEditingId = null;
+    ['gf-funder','gf-name','gf-amount-min','gf-amount-max','gf-amount-notes',
+     'gf-deadline','gf-deadline-notes','gf-notes','gf-contact-name','gf-contact-email',
+     'gf-funder-url','gf-drive-url','gf-assigned','gf-award-amount'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value = '';
+    });
+    const st = document.getElementById('gf-status');   if (st) st.value = 'researching';
+    const pr = document.getElementById('gf-priority'); if (pr) pr.value = 'medium';
+    const el = document.getElementById('gf-eligible'); if (el) el.value = 'yes';
+    const t  = document.getElementById('grant-form-title'); if (t) t.textContent = 'New Grant';
+    fields.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+function cancelGrantEdit() {
+  const f = document.getElementById('grant-form-fields');
+  if (f) f.style.display = 'none';
+  _grantEditingId = null;
+}
+
+async function saveGrant() {
+  const funder = document.getElementById('gf-funder').value.trim();
+  const name   = document.getElementById('gf-name').value.trim();
+  if (!funder || !name) { showToast('⚠ Funder and grant name are required.'); return; }
+  const grant = {
+    id:             _grantEditingId || 'gr-' + Date.now().toString(36),
+    funder,
+    grant_name:     name,
+    amount_min:     parseInt(document.getElementById('gf-amount-min').value)    || null,
+    amount_max:     parseInt(document.getElementById('gf-amount-max').value)    || null,
+    amount_notes:   document.getElementById('gf-amount-notes').value.trim()     || null,
+    deadline:       document.getElementById('gf-deadline').value                || null,
+    deadline_notes: document.getElementById('gf-deadline-notes').value.trim()   || null,
+    status:         document.getElementById('gf-status').value,
+    priority:       document.getElementById('gf-priority').value,
+    eligible:       document.getElementById('gf-eligible').value,
+    funder_url:     document.getElementById('gf-funder-url').value.trim()       || null,
+    drive_url:      document.getElementById('gf-drive-url').value.trim()        || null,
+    notes:          document.getElementById('gf-notes').value.trim()            || null,
+    contact_name:   document.getElementById('gf-contact-name').value.trim()     || null,
+    contact_email:  document.getElementById('gf-contact-email').value.trim()    || null,
+    assigned_to:    document.getElementById('gf-assigned').value.trim()         || null,
+    award_amount:   parseInt(document.getElementById('gf-award-amount').value)  || null,
+    updated_at:     new Date().toISOString(),
+  };
+  await sbUpsert('grants', grant);
+  await logActivity(_grantEditingId ? 'updated' : 'created', 'grant', grant.id, `${funder} — ${name}`);
+  cancelGrantEdit();
+  await renderGrantsTable();
+  await renderGrantStats();
+  showToast('✓ Grant saved.');
+}
+
+async function editGrant(id) {
+  const data = await sbGet('grants', `?id=eq.${id}&select=*`);
+  const g = data && data[0]; if (!g) return;
+  _grantEditingId = id;
+  const set = (elId, val) => { const el = document.getElementById(elId); if (el) el.value = val || ''; };
+  set('gf-funder', g.funder); set('gf-name', g.grant_name);
+  set('gf-amount-min', g.amount_min); set('gf-amount-max', g.amount_max);
+  set('gf-amount-notes', g.amount_notes); set('gf-deadline', g.deadline);
+  set('gf-deadline-notes', g.deadline_notes); set('gf-notes', g.notes);
+  set('gf-contact-name', g.contact_name); set('gf-contact-email', g.contact_email);
+  set('gf-funder-url', g.funder_url); set('gf-drive-url', g.drive_url);
+  set('gf-assigned', g.assigned_to); set('gf-award-amount', g.award_amount);
+  const st = document.getElementById('gf-status');   if (st) st.value = g.status || 'researching';
+  const pr = document.getElementById('gf-priority'); if (pr) pr.value = g.priority || 'medium';
+  const el = document.getElementById('gf-eligible'); if (el) el.value = g.eligible || 'yes';
+  const t  = document.getElementById('grant-form-title'); if (t) t.textContent = 'Edit Grant';
+  toggleGrantForm(true);
+}
+
+async function deleteGrant(id) {
+  if (!confirm('Delete this grant?')) return;
+  await logActivity('deleted', 'grant', id);
+  await sbDelete('grants', id);
+  closeGrantDetail();
+  await renderGrantsTable();
+  await renderGrantStats();
+  showToast('✓ Grant deleted.');
+}
+
+async function renderGrantStats() {
+  const el = document.getElementById('grant-stats');
+  if (!el) return;
+  const all = await sbGet('grants', '?select=status,amount_max,award_amount') || [];
+  const awarded = all.filter(g => g.status === 'awarded');
+  const awardedTotal = awarded.reduce((s,g) => s + (g.award_amount || g.amount_max || 0), 0);
+  el.innerHTML = `
+    <div class="stat-card"><div class="sc-label">Total Grants</div><div class="sc-value">${all.length}</div><div class="sc-sub">${all.filter(g=>['researching','drafting','submitted'].includes(g.status)).length} active</div></div>
+    <div class="stat-card"><div class="sc-label">Awarded</div><div class="sc-value">${awarded.length}</div><div class="sc-sub" style="color:#16a34a;">$${awardedTotal.toLocaleString()} received</div></div>
+    <div class="stat-card"><div class="sc-label">Submitted</div><div class="sc-value">${all.filter(g=>g.status==='submitted').length}</div><div class="sc-sub">Awaiting decision</div></div>
+    <div class="stat-card"><div class="sc-label">Drafting</div><div class="sc-value">${all.filter(g=>g.status==='drafting').length}</div><div class="sc-sub">In progress</div></div>`;
+}
+
+async function renderGrantsTable() {
+  const sf = document.getElementById('grant-filter-status');
+  const pf = document.getElementById('grant-filter-priority');
+  const tbody = document.getElementById('grants-tbody');
+  if (!sf || !pf || !tbody) return;
+  let params = '?select=*&order=deadline.asc.nullslast,priority.asc';
+  if (sf.value !== 'all') params += `&status=eq.${sf.value}`;
+  if (pf.value !== 'all') params += `&priority=eq.${pf.value}`;
+  const grants = await sbGet('grants', params);
+  if (!grants || !grants.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="padding:32px;text-align:center;color:var(--text-muted);font-size:13px;">No grants yet. Click + Add Grant to get started.</td></tr>';
+    return;
+  }
+  const today = new Date();
+  tbody.innerHTML = grants.map(g => {
+    const sc = GRANT_STATUS_COLORS[g.status]||'#6b7280';
+    const pc = GRANT_PRIORITY_COLORS[g.priority]||'#6b7280';
+    const sl = GRANT_STATUS_LABELS[g.status]||g.status;
+    let dl = '<span style="color:var(--text-faint);">—</span>';
+    if (g.deadline) {
+      const d = new Date(g.deadline+'T12:00:00');
+      const days = Math.ceil((d-today)/(1000*60*60*24));
+      const ds = d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+      const urg = days<0?'color:#dc2626;':days<30?'color:#d97706;font-weight:600;':'';
+      dl = `<div style="font-size:13px;${urg}">${ds}</div>`;
+      if (days>=0&&days<60) dl+=`<div style="font-size:11px;color:${days<30?'#d97706':'var(--text-faint)'};font-family:'DM Mono',monospace;">${days}d left</div>`;
+      if (days<0) dl+=`<div style="font-size:11px;color:#dc2626;font-family:'DM Mono',monospace;">Passed</div>`;
+    } else if (g.deadline_notes) dl=`<div style="font-size:12px;color:var(--text-muted);">${g.deadline_notes}</div>`;
+    let amt = '<span style="color:var(--text-faint);">—</span>';
+    if (g.award_amount) amt=`<div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#16a34a;">$${g.award_amount.toLocaleString()}</div><div style="font-size:10px;color:#16a34a;font-family:'DM Mono',monospace;text-transform:uppercase;">Awarded</div>`;
+    else if (g.amount_max) { const r=g.amount_min&&g.amount_min!==g.amount_max?`$${g.amount_min.toLocaleString()}–$${g.amount_max.toLocaleString()}`:`Up to $${g.amount_max.toLocaleString()}`; amt=`<div style="font-size:13px;color:var(--text-dark);">${r}</div>`; }
+    else if (g.amount_notes) amt=`<div style="font-size:12px;color:var(--text-muted);">${g.amount_notes}</div>`;
+    return `<tr style="cursor:pointer;" onclick="openGrantDetail('${g.id}')">
+      <td><div class="td-title">${g.grant_name}</div><div class="td-meta">${g.funder}</div>${g.funder_url?`<a href="${g.funder_url}" target="_blank" onclick="event.stopPropagation()" style="font-family:'DM Mono',monospace;font-size:9px;color:var(--amber);text-transform:uppercase;">Website ↗</a>`:''}
+      </td>
+      <td>${amt}</td><td>${dl}</td>
+      <td><span style="display:inline-block;padding:3px 10px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;background:${sc}18;color:${sc};border:1px solid ${sc}40;">${sl}</span></td>
+      <td><span style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;color:${pc};font-weight:600;">${g.priority}</span></td>
+      <td><span style="font-size:12px;color:var(--text-muted);">${g.assigned_to||'—'}</span></td>
+      <td onclick="event.stopPropagation()"><div class="row-actions">
+        <button class="row-btn" onclick="editGrant('${g.id}')">Edit</button>
+        <button class="row-btn del" onclick="deleteGrant('${g.id}')">Delete</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+async function openGrantDetail(id) {
+  _currentGrantId = id;
+  const data = await sbGet('grants', `?id=eq.${id}&select=*`);
+  const g = data && data[0]; if (!g) return;
+  const sc = GRANT_STATUS_COLORS[g.status]||'#6b7280';
+  const sl = GRANT_STATUS_LABELS[g.status]||g.status;
+  document.getElementById('gd-title').textContent = `${g.funder} — ${g.grant_name}`;
+  document.getElementById('gd-details').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div><div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--amber);margin-bottom:4px;">Status</div>
+        <span style="padding:4px 12px;background:${sc}18;color:${sc};border:1px solid ${sc}40;font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;">${sl}</span></div>
+      ${g.deadline?`<div><div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--amber);margin-bottom:4px;">Deadline</div><div style="font-size:14px;">${new Date(g.deadline+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</div></div>`:''}
+      ${g.amount_max||g.award_amount?`<div><div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--amber);margin-bottom:4px;">${g.award_amount?'Award Amount':'Grant Amount'}</div><div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:${g.award_amount?'#16a34a':'var(--text-dark)'};">$${(g.award_amount||g.amount_max).toLocaleString()}</div></div>`:''}
+      ${g.eligible?`<div><div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--amber);margin-bottom:4px;">Eligible</div><div style="font-size:14px;text-transform:capitalize;">${g.eligible}</div></div>`:''}
+      ${g.assigned_to?`<div><div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--amber);margin-bottom:4px;">Assigned To</div><div style="font-size:14px;">${g.assigned_to}</div></div>`:''}
+      ${g.notes?`<div><div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--amber);margin-bottom:4px;">Notes</div><div style="font-size:13px;line-height:1.6;color:var(--text-body);">${g.notes.replace(/\n/g,'<br>')}</div></div>`:''}
+      <div style="display:flex;gap:8px;flex-wrap:wrap;padding-top:8px;border-top:1px solid var(--rule);">
+        ${g.funder_url?`<a href="${g.funder_url}" target="_blank" class="btn-sm">Funder Website ↗</a>`:''}
+        ${g.drive_url?`<a href="${g.drive_url}" target="_blank" class="btn-sm">Google Drive ↗</a>`:''}
+        <button class="btn-sm primary" onclick="editGrant('${g.id}');closeGrantDetail();">Edit Grant →</button>
+        <button class="btn-sm" onclick="deleteGrant('${g.id}')" style="color:var(--red);border-color:rgba(192,57,43,0.3);">Delete</button>
+      </div>
+    </div>`;
+  await renderGrantNotes(id);
+  const panel = document.getElementById('grant-detail-panel');
+  panel.style.display = 'block';
+  panel.scrollIntoView({ behavior: 'smooth' });
+}
+
+function closeGrantDetail() {
+  const p = document.getElementById('grant-detail-panel');
+  if (p) p.style.display = 'none';
+  _currentGrantId = null;
+}
+
+async function renderGrantNotes(grantId) {
+  const notes = await sbGet('grant_notes', `?grant_id=eq.${grantId}&order=created_at.asc`);
+  const feed  = document.getElementById('gd-notes-feed');
+  if (!feed) return;
+  if (!notes || !notes.length) { feed.innerHTML = '<div style="font-size:13px;color:var(--text-faint);padding:8px 0;">No notes yet.</div>'; return; }
+  feed.innerHTML = notes.map(n => {
+    const d = new Date(n.created_at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+    return `<div style="padding:10px 0;border-bottom:1px solid var(--rule);">
+      <div style="font-size:13px;color:var(--text-body);line-height:1.6;margin-bottom:4px;">${n.body.replace(/\n/g,'<br>')}</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-faint);">${n.author||'admin'} · ${d}</div>
+    </div>`;
+  }).join('');
+}
+
+async function addGrantNote() {
+  if (!_currentGrantId) return;
+  const input = document.getElementById('gd-note-input');
+  const body  = input ? input.value.trim() : '';
+  if (!body) return;
+  await sbUpsert('grant_notes', {
+    id: 'gn-'+Date.now().toString(36),
+    grant_id: _currentGrantId,
+    author: currentUser ? currentUser.name : 'admin',
+    body,
+  });
+  await logActivity('updated', 'grant', _currentGrantId, `Note: ${body.slice(0,60)}`);
+  input.value = '';
+  await renderGrantNotes(_currentGrantId);
+  showToast('✓ Note added.');
+}
+
 // ── TOAST ─────────────────────────────────────────────────
 let toastTimer;
 function showToast(msg) {
