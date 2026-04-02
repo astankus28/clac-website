@@ -150,6 +150,7 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
       <a class="snav-item" onclick="showPage('quick-links')" href="#"><span class="snav-icon">⬡</span> Quick Links</a>
       <a class="snav-item" onclick="showPage('board')" href="#"><span class="snav-icon">◉</span> Board Members</a>
       <a class="snav-item" onclick="showPage('media')" href="#"><span class="snav-icon">▲</span> Media Library</a>
+      <a class="snav-item" onclick="showPage('gallery')" href="#"><span class="snav-icon">◈</span> Gallery</a>
       <a class="snav-item" onclick="showPage('users')" href="#"><span class="snav-icon">◈</span> Users</a>
       <a class="snav-item" onclick="showPage('settings')" href="#"><span class="snav-icon">⚙</span> Settings</a>
       <div class="snav-section">Board</div>
@@ -736,6 +737,49 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
           <thead><tr><th>Name</th><th>Email</th><th>Interests</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
           <tbody id="inq-tbody"></tbody>
         </table>
+      </div>
+    </div>
+
+
+    <!-- GALLERY MANAGEMENT -->
+    <div class="page" id="page-gallery">
+      <div style="margin-bottom:24px;"><div style="font-size:13px; color:var(--text-muted);">Manage the public photo gallery. Approve community submissions and add photos to events.</div></div>
+
+      <!-- SUBMISSIONS -->
+      <div class="settings-section">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div class="settings-section-title" style="margin:0;">Pending Submissions</div>
+          <span id="sub-count" style="font-family:'DM Mono',monospace; font-size:11px; color:var(--amber);"></span>
+        </div>
+        <div id="sub-feed" style="margin-top:16px;"></div>
+      </div>
+
+      <!-- ADD PHOTOS TO EVENT -->
+      <div class="settings-section">
+        <div class="settings-section-title">Add Photos to Event</div>
+        <div class="form-grid" style="margin-top:8px;">
+          <div class="form-group">
+            <label class="form-label">Select Event</label>
+            <select class="form-select" id="gal-event-select" onchange="loadGalleryEvent()">
+              <option value="">— Choose event —</option>
+            </select>
+          </div>
+          <div class="form-group" style="display:flex; align-items:flex-end;">
+            <button class="btn-sm primary" onclick="document.getElementById('gal-upload-input').click()">+ Upload Photos</button>
+            <input type="file" id="gal-upload-input" accept="image/*" multiple style="display:none" onchange="uploadGalleryPhotos(this.files)">
+          </div>
+        </div>
+        <div id="gal-event-photos" style="margin-top:16px;"></div>
+        <div id="gal-upload-status" style="font-family:'DM Mono',monospace; font-size:11px; color:var(--amber); margin-top:8px; display:none;"></div>
+      </div>
+
+      <!-- ALL GALLERY PHOTOS -->
+      <div class="settings-section">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div class="settings-section-title" style="margin:0;">All Gallery Photos</div>
+          <span id="gal-total" style="font-family:'DM Mono',monospace; font-size:11px; color:var(--text-muted);"></span>
+        </div>
+        <div id="gal-all-grid" style="display:grid; grid-template-columns:repeat(5,1fr); gap:6px; margin-top:16px;"></div>
       </div>
     </div>
 
@@ -1340,9 +1384,9 @@ if (_existingSession) {
 function doLogout() { CLAC.auth.logout(); window.location.href = 'index.html'; }
 
 // ── NAVIGATION ────────────────────────────────────────────
-const pages = ['dashboard','events','announcements','settings','page-content','quick-links','board','media','users','portal','inquiries','social','activity','calendar'];
-const pageTitles = { dashboard:'Dashboard', events:'Events', announcements:'Announcements', settings:'Settings', 'page-content':'Page Content', 'quick-links':'Quick Links', board:'Board Members', media:'Media Library', users:'Users & Security', portal:'Board Portal', inquiries:'Inquiries', social:'Social Media', activity:'Activity Log', calendar:'Content Calendar' };
-const topbarActions = { dashboard:'+ New Event', events:'+ New Event', announcements:'+ New Announcement', settings:'Save Settings', 'page-content':'Save Content', 'quick-links':'+ New Link', board:'+ New Member', media:'Upload Photos', users:'+ Add User', portal:'', inquiries:'', social:'Generate Post', activity:'', calendar:'✦ Generate Week' };
+const pages = ['dashboard','events','announcements','settings','page-content','quick-links','board','media','users','portal','inquiries','social','activity','calendar','gallery'];
+const pageTitles = { dashboard:'Dashboard', events:'Events', announcements:'Announcements', settings:'Settings', 'page-content':'Page Content', 'quick-links':'Quick Links', board:'Board Members', media:'Media Library', gallery:'Gallery', users:'Users & Security', portal:'Board Portal', inquiries:'Inquiries', social:'Social Media', activity:'Activity Log', calendar:'Content Calendar' };
+const topbarActions = { dashboard:'+ New Event', events:'+ New Event', announcements:'+ New Announcement', settings:'Save Settings', 'page-content':'Save Content', 'quick-links':'+ New Link', board:'+ New Member', media:'Upload Photos', gallery:'Upload Photos', users:'+ Add User', portal:'', inquiries:'', social:'Generate Post', activity:'', calendar:'✦ Generate Week' };
 
 async function showPage(name) {
   pages.forEach(p => {
@@ -1367,6 +1411,7 @@ async function showPage(name) {
   if (name === 'social') { await loadSocialEventList(); await renderSocialHistory(); }
   if (name === 'activity') await renderActivityLog();
   if (name === 'calendar') { await renderCalendarFeed(); await renderLibraryFeed(); }
+  if (name === 'gallery') await loadGalleryPage();
   // Update topbar action
   const btn = document.getElementById('topbar-action');
   btn.textContent = topbarActions[name] || '+ New';
