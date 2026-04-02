@@ -224,6 +224,114 @@ export default {
     }
 
 
+
+    // ── STRIPE WEBHOOK ────────────────────────────────────────────────────────
+    if (url.pathname === '/api/stripe-webhook' && request.method === 'POST') {
+      try {
+        const webhookSecret = env.STRIPE_WEBHOOK_SECRET;
+        const body          = await request.text();
+        const sig           = request.headers.get('stripe-signature');
+
+        // Verify webhook signature if secret is set
+        if (webhookSecret && sig) {
+          // Note: full crypto verification requires Web Crypto API
+          // Stripe signature verification is implemented below
+          const elements   = sig.split(',');
+          const timestamp  = elements.find(e => e.startsWith('t=')).slice(2);
+          const signatures = elements.filter(e => e.startsWith('v1=')).map(e => e.slice(3));
+
+          const encoder   = new TextEncoder();
+          const keyData   = encoder.encode(webhookSecret);
+          const msgData   = encoder.encode(`${timestamp}.${body}`);
+          const key       = await crypto.subtle.importKey('raw', keyData, { name:'HMAC', hash:'SHA-256' }, false, ['sign']);
+          const signature = await crypto.subtle.sign('HMAC', key, msgData);
+          const computed  = Array.from(new Uint8Array(signature)).map(b => b.toString(16).padStart(2,'0')).join('');
+
+          if (!signatures.includes(computed)) {
+            console.error('Invalid Stripe webhook signature');
+            return new Response('Invalid signature', { status: 400 });
+          }
+        }
+
+        const event = JSON.parse(body);
+        console.log('Stripe webhook:', event.type);
+
+        if (event.type === 'checkout.session.completed') {
+          const session    = event.data.object;
+          const donationId = session.metadata?.donation_id;
+          const fund       = session.metadata?.fund || 'general';
+          const amount     = Math.round(session.amount_total / 100);
+          const email      = session.customer_email || session.customer_details?.email || '';
+          const name       = session.metadata?.donor_name || session.customer_details?.name || '';
+
+          if (donationId) {
+            // Mark donation as completed
+            await fetch(`${SB_URL}/rest/v1/donations?id=eq.${donationId}`, {
+              method: 'PATCH',
+              headers: { ...SB_HEADERS, 'Prefer': 'return=minimal' },
+              body: JSON.stringify({ status: 'completed', stripe_session: session.id }),
+            });
+
+            // Update fundraising goal raised amount
+            const goals = await (await fetch(`${SB_URL}/rest/v1/fundraising_goals?fund_key=eq.${fund}&select=id,raised_amount`, { headers: SB_HEADERS })).json();
+            if (goals && goals[0]) {
+              await fetch(`${SB_URL}/rest/v1/fundraising_goals?id=eq.${goals[0].id}`, {
+                method: 'PATCH',
+                headers: { ...SB_HEADERS, 'Prefer': 'return=minimal' },
+                body: JSON.stringify({ raised_amount: (goals[0].raised_amount || 0) + amount }),
+              });
+            }
+
+            // Send thank you email via Resend
+            const resendKey = env.RESEND_API_KEY;
+            if (resendKey && email) {
+              const fundNames = { general:'General Community Fund', 'one-world-day':'One World Day 2026', 'saturday-school':'Lithuanian Saturday School', 'cultural-garden':'Cultural Garden Maintenance' };
+              await fetch('https://api.resend.com/emails', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  from:    'CLAC <onboarding@resend.dev>',
+                  to:      [email],
+                  subject: `Thank you for your donation, ${name || 'friend'}! — CLAC`,
+                  text:    `Dear ${name || 'Friend'},
+
+Thank you for your generous donation of $${amount} to the ${fundNames[fund] || 'Cleveland Lithuanian American Community'}.
+
+Your contribution helps preserve Lithuanian culture and heritage in Northeast Ohio. CLAC is a 501(c)(3) nonprofit organization — your donation is tax-deductible.
+
+Please keep this email as your donation receipt.
+
+Date: ${new Date().toLocaleDateString()}
+Amount: $${amount}
+Fund: ${fundNames[fund] || fund}
+Transaction ID: ${session.id}
+
+Ačiū — Thank you,
+Cleveland Lithuanian American Community
+clacleveland.org`,
+                }),
+              });
+            }
+
+            // Log activity
+            await sbInsert('activity_log', {
+              id:        'log-' + Date.now().toString(36),
+              user_name: 'stripe',
+              action:    'created',
+              entity:    'donation',
+              entity_id: donationId,
+              detail:    `$${amount} donation completed — ${fund} fund — ${email}`,
+            });
+          }
+        }
+
+        return new Response(JSON.stringify({ received: true }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+      } catch(e) {
+        console.error('Webhook error:', e);
+        return new Response('Webhook error', { status: 500 });
+      }
+    }
+
     // ── STRIPE DONATE ─────────────────────────────────────────────────────────
     if (url.pathname === '/api/stripe-donate' && request.method === 'POST') {
       try {

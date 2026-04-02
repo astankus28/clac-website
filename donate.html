@@ -179,7 +179,19 @@
         <div class="donate-error" id="donate-error"></div>
         <button class="donate-btn" id="donate-btn" onclick="processDonate()">Donate $50 →</button>
         <div class="stripe-note" id="stripe-note">Secure payment via Stripe · Tax-deductible receipt emailed</div>
-        <div class="stripe-note" id="no-stripe-note" style="display:none; color:var(--amber);">⚠ Online donations coming soon. Contact us at info@clacleveland.org to donate by check.</div>
+        <div class="stripe-note" id="no-stripe-note" style="display:none; color:var(--amber);">⚠ Stripe not configured — use options below.</div>
+
+        <div style="margin-top:16px; padding-top:16px; border-top:1px solid var(--rule);">
+          <div style="font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-muted); text-align:center; margin-bottom:12px;">— or donate via —</div>
+          <div style="display:flex; gap:8px;">
+            <a id="zeffy-donate-btn" href="#" target="_blank" onclick="return openZeffy()" style="flex:1; display:flex; align-items:center; justify-content:center; gap:8px; padding:12px; border:1px solid var(--rule); background:var(--white); text-decoration:none; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dark); transition:all 0.15s;" onmouseover="this.style.borderColor='var(--amber)'" onmouseout="this.style.borderColor='var(--rule)'">
+              <span style="font-size:16px;">🎟</span> Zeffy
+            </a>
+            <a id="paypal-donate-btn" href="#" target="_blank" style="flex:1; display:flex; align-items:center; justify-content:center; gap:8px; padding:12px; border:1px solid var(--rule); background:var(--white); text-decoration:none; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dark); transition:all 0.15s;" onmouseover="this.style.borderColor='#003087'" onmouseout="this.style.borderColor='var(--rule)'">
+              <span style="font-size:16px; color:#003087;">P</span> PayPal
+            </a>
+          </div>
+        </div>
       </div>
       <div class="donate-success" id="qd-success">
         <div class="donate-success-icon">🙏</div>
@@ -338,6 +350,7 @@ async function init() {
 
   await loadGoals();
   await loadSponsors();
+  await loadPaymentLinks();
 
   // Check for URL params (return from Stripe)
   const params = new URLSearchParams(window.location.search);
@@ -364,6 +377,32 @@ function selectCustom(btn) {
 function updateCustomAmount(val) {
   _selectedAmount = parseInt(val) || 0;
   document.getElementById('donate-btn').textContent = _selectedAmount > 0 ? `Donate $${_selectedAmount} →` : 'Donate →';
+}
+
+async function loadPaymentLinks() {
+  const settings = await sbGet('settings', '?key=in.(zeffyDonateUrl,paypalDonateUrl)&select=key,value');
+  const sMap = {};
+  (settings||[]).forEach(s => sMap[s.key] = s.value);
+
+  const zeffyUrl  = sMap.zeffyDonateUrl  || '';
+  const paypalUrl = sMap.paypalDonateUrl || '';
+
+  const zeffyBtn  = document.getElementById('zeffy-donate-btn');
+  const paypalBtn = document.getElementById('paypal-donate-btn');
+
+  if (zeffyUrl)  { zeffyBtn.href  = zeffyUrl;  zeffyBtn.style.display  = 'flex'; }
+  else           { zeffyBtn.style.opacity = '0.4'; zeffyBtn.title = 'Zeffy not configured yet'; }
+
+  if (paypalUrl) { paypalBtn.href = paypalUrl; paypalBtn.style.display = 'flex'; }
+  else           { paypalBtn.style.opacity = '0.4'; paypalBtn.title = 'PayPal not configured yet'; }
+}
+
+function openZeffy() {
+  const zeffyBtn = document.getElementById('zeffy-donate-btn');
+  if (zeffyBtn.href && zeffyBtn.href !== '#' && zeffyBtn.href !== window.location.href + '#') {
+    window.open(zeffyBtn.href, '_blank');
+  }
+  return false;
 }
 
 async function processDonate() {

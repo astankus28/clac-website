@@ -310,7 +310,8 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
           </div>
           <div class="form-group">
             <label class="form-label">RSVP Link — optional</label>
-            <input class="form-input" type="url" id="f-rsvp" placeholder="https://...">
+            <input class="form-input" type="url" id="f-rsvp" placeholder="https://www.zeffy.com/en-US/ticketing/...">
+            <div class="form-hint">Use a Zeffy ticketing link for paid events. Free events can leave blank or link to Facebook event.</div>
           </div>
           <div class="form-group">
             <label class="form-label">Attendance Count — optional (past events)</label>
@@ -566,6 +567,34 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
           <div class="form-hint">Supplemental text for the scrolling ticker. Upcoming events are added automatically.</div>
         </div>
       </div>
+      <!-- PAYMENT SETTINGS -->
+      <div class="settings-section" style="margin-top:24px;">
+        <div class="settings-section-title">Payment & Donations</div>
+        <div style="margin-bottom:16px; font-size:13px; color:var(--text-muted); line-height:1.6;">Configure payment providers. All are optional — use whichever your org sets up.</div>
+        <div class="form-grid">
+          <div class="form-group full">
+            <label class="form-label">Zeffy Donation URL</label>
+            <input class="form-input" type="url" id="s-zeffy-donate" placeholder="https://www.zeffy.com/en-US/donation-form/...">
+            <div class="form-hint">From your Zeffy dashboard → Donation form → Share link. Also used for ticket links on events.</div>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Zeffy Tickets Base URL — optional</label>
+            <input class="form-input" type="url" id="s-zeffy-tickets" placeholder="https://www.zeffy.com/en-US/ticketing/...">
+            <div class="form-hint">Base URL for event ticketing on Zeffy. Each event can override with its own RSVP link.</div>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">PayPal Giving Fund URL</label>
+            <input class="form-input" type="url" id="s-paypal-donate" placeholder="https://www.paypal.com/donate/?hosted_button_id=...">
+            <div class="form-hint">From PayPal Giving Fund enrollment or your PayPal donate button code.</div>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Stripe Public Key — optional</label>
+            <input class="form-input" type="text" id="s-stripe-public" placeholder="pk_live_...">
+            <div class="form-hint">From Stripe Dashboard → Developers → API Keys. Secret key goes in Cloudflare env vars.</div>
+          </div>
+        </div>
+      </div>
+
       <button class="btn-sm primary" onclick="saveSettings()" style="padding:12px 28px;">Save Settings →</button>
     </div>
 
