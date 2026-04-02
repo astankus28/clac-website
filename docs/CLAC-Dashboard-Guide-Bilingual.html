@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Guide — CLAC</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Georgia', serif; background: #f5f2ed; color: #1a1a1a; }
+    
+    .cover { background: #1a2e1e; color: #f2ede4; padding: 60px 48px; }
+    .cover-org { font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #c8903a; margin-bottom: 16px; }
+    .cover-title-en { font-size: 36px; font-weight: 700; line-height: 1.1; margin-bottom: 8px; }
+    .cover-title-lt { font-size: 22px; font-weight: 400; color: rgba(242,237,228,0.6); font-style: italic; margin-bottom: 24px; }
+    .cover-sub-en { font-size: 15px; color: rgba(242,237,228,0.7); margin-bottom: 4px; }
+    .cover-sub-lt { font-size: 13px; color: rgba(242,237,228,0.45); font-style: italic; }
+    .cover-meta { margin-top: 40px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(242,237,228,0.3); }
+    
+    .lang-bar { background: #2d4a33; padding: 12px 48px; display: flex; gap: 24px; align-items: center; }
+    .lang-bar-item { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+    .lb-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .lb-dot-en { background: #c8903a; }
+    .lb-dot-lt { background: #7ab893; }
+    .lb-label { color: rgba(242,237,228,0.7); letter-spacing: 0.1em; text-transform: uppercase; }
+
+    .content { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+    
+    .section { background: white; margin-bottom: 20px; border: 1px solid #e0dbd4; overflow: hidden; }
+    .section-header { background: #1a2e1e; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .section-title-en { font-size: 16px; font-weight: 700; color: #f2ede4; }
+    .section-title-lt { font-size: 13px; color: #c8903a; font-style: italic; }
+    .section-body { display: grid; grid-template-columns: 1fr 1fr; }
+    .col { padding: 24px; }
+    .col-en { border-right: 1px solid #e0dbd4; }
+    .lang-tag { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; font-family: monospace; padding: 2px 8px; display: inline-block; margin-bottom: 14px; border: 1px solid; }
+    .col-en .lang-tag { color: #c8903a; border-color: #c8903a; background: rgba(200,144,58,0.06); }
+    .col-lt .lang-tag { color: #2d4a33; border-color: #2d4a33; background: rgba(45,74,51,0.06); }
+    p { font-size: 13px; line-height: 1.75; color: #333; margin-bottom: 10px; }
+    p:last-child { margin-bottom: 0; }
+    ul { padding-left: 0; list-style: none; }
+    li { font-size: 13px; line-height: 1.65; color: #333; padding: 4px 0 4px 16px; position: relative; border-bottom: 1px solid #f0ede8; }
+    li:last-child { border-bottom: none; }
+    li::before { content: '—'; position: absolute; left: 0; color: #c8903a; }
+    
+    .footer { text-align: center; padding: 32px; font-size: 11px; color: #999; letter-spacing: 0.1em; text-transform: uppercase; }
+    
+    @media (max-width: 700px) {
+      .cover { padding: 40px 24px; }
+      .section-body { grid-template-columns: 1fr; }
+      .col-en { border-right: none; border-bottom: 1px solid #e0dbd4; }
+      .section-header { flex-direction: column; align-items: flex-start; gap: 4px; }
+      .lang-bar { padding: 12px 24px; }
+    }
+    
+    @media print {
+      body { background: white; }
+      .section { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="cover-org">Cleveland Lithuanian American Community · Klivlando Lietuvių Amerikiečių Bendruomenė</div>
+  <div class="cover-title-en">Dashboard Guide</div>
+  <div class="cover-title-lt">Valdymo Skydelio Vadovas</div>
+  <div class="cover-sub-en">Complete guide to managing the CLAC website dashboard</div>
+  <div class="cover-sub-lt">Išsamus CLAC svetainės valdymo skydelio vadovas</div>
+  <div class="cover-meta">clacleveland.org · Last updated April 2026 · Atnaujinta 2026 m. balandžio mėn.</div>
+</div>
+
+<div class="lang-bar">
+  <div class="lang-bar-item"><div class="lb-dot lb-dot-en"></div><div class="lb-label">English</div></div>
+  <div class="lang-bar-item"><div class="lb-dot lb-dot-lt"></div><div class="lb-label">Lietuvių</div></div>
+</div>
+
+<div class="content">
+
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title-en">Getting Started</div>
+          <div class="section-title-lt">Prisijungimas ir naršymas</div>
+        </div>
+        <div class="section-body">
+          <div class="col col-en">
+            <div class="lang-tag">EN</div>
+            <ul><li>Go to clac-website.pages.dev/dashboard</li><li>Enter your username and password</li><li>Session lasts 8 hours — you'll be prompted to log in again after that</li></ul><p>Changing Your Password: Admin → Users → find your username → Edit → enter new password → Save.</p><p>Never share your password. Each board member should have their own login.</p><p>The sidebar is organized into collapsible groups: Content (Events, Announcements, Page Content) · Site (Gallery, Media Library, Board Members, Quick Links) · Community (Inquiries, Donations, Sponsors) · Social (Post Generator, Content Calendar) · Board (Board Portal, Activity Log) · Admin (Users, Settings).</p><p>On mobile — tap the ☰ button in the top left to open the sidebar.</p>
+          </div>
+          <div class="col col-lt">
+            <div class="lang-tag">LT</div>
+            <ul><li>Eikite į clac-website.pages.dev/dashboard</li><li>Įveskite vartotojo vardą ir slaptažodį</li><li>Sesija galioja 8 valandas — po to reikės vėl prisijungti</li></ul><p>Slaptažodžio keitimas: Admin → Users → Edit → naujas slaptažodis → Save.</p><p>Niekada nesidalinkite slaptažodžiu. Kiekvienas valdybos narys turėtų turėti savo prisijungimą.</p><p>Šoninė juosta suskirstyta į sutraukiamas grupes: Content (Renginiai, Pranešimai, Puslapio turinys) · Site (Galerija, Medijų biblioteka, Valdybos nariai, Greitos nuorodos) · Community (Užklausos, Aukos, Rėmėjai) · Social (Įrašų generatorius, Turinio kalendorius) · Board (Valdybos portalas, Veiklos žurnalas) · Admin (Vartotojai, Nustatymai).</p><p>Mobiliajame telefone — ☰ mygtukas viršuje kairėje atidaro šoninę juostą.</p>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title-en">Events</div>
+          <div class="section-title-lt">Renginiai</div>
+        </div>
+        <div class="section-body">
+          <div class="col col-en">
+            <div class="lang-tag">EN</div>
+            <p>The most important section — the entire public calendar lives here.</p><p>Creating a New Event: + New Event → Tab 1: title (EN and Lithuanian), date, time, location, cover photo, description, RSVP link (use Zeffy ticketing link for paid events), Published/Featured checkboxes. After the event — Tab 2: write the story/recap + upload photos + AI writer. Tab 3: generate and copy social posts.</p><p>Managing Events: use All/Upcoming/Past filters. Click Edit to update any event. Check boxes + Delete Selected for bulk deletion. Unpublished events are invisible to the public.</p><p>Scheduled Publishing: set a future date in "Schedule Publish" — the system automatically publishes at 8am ET daily.</p>
+          </div>
+          <div class="col col-lt">
+            <div class="lang-tag">LT</div>
+            <p>Svarbiausia skyriaus dalis — visas viešasis kalendorius yra čia.</p><p>Naujo renginio kūrimas: + New Event → Tab 1: pavadinimas (EN ir LT), data, laikas, vieta, viršelio nuotrauka, aprašymas, RSVP nuoroda (Zeffy bilietų nuoroda), paskelbta/featured. Po renginio — Tab 2: istorija/apžvalga + nuotraukų įkėlimas + AI pagalbininkas. Tab 3: socialinių tinklų įrašų generavimas.</p><p>Renginių valdymas: filtrai All/Upcoming/Past. Edit — redaguoti. Žymimieji langeliai + Delete Selected — masinis trynimas. Nepaskelbti renginiai nepasirodo viešai.</p><p>Suplanuotas paskelbimas: nustatykite datą laukelyje „Schedule Publish" — sistema automatiškai paskelbia kas rytą 8 val. ET.</p>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title-en">Announcements</div>
+          <div class="section-title-lt">Pranešimai</div>
+        </div>
+        <div class="section-body">
+          <div class="col col-en">
+            <div class="lang-tag">EN</div>
+            <p>Short news items shown on the homepage.</p><p>Creating: + Add New → type, date, headline, body text → Published → Save.</p><p>Types: Community Update, National Organization, Heritage, Membership, Religious, Civic.</p>
+          </div>
+          <div class="col col-lt">
+            <div class="lang-tag">LT</div>
+            <p>Trumpos naujienos, rodomos pagrindiniame puslapyje.</p><p>Kūrimas: + Add New → tipas, data, antraštė, tekstas → Published → Save.</p><p>Tipai: Community Update (bendruomenės atnaujinimas), National Organization (nacionalinė organizacija), Heritage (paveldas), Membership (narystė), Religious (religiniai), Civic (pilietiniai).</p>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title-en">Gallery & Photos</div>
+          <div class="section-title-lt">Galerija ir nuotraukos</div>
+        </div>
+        <div class="section-body">
+          <div class="col col-en">
+            <div class="lang-tag">EN</div>
+            <p>Manage the public photo gallery at clacleveland.org/gallery.</p><p>Approving Submissions: when community members submit photos through the website, they appear here. Click Approve to add to gallery, Reject to discard.</p><p>Adding Photos to an Event: select the event → Upload Photos. Photos compress automatically — no need to resize beforehand.</p><p>All Gallery Photos: hover over any photo to reveal the delete button.</p>
+          </div>
+          <div class="col col-lt">
+            <div class="lang-tag">LT</div>
+            <p>Viešosios nuotraukų galerijos valdymas (clacleveland.org/gallery).</p><p>Pateiktų nuotraukų patvirtinimas: kai bendruomenės nariai pateikia nuotraukas per svetainę, jos pasirodo čia. Approve — pridėti į galeriją, Reject — atmesti.</p><p>Nuotraukų pridėjimas prie renginio: pasirinkite renginį → Upload Photos. Nuotraukos automatiškai suspaudžiamos — nereikia jų iš anksto keisti dydžio.</p><p>Visų galerijos nuotraukų peržiūra: nuveikite pele ant nuotraukos, pasirodys trynimo mygtukas.</p>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title-en">Board Members</div>
+          <div class="section-title-lt">Valdybos nariai</div>
+        </div>
+        <div class="section-body">
+          <div class="col col-en">
+            <div class="lang-tag">EN</div>
+            <p>Manage the board member grid on the About page.</p><p>Adding a Member: + New Member → name, role (English and Lithuanian), email (optional), bio (optional) → upload headshot photo → Sort Order → Published → Save.</p><p>Sort Order 1 appears first. Important: this list is visible publicly on the website.</p>
+          </div>
+          <div class="col col-lt">
+            <div class="lang-tag">LT</div>
+            <p>Valdybos narių tinklelio valdymas puslapyje „Apie mus".</p><p>Naujo nario pridėjimas: + New Member → vardas, pareigos (EN ir LT), el. paštas (neprivaloma), biografija (neprivaloma) → nuotraukos įkėlimas → Sort Order (rodymo tvarka) → Published → Save.</p><p>Pirmas nario Sort Order rodomas pirmasis. Svarbu: Šis sąrašas matomas viešai.</p>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title-en">Inquiries</div>
+          <div class="section-title-lt">Užklausos (Join forma)</div>
+        </div>
+        <div class="section-body">
+          <div class="col col-en">
+            <div class="lang-tag">EN</div>
+            <p>Everyone who fills out the Join & Get Involved form on the public website appears here.</p><p>Statuses: New (not yet contacted) → Contacted → Closed. Click Email ↗ to open a pre-addressed email to that person.</p><p>A red badge on the Inquiries menu item means new inquiries are waiting for follow-up.</p>
+          </div>
+          <div class="col col-lt">
+            <div class="lang-tag">LT</div>
+            <p>Visi, užpildę formą „Join & Get Involved" svetainėje, rodomi čia.</p><p>Būsenos: New (dar nesikreipta) → Contacted (susisiekta) → Closed (baigta). Spustelėkite Email ↗ — atidaro el. laišką su tuo asmeniu.</p><p>Raudona žyma meniu prie „Inquiries" reiškia, kad laukia naujų užklausų.</p>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title-en">Donations & Sponsors</div>
+          <div class="section-title-lt">Aukos ir rėmėjai</div>
+        </div>
+        <div class="section-body">
+          <div class="col col-en">
+            <div class="lang-tag">EN</div>
+            <p>Donations: track donations received. Add fundraising goals with target amounts (e.g. "One World Day booth — $500"). Update raised amounts manually or automatically via Stripe.</p><p>Sponsors: add business sponsors with logo, tier, website, and expiration date.</p><p>Tiers: Platinum ($1,000/yr) — hero logo · Heritage ($500/yr) — homepage logo · Community ($250/yr) — footer logo.</p><p>Payment setup: Admin → Settings → Payment & Donations → add Zeffy, PayPal, Stripe links.</p>
+          </div>
+          <div class="col col-lt">
+            <div class="lang-tag">LT</div>
+            <p>Aukos: stebėkite gautas aukas. Pridėkite rinkimo tikslus su tikslinėmis sumomis (pvz., „One World Day stendas — 500 $"). Surinktas sumas atnaujinkite rankiniu būdu arba automatiškai per Stripe.</p><p>Rėmėjai: pridėkite verslo rėmėjus su logotipu, pakopomis, svetaine ir galiojimo data.</p><p>Pakopos: Platinum ($1 000/m.) — logotipas heroje · Heritage ($500/m.) — logotipas viršuje · Community ($250/m.) — logotipas poraštėje.</p><p>Mokėjimų nustatymas: Admin → Settings → Payment & Donations → Zeffy, PayPal, Stripe nuorodos.</p>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title-en">Social Media</div>
+          <div class="section-title-lt">Socialiniai tinklai</div>
+        </div>
+        <div class="section-body">
+          <div class="col col-en">
+            <div class="lang-tag">EN</div>
+            <p>Post Generator: select event → platform (Facebook, Instagram, or Both) → Generate with AI → review and edit → copy to Facebook/Instagram. Download the image card for Instagram.</p><p>Content Calendar: Generate Week with AI creates 7 days of posts from the Lithuanian content library (history, recipes, culture, trivia, language, sports, traditions). Mark posts Approved to auto-post at 8am ET (requires Facebook page credentials).</p><p>Category rotation: History → Recipe → Culture → Trivia → Language → Sports → Tradition.</p>
+          </div>
+          <div class="col col-lt">
+            <div class="lang-tag">LT</div>
+            <p>Įrašų generatorius: pasirinkite renginį → platforma (Facebook, Instagram ar abu) → Generate with AI → peržiūrėkite ir redaguokite → nukopijuokite į Facebook/Instagram. Atsisiųskite nuotraukos kortelę Instagram.</p><p>Turinio kalendorius: Generate Week with AI — 7 dienų įrašai iš lietuviško turinio bibliotekos (istorija, receptai, kultūra, trivia, kalba, sportas, tradicijos). Pažymėkite Approved automatiniam skelbimui 8 val. ET (reikalingi Facebook prisijungimo duomenys).</p><p>Kategorijų rotacija: Istorija → Receptas → Kultūra → Trivia → Kalba → Sportas → Tradicija.</p>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title-en">Settings</div>
+          <div class="section-title-lt">Nustatymai</div>
+        </div>
+        <div class="section-body">
+          <div class="col col-en">
+            <div class="lang-tag">EN</div>
+            <p>Site Identity: org name, contact email, Facebook and Instagram URLs.</p><p>Payment & Donations: Zeffy, PayPal, and Stripe configuration — paste links from each platform.</p><p>Homepage Content: hero text, about columns, ticker — same fields as the Page Content section.</p><p>Always click Save Settings → after making any changes.</p>
+          </div>
+          <div class="col col-lt">
+            <div class="lang-tag">LT</div>
+            <p>Svetainės tapatybė: organizacijos pavadinimas, kontaktinis el. paštas, Facebook ir Instagram nuorodos.</p><p>Mokėjimai ir aukos: Zeffy, PayPal ir Stripe konfigūracija — įklijuokite nuorodas iš kiekvienos platformos.</p><p>Pagrindinio puslapio turinys: herojaus tekstas, skyriai „Apie mus", teksto juosta — tie patys laukai kaip ir skiltyje „Page Content".</p><p>Visada spustelėkite Save Settings → po bet kokių pakeitimų.</p>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title-en">Common Tasks Quick Reference</div>
+          <div class="section-title-lt">Dažniausių užduočių santrauka</div>
+        </div>
+        <div class="section-body">
+          <div class="col col-en">
+            <div class="lang-tag">EN</div>
+            <p>New event → Events → + New Event</p><p>Update homepage text → Content → Page Content → Save</p><p>Add board member photo → Site → Board Members → + New Member</p><p>New inquiries → Community → Inquiries (red badge)</p><p>Generate social post → Social → Post Generator → select event → Generate</p><p>Upload event photos → Events → Edit event → Tab 2 Story & Photos</p><p>Check donation totals → Community → Donations</p><p>Add a sponsor → Community → Sponsors → + Add Sponsor</p><p>Auto schedule a week of posts → Social → Content Calendar → Generate Week</p>
+          </div>
+          <div class="col col-lt">
+            <div class="lang-tag">LT</div>
+            <p>Naujas renginys → Events → + New Event</p><p>Pagrindinio puslapio tekstas → Content → Page Content → Save</p><p>Valdybos nario nuotrauka → Site → Board Members → + New Member</p><p>Naujos užklausos → Community → Inquiries (raudona žyma)</p><p>Socialinio įrašo generavimas → Social → Post Generator → renginys → Generate</p><p>Renginio nuotraukų įkėlimas → Events → Edit → Tab 2 Story & Photos</p><p>Aukų sumos → Community → Donations</p><p>Rėmėjų pridėjimas → Community → Sponsors → + Add Sponsor</p><p>Savaitės įrašai automatiškai → Social → Content Calendar → Generate Week</p>
+          </div>
+        </div>
+      </div>
+</div>
+
+<div class="footer">Cleveland Lithuanian American Community · clacleveland.org · Built by Andrew Stankus</div>
+
+</body>
+</html>

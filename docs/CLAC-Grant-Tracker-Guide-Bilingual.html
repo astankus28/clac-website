@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grant Tracker Guide — CLAC</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Georgia', serif; background: #f5f2ed; color: #1a1a1a; }
+    
+    .cover { background: #1a2e1e; color: #f2ede4; padding: 60px 48px; }
+    .cover-org { font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #c8903a; margin-bottom: 16px; }
+    .cover-title-en { font-size: 36px; font-weight: 700; line-height: 1.1; margin-bottom: 8px; }
+    .cover-title-lt { font-size: 22px; font-weight: 400; color: rgba(242,237,228,0.6); font-style: italic; margin-bottom: 24px; }
+    .cover-sub-en { font-size: 15px; color: rgba(242,237,228,0.7); margin-bottom: 4px; }
+    .cover-sub-lt { font-size: 13px; color: rgba(242,237,228,0.45); font-style: italic; }
+    .cover-meta { margin-top: 40px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(242,237,228,0.3); }
+    
+    .lang-bar { background: #2d4a33; padding: 12px 48px; display: flex; gap: 24px; align-items: center; }
+    .lang-bar-item { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+    .lb-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .lb-dot-en { background: #c8903a; }
+    .lb-dot-lt { background: #7ab893; }
+    .lb-label { color: rgba(242,237,228,0.7); letter-spacing: 0.1em; text-transform: uppercase; }
+
+    .content { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+    
+    .section { background: white; margin-bottom: 20px; border: 1px solid #e0dbd4; overflow: hidden; }
+    .section-header { background: #1a2e1e; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .section-title-en { font-size: 16px; font-weight: 700; color: #f2ede4; }
+    .section-title-lt { font-size: 13px; color: #c8903a; font-style: italic; }
+    .section-body { display: grid; grid-template-columns: 1fr 1fr; }
+    .col { padding: 24px; }
+    .col-en { border-right: 1px solid #e0dbd4; }
+    .lang-tag { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; font-family: monospace; padding: 2px 8px; display: inline-block; margin-bottom: 14px; border: 1px solid; }
+    .col-en .lang-tag { color: #c8903a; border-color: #c8903a; background: rgba(200,144,58,0.06); }
+    .col-lt .lang-tag { color: #2d4a33; border-color: #2d4a33; background: rgba(45,74,51,0.06); }
+    p { font-size: 13px; line-height: 1.75; color: #333; margin-bottom: 10px; }
+    p:last-child { margin-bottom: 0; }
+    ul { padding-left: 0; list-style: none; }
+    li { font-size: 13px; line-height: 1.65; color: #333; padding: 4px 0 4px 16px; position: relative; border-bottom: 1px solid #f0ede8; }
+    li:last-child { border-bottom: none; }
+    li::before { content: '—'; position: absolute; left: 0; color: #c8903a; }
+    
+    .footer { text-align: center; padding: 32px; font-size: 11px; color: #999; letter-spacing: 0.1em; text-transform: uppercase; }
+    
+    @media (max-width: 700px) {
+      .cover { padding: 40px 24px; }
+      .section-body { grid-template-columns: 1fr; }
+      .col-en { border-right: none; border-bottom: 1px solid #e0dbd4; }
+      .section-header { flex-direction: column; align-items: flex-start; gap: 4px; }
+      .lang-bar { padding: 12px 24px; }
+    }
+    
+    @media print {
+      body { background: white; }
+      .section { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="cover-org">Cleveland Lithuanian American Community · Klivlando Lietuvių Amerikiečių Bendruomenė</div>
+  <div class="cover-title-en">Grant Tracker Guide</div>
+  <div class="cover-title-lt">Dotacijų Sekiklio Vadovas</div>
+  <div class="cover-sub-en">How to use and update the CLAC grant tracking system</div>
+  <div class="cover-sub-lt">Kaip naudotis ir atnaujinti CLAC dotacijų sekimo sistemą</div>
+  <div class="cover-meta">clacleveland.org · Last updated April 2026 · Atnaujinta 2026 m. balandžio mėn.</div>
+</div>
+
+<div class="lang-bar">
+  <div class="lang-bar-item"><div class="lb-dot lb-dot-en"></div><div class="lb-label">English</div></div>
+  <div class="lang-bar-item"><div class="lb-dot lb-dot-lt"></div><div class="lb-label">Lietuvių</div></div>
+</div>
+
+<div class="content">
+
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title-en">Overview</div>
+          <div class="section-title-lt">Apžvalga</div>
+        </div>
+        <div class="section-body">
+          <div class="col col-en">
+            <div class="lang-tag">EN</div>
+            <p>The Grant Tracker is a live web app at cle-grants.vercel.app that tracks grant opportunities for CLAC. It reads from a Google Sheet — updating is as simple as editing a spreadsheet.</p><p>Also embedded inside the CLAC Dashboard: Dashboard → Board → Board Portal.</p><p>Data flow: Google Sheets → Grant Tracker → Board Portal embed.</p>
+          </div>
+          <div class="col col-lt">
+            <div class="lang-tag">LT</div>
+            <p>Dotacijų sekiklis — tai gyva programa adresu cle-grants.vercel.app, skirta CLAC dotacijų galimybėms sekti. Ji nuskaito duomenis iš „Google" skaičiuoklės — atnaujinti sekiklį taip paprasta, kaip redaguoti skaičiuoklę.</p><p>Sekiklis taip pat įterpta į CLAC valdymo skydelį: Dashboard → Board → Board Portal.</p><p>Duomenų srautas: Google Sheets → Dotacijų sekiklis → valdybos portalas.</p>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title-en">Sheet Structure & Statuses</div>
+          <div class="section-title-lt">Skaičiuoklės struktūra ir būsenos</div>
+        </div>
+        <div class="section-body">
+          <div class="col col-en">
+            <div class="lang-tag">EN</div>
+            <p>Columns: Funder · Grant Name · Amount · Deadline · Status · Notes · Funder Website · Drive Link · Eligible (Yes/No/Maybe) · Priority (High/Medium/Low).</p><p>Adding a new grant: open the spreadsheet → new row → fill in columns → tracker updates on refresh.</p><p>Statuses: Researching · Drafting · Submitted · Awarded · Declined · Not Eligible · Recurring.</p>
+          </div>
+          <div class="col col-lt">
+            <div class="lang-tag">LT</div>
+            <p>Stulpeliai: Funder (finansuotojas) · Grant Name (pavadinimas) · Amount (suma) · Deadline (terminas) · Status (būsena) · Notes (pastabos) · Funder Website · Drive Link · Eligible (Yes/No/Maybe) · Priority (High/Medium/Low).</p><p>Naujos dotacijos pridėjimas: atidarykite skaičiuoklę → nauja eilutė → užpildykite → sekiklis atsinaujina.</p><p>Būsenos: Researching (tiriama) · Drafting (rengiama paraiška) · Submitted (pateikta) · Awarded (gauta) · Declined (atmesta) · Not Eligible (netinkama) · Recurring (kasmetinė).</p>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title-en">Documents Needed for Applications</div>
+          <div class="section-title-lt">Reikalingi dokumentai</div>
+        </div>
+        <div class="section-body">
+          <div class="col col-en">
+            <div class="lang-tag">EN</div>
+            <p>Keep these ready in Google Drive — nearly every grant application asks for them:</p><ul><li>(c)(3) Determination Letter (IRS proof of nonprofit status)</li><li>EIN (Tax ID Number)</li><li>Board Member List (names, roles, contact info)</li><li>Most Recent Financial Statements (income/expense report, balance sheet)</li><li>Annual Budget (current year projected)</li><li>Organization Description (1-2 paragraphs about CLAC's mission and programs)</li><li>Program Description (what specifically the grant will fund)</li></ul>
+          </div>
+          <div class="col col-lt">
+            <div class="lang-tag">LT</div>
+            <p>Laikykite šiuos dokumentus paruoštus „Google" diske — dauguma paraiškų jų reikalauja:</p><ul><li>(c)(3) patvirtinimo laiškas (IRS ne pelno organizacijos įrodymas)</li><li>EIN (mokesčių mokėtojo identifikacijos numeris)</li><li>Valdybos narių sąrašas (vardai, pareigos, kontaktai)</li><li>Naujausios finansinės ataskaitos (pajamų/išlaidų ataskaita, balansas)</li><li>Metinis biudžetas (einamųjų metų prognozė)</li><li>Organizacijos aprašymas (1–2 pastraipos apie CLAC misiją ir programas)</li><li>Programos aprašymas (kam konkrečiai bus naudojama dotacija)</li></ul>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title-en">Grant Finding Resources</div>
+          <div class="section-title-lt">Dotacijų paieškos šaltiniai</div>
+        </div>
+        <div class="section-body">
+          <div class="col col-en">
+            <div class="lang-tag">EN</div>
+            <p>Ohio / Northeast Ohio:</p><p>— Ohio Arts Council — oac.ohio.gov</p><p>— Cuyahoga Arts & Culture — cacgrants.org</p><p>— The Cleveland Foundation — clevelandfoundation.org</p><p>— GAR Foundation — garfdn.org</p><p>— Community West Foundation</p><p>National:</p><p>— National Endowment for the Arts — arts.gov</p><p>— National Endowment for the Humanities — neh.gov</p><p>— American Folklife Center (Library of Congress)</p><p>Free nonprofit resources:</p><p>— Google for Nonprofits — free Google Workspace + $10k/month Ads</p><p>— TechSoup — discounted software for nonprofits</p><p>— Canva for Nonprofits — free Canva Pro</p>
+          </div>
+          <div class="col col-lt">
+            <div class="lang-tag">LT</div>
+            <p>Ohajas / Šiaurės rytų Ohajas:</p><p>— Ohio Arts Council — oac.ohio.gov</p><p>— Cuyahoga Arts & Culture — cacgrants.org</p><p>— The Cleveland Foundation — clevelandfoundation.org</p><p>— GAR Foundation — garfdn.org</p><p>— Community West Foundation</p><p>Nacionaliniai:</p><p>— National Endowment for the Arts — arts.gov</p><p>— National Endowment for the Humanities — neh.gov</p><p>— American Folklife Center (Library of Congress)</p><p>Nemokami ne pelno ištekliai:</p><p>— Google for Nonprofits — nemokamas Google Workspace + $10 000/mėn. reklamos</p><p>— TechSoup — nuolaidos programinei įrangai ne pelno organizacijoms</p><p>— Canva for Nonprofits — nemokamas Canva Pro</p>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title-en">Tips for Successful Applications</div>
+          <div class="section-title-lt">Patarimai sėkmingoms paraiškoms</div>
+        </div>
+        <div class="section-body">
+          <div class="col col-en">
+            <div class="lang-tag">EN</div>
+            <p>Start early — 4-6 weeks before the deadline. Most applications require significant documentation.</p><p>Be specific. "Fund 12 Saturday School sessions for 20 children, purchasing $400 in Lithuanian language workbooks" is stronger than "preserve Lithuanian culture."</p><p>Show community impact. Funders want to know who benefits and how many people you reach. Track event attendance, Saturday School enrollment, social media reach.</p><p>Follow up after submitting. A brief thank-you email to the program officer is appropriate and keeps CLAC on their radar.</p><p>Keep records. Document how funds were spent — required for reports and makes renewal applications easier.</p>
+          </div>
+          <div class="col col-lt">
+            <div class="lang-tag">LT</div>
+            <p>Pradėkite iš anksto — likus 4–6 savaitėms iki termino. Dauguma paraiškų reikalauja daug dokumentacijos.</p><p>Būkite konkretūs. „Finansuosime 12 šeštadienio mokyklos pamokų 20 vaikų, pirkdami lietuviškus vadovėlius už 400 $" yra stipriau nei „išsaugosime lietuvių kultūrą."</p><p>Parodykite bendruomenės poveikį. Finansuotojai nori žinoti, kas naudojasi ir kiek žmonių. Sekite dalyvių skaičių renginiuose, mokinių kiekį, socialinių tinklų pasiekiamumą.</p><p>Susisiekite po pateikimo. Trumpas padėkos laiškas programos koordinatoriui po paraiškos pateikimo yra tinkamas ir palaiko ryšį.</p><p>Tvarkykite įrašus. Dokumentuokite, kaip buvo panaudotos lėšos — reikalinga ataskaitoms ir paramai atnaujinti.</p>
+          </div>
+        </div>
+      </div>
+</div>
+
+<div class="footer">Cleveland Lithuanian American Community · clacleveland.org · Built by Andrew Stankus</div>
+
+</body>
+</html>
