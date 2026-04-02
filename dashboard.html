@@ -15,11 +15,40 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
 .admin-shell { display:grid; grid-template-columns:240px 1fr; min-height:100vh; }
 
 /* ── SIDEBAR ── */
-.admin-sidebar { background:var(--forest); color:var(--cream); display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; }
-.sidebar-brand { padding:28px 24px 20px; border-bottom:1px solid rgba(255,255,255,0.08); }
+.admin-sidebar { background:var(--forest); color:var(--cream); display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; width:240px; transition:width 0.25s ease; flex-shrink:0; }
+.admin-sidebar.collapsed { width:56px; }
+.admin-sidebar.collapsed .snav-label { display:none; }
+.admin-sidebar.collapsed .snav-group-hdr .snav-label { display:none; }
+.admin-sidebar.collapsed .snav-group-body { display:none; }
+.admin-sidebar.collapsed .sb-org { display:none; }
+.admin-sidebar.collapsed .sb-badge { display:none; }
+.admin-sidebar.collapsed .sb-collapse { transform:rotate(180deg); }
+.admin-sidebar.collapsed .su-name { display:none; }
+.admin-sidebar.collapsed .su-role { display:none; }
+.admin-sidebar.collapsed .sb-logo { margin:0 auto; }
+.sidebar-brand { padding:16px 12px 16px 16px; border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:10px; }
+.sb-logo { width:32px; height:32px; background:var(--amber); color:var(--forest); border-radius:4px; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:14px; font-weight:700; flex-shrink:0; }
+.sb-collapse { background:none; border:none; color:rgba(255,255,255,0.4); cursor:pointer; font-size:18px; padding:4px; line-height:1; transition:transform 0.25s, color 0.15s; flex-shrink:0; }
+.sb-collapse:hover { color:var(--amber); }
 .sb-org { font-family:'Playfair Display',serif; font-size:13px; font-weight:700; color:var(--cream); line-height:1.3; }
 .sb-badge { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber); margin-top:4px; }
 .sidebar-nav { padding:16px 0; flex:1; }
+
+/* ── SIDEBAR GROUPS ── */
+.snav-group { border-bottom:1px solid rgba(255,255,255,0.06); }
+.snav-group-hdr { display:flex; align-items:center; gap:8px; padding:10px 16px; cursor:pointer; color:rgba(255,255,255,0.5); font-size:12px; transition:color 0.15s, background 0.15s; user-select:none; }
+.snav-group-hdr:hover { background:rgba(255,255,255,0.04); color:var(--cream); }
+.snav-group-hdr .snav-icon { font-size:12px; width:16px; text-align:center; flex-shrink:0; }
+.snav-group-hdr .snav-label { flex:1; font-size:12px; font-weight:500; }
+.snav-chev { font-size:14px; transition:transform 0.2s; }
+.snav-group-body { display:none; background:rgba(0,0,0,0.15); }
+.snav-group-body.open { display:block; }
+.snav-chev.open { transform:rotate(90deg); }
+.snav-item.sub { padding:8px 16px 8px 40px; font-size:13px; color:rgba(255,255,255,0.55); border-bottom:none; }
+.snav-item.sub:hover { color:var(--cream); background:rgba(255,255,255,0.04); }
+.snav-item.sub.active { color:var(--amber); background:rgba(200,144,58,0.08); }
+.snav-badge { display:inline-flex; align-items:center; justify-content:center; background:var(--amber); color:var(--forest); border-radius:10px; font-size:10px; font-weight:700; min-width:18px; height:18px; padding:0 5px; margin-left:6px; }
+
 .snav-section { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.3); padding:10px 24px 6px; }
 .snav-item { display:flex; align-items:center; gap:10px; padding:10px 24px; font-size:13px; color:rgba(242,237,228,0.7); cursor:pointer; transition:all 0.15s; text-decoration:none; border-left:2px solid transparent; }
 .snav-item:hover { color:var(--cream); background:rgba(255,255,255,0.04); }
@@ -128,7 +157,24 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
 .view-site-link { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.1em; color:var(--amber); text-decoration:none; display:flex; align-items:center; gap:5px; }
 .view-site-link:hover { color:var(--amber-light); }
 
-@media (max-width:900px) { .admin-shell { grid-template-columns:1fr; } .admin-sidebar { position:fixed; left:-240px; z-index:200; transition:left 0.3s; height:100%; } .admin-sidebar.open { left:0; } .stats-grid { grid-template-columns:1fr 1fr; } .form-grid { grid-template-columns:1fr; } }
+@media (max-width:900px) {
+  .admin-shell { grid-template-columns:1fr; }
+  .admin-sidebar { position:fixed; left:-260px; z-index:200; transition:left 0.25s; height:100%; width:240px !important; }
+  .admin-sidebar.mobile-open { left:0; box-shadow:4px 0 20px rgba(0,0,0,0.3); }
+  .admin-sidebar.collapsed { left:-60px; }
+  .stats-grid { grid-template-columns:1fr 1fr; }
+  .form-grid { grid-template-columns:1fr; }
+  .form-grid-2 { grid-template-columns:1fr; }
+  .admin-topbar { padding:0 16px; }
+  .mobile-menu-btn { display:flex !important; }
+  .admin-main { grid-column:1; }
+  .sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:199; }
+  .sidebar-overlay.show { display:block; }
+}
+@media (max-width:600px) {
+  .stats-grid { grid-template-columns:1fr; }
+  .at-title { font-size:16px; }
+}
 </style>
 </head>
 <body>
@@ -137,68 +183,170 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
   <!-- SIDEBAR -->
   <aside class="admin-sidebar" id="admin-sidebar">
     <div class="sidebar-brand">
-      <div class="sb-org">Cleveland Lithuanian<br>American Community</div>
-      <div class="sb-badge">Admin Portal</div>
+      <div class="sb-logo">CL</div>
+      <div style="flex:1; min-width:0;">
+        <div class="sb-org">Cleveland Lithuanian</div>
+        <div class="sb-badge">Admin Portal</div>
+      </div>
+      <button class="sb-collapse" onclick="toggleSidebar()" title="Collapse">‹</button>
     </div>
     <nav class="sidebar-nav">
-      <div class="snav-section">Content</div>
-      <a class="snav-item active" onclick="showPage('dashboard')" href="#"><span class="snav-icon">◈</span> Dashboard</a>
-      <a class="snav-item" onclick="showPage('events')" href="#"><span class="snav-icon">◆</span> Events</a>
-      <a class="snav-item" onclick="showPage('announcements')" href="#"><span class="snav-icon">✦</span> Announcements</a>
-      <div class="snav-section">Site</div>
-      <a class="snav-item" onclick="showPage('page-content')" href="#"><span class="snav-icon">✎</span> Page Content</a>
-      <a class="snav-item" onclick="showPage('quick-links')" href="#"><span class="snav-icon">⬡</span> Quick Links</a>
-      <a class="snav-item" onclick="showPage('board')" href="#"><span class="snav-icon">◉</span> Board Members</a>
-      <a class="snav-item" onclick="showPage('media')" href="#"><span class="snav-icon">▲</span> Media Library</a>
-      <a class="snav-item" onclick="showPage('gallery')" href="#"><span class="snav-icon">◈</span> Gallery</a>
-      <a class="snav-item" onclick="showPage('users')" href="#"><span class="snav-icon">◈</span> Users</a>
-      <a class="snav-item" onclick="showPage('settings')" href="#"><span class="snav-icon">⚙</span> Settings</a>
-      <div class="snav-section">Board</div>
-      <a class="snav-item" onclick="showPage('social')" href="#"><span class="snav-icon">◉</span> Social Media</a>
-      <a class="snav-item" onclick="showPage('calendar')" href="#"><span class="snav-icon">◇</span> Content Calendar</a>
-      <a class="snav-item" onclick="showPage('activity')" href="#"><span class="snav-icon">◇</span> Activity Log</a>
-      <a class="snav-item" onclick="showPage('portal')" href="#"><span class="snav-icon">◆</span> Board Portal</a>
-      <a class="snav-item" onclick="showPage('inquiries')" href="#"><span class="snav-icon">✦</span> Inquiries</a>
-      <a class="snav-item" onclick="showPage('donations')" href="#"><span class="snav-icon">◆</span> Donations</a>
-      <a class="snav-item" onclick="showPage('sponsors')" href="#"><span class="snav-icon">◈</span> Sponsors</a>
-      <div class="snav-section">Public</div>
-      <a class="snav-item" href="index.html" target="_blank"><span class="snav-icon">↗</span> View Public Site</a>
+
+      <a class="snav-item active" onclick="showPage('dashboard')" href="#" data-page="dashboard">
+        <span class="snav-icon">◈</span><span class="snav-label"> Dashboard</span>
+      </a>
+
+      <!-- CONTENT GROUP -->
+      <div class="snav-group">
+        <div class="snav-group-hdr" onclick="toggleGroup('content')">
+          <span class="snav-icon">◆</span><span class="snav-label">Content</span>
+          <span class="snav-chev" id="chev-content">›</span>
+        </div>
+        <div class="snav-group-body open" id="grp-content">
+          <a class="snav-item sub" onclick="showPage('events')" href="#" data-page="events">Events</a>
+          <a class="snav-item sub" onclick="showPage('announcements')" href="#" data-page="announcements">Announcements</a>
+          <a class="snav-item sub" onclick="showPage('page-content')" href="#" data-page="page-content">Page Content</a>
+        </div>
+      </div>
+
+      <!-- SITE GROUP -->
+      <div class="snav-group">
+        <div class="snav-group-hdr" onclick="toggleGroup('site')">
+          <span class="snav-icon">▲</span><span class="snav-label">Site</span>
+          <span class="snav-chev" id="chev-site">›</span>
+        </div>
+        <div class="snav-group-body" id="grp-site">
+          <a class="snav-item sub" onclick="showPage('gallery')" href="#" data-page="gallery">Gallery</a>
+          <a class="snav-item sub" onclick="showPage('media')" href="#" data-page="media">Media Library</a>
+          <a class="snav-item sub" onclick="showPage('board')" href="#" data-page="board">Board Members</a>
+          <a class="snav-item sub" onclick="showPage('quick-links')" href="#" data-page="quick-links">Quick Links</a>
+        </div>
+      </div>
+
+      <!-- COMMUNITY GROUP -->
+      <div class="snav-group">
+        <div class="snav-group-hdr" onclick="toggleGroup('community')">
+          <span class="snav-icon">✦</span><span class="snav-label">Community</span>
+          <span class="snav-chev" id="chev-community">›</span>
+        </div>
+        <div class="snav-group-body" id="grp-community">
+          <a class="snav-item sub" onclick="showPage('inquiries')" href="#" data-page="inquiries">Inquiries <span id="inq-badge" class="snav-badge" style="display:none;"></span></a>
+          <a class="snav-item sub" onclick="showPage('donations')" href="#" data-page="donations">Donations</a>
+          <a class="snav-item sub" onclick="showPage('sponsors')" href="#" data-page="sponsors">Sponsors</a>
+        </div>
+      </div>
+
+      <!-- SOCIAL GROUP -->
+      <div class="snav-group">
+        <div class="snav-group-hdr" onclick="toggleGroup('social')">
+          <span class="snav-icon">◉</span><span class="snav-label">Social</span>
+          <span class="snav-chev" id="chev-social">›</span>
+        </div>
+        <div class="snav-group-body" id="grp-social">
+          <a class="snav-item sub" onclick="showPage('social')" href="#" data-page="social">Post Generator</a>
+          <a class="snav-item sub" onclick="showPage('calendar')" href="#" data-page="calendar">Content Calendar</a>
+        </div>
+      </div>
+
+      <!-- BOARD GROUP -->
+      <div class="snav-group">
+        <div class="snav-group-hdr" onclick="toggleGroup('board-grp')">
+          <span class="snav-icon">◇</span><span class="snav-label">Board</span>
+          <span class="snav-chev" id="chev-board-grp">›</span>
+        </div>
+        <div class="snav-group-body" id="grp-board-grp">
+          <a class="snav-item sub" onclick="showPage('portal')" href="#" data-page="portal">Board Portal</a>
+          <a class="snav-item sub" onclick="showPage('activity')" href="#" data-page="activity">Activity Log</a>
+        </div>
+      </div>
+
+      <!-- ADMIN GROUP -->
+      <div class="snav-group">
+        <div class="snav-group-hdr" onclick="toggleGroup('admin')">
+          <span class="snav-icon">⚙</span><span class="snav-label">Admin</span>
+          <span class="snav-chev" id="chev-admin">›</span>
+        </div>
+        <div class="snav-group-body" id="grp-admin">
+          <a class="snav-item sub" onclick="showPage('users')" href="#" data-page="users">Users</a>
+          <a class="snav-item sub" onclick="showPage('settings')" href="#" data-page="settings">Settings</a>
+        </div>
+      </div>
+
+      <a class="snav-item" href="index.html" target="_blank">
+        <span class="snav-icon">↗</span><span class="snav-label"> View Site</span>
+      </a>
+
     </nav>
     <div class="sidebar-user" id="sidebar-user">
       <div class="su-avatar" id="su-avatar">A</div>
-      <div>
+      <div class="snav-label" style="flex:1; min-width:0;">
         <div class="su-name" id="su-name">Loading...</div>
         <div class="su-role" id="su-role">editor</div>
       </div>
-      <button class="su-logout" onclick="doLogout()">Sign out</button>
+      <button class="su-logout" onclick="doLogout()" title="Sign out">↩</button>
     </div>
   </aside>
 
   <!-- MAIN -->
   <main class="admin-main">
     <div class="admin-topbar">
-      <div class="at-title" id="page-title">Dashboard</div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button class="mobile-menu-btn" onclick="toggleMobileSidebar()" style="display:none; background:none; border:none; color:var(--text-dark); font-size:20px; cursor:pointer; padding:4px 8px; line-height:1;">☰</button>
+        <div class="at-title" id="page-title">Dashboard</div>
+      </div>
       <div class="at-actions">
-        <a href="../index.html" target="_blank" class="view-site-link">↗ View Site</a>
+        <a href="index.html" target="_blank" class="view-site-link">↗ View Site</a>
         <button class="btn-sm primary" id="topbar-action" onclick="newEventClick()">+ New Event</button>
       </div>
     </div>
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMobileSidebar()"></div>
 
     <!-- DASHBOARD PAGE -->
     <div class="page active" id="page-dashboard">
-      <div style="margin-bottom:24px;">
-        <div style="font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--text-dark); margin-bottom:4px;">Good to see you, <span id="welcome-name">board member</span>.</div>
-        <div style="font-size:13px; color:var(--text-muted);">Manage your community's digital presence from here.</div>
+      <div style="margin-bottom:28px; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px;">
+        <div>
+          <div style="font-family:'Playfair Display',serif; font-size:26px; font-weight:700; color:var(--text-dark); margin-bottom:4px;">Good to see you, <span id="welcome-name">board member</span>.</div>
+          <div style="font-size:13px; color:var(--text-muted);" id="dash-date"></div>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button class="btn-sm primary" onclick="showPage('events'); newEventClick();">+ New Event</button>
+          <a href="index.html" target="_blank" class="btn-sm">View Site ↗</a>
+        </div>
       </div>
-      <div class="stats-grid" id="stats-grid"></div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+
+      <!-- ACTION ALERTS -->
+      <div id="dash-alerts" style="margin-bottom:20px;"></div>
+
+      <!-- STATS -->
+      <div class="stats-grid" id="stats-grid" style="margin-bottom:24px;"></div>
+
+      <!-- NEXT EVENT + QUICK ACTIONS -->
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:24px;">
+        <div style="grid-column:span 2; background:var(--white); border:1px solid var(--rule); padding:24px;">
+          <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber); margin-bottom:16px;">Next Upcoming Event</div>
+          <div id="dash-next-event"><div style="color:var(--text-muted); font-size:13px;">No upcoming events — <a href="#" onclick="showPage('events'); newEventClick(); return false;" style="color:var(--amber);">add one →</a></div></div>
+        </div>
+        <div style="background:var(--white); border:1px solid var(--rule); padding:24px;">
+          <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber); margin-bottom:16px;">Quick Actions</div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <button class="btn-sm" onclick="showPage('events'); newEventClick();" style="text-align:left; justify-content:flex-start;">+ New Event</button>
+            <button class="btn-sm" onclick="showPage('announcements'); toggleAnnForm(true);" style="text-align:left; justify-content:flex-start;">+ Announcement</button>
+            <button class="btn-sm" onclick="showPage('social');" style="text-align:left; justify-content:flex-start;">◉ Generate Social Post</button>
+            <button class="btn-sm" onclick="showPage('gallery');" style="text-align:left; justify-content:flex-start;">◈ Upload Photos</button>
+            <button class="btn-sm" onclick="showPage('inquiries');" style="text-align:left; justify-content:flex-start;" id="qa-inquiries">✦ View Inquiries</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- UPCOMING + RECENT ACTIVITY -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
         <div>
           <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber); margin-bottom:12px;">Upcoming Events</div>
           <div id="dash-upcoming" style="background:var(--white); border:1px solid var(--rule);"></div>
         </div>
         <div>
-          <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber); margin-bottom:12px;">Recent Announcements</div>
-          <div id="dash-anns" style="background:var(--white); border:1px solid var(--rule);"></div>
+          <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--amber); margin-bottom:12px;">Recent Activity</div>
+          <div id="dash-recent-activity" style="background:var(--white); border:1px solid var(--rule);"></div>
         </div>
       </div>
     </div>
@@ -1586,6 +1734,7 @@ function initApp(sess) {
   document.getElementById('su-name').textContent = sess.name;
   document.getElementById('su-role').textContent = sess.role;
   document.getElementById('su-avatar').textContent = sess.name.charAt(0).toUpperCase();
+  restoreSidebarState();
   document.getElementById('welcome-name').textContent = sess.name.split(' ')[0];
   renderDashboard();
 }
@@ -1609,6 +1758,7 @@ const pageTitles = { dashboard:'Dashboard', events:'Events', announcements:'Anno
 const topbarActions = { dashboard:'+ New Event', events:'+ New Event', announcements:'+ New Announcement', settings:'Save Settings', 'page-content':'Save Content', 'quick-links':'+ New Link', board:'+ New Member', media:'Upload Photos', gallery:'Upload Photos', users:'+ Add User', portal:'', inquiries:'', donations:'', sponsors:'+ Add Sponsor', social:'Generate Post', activity:'', calendar:'✦ Generate Week' };
 
 async function showPage(name) {
+  autoOpenGroupForPage(name);
   pages.forEach(p => {
     document.getElementById('page-'+p).classList.toggle('active', p === name);
     document.querySelectorAll('.snav-item').forEach((el,i) => el.classList.remove('active'));
@@ -1652,6 +1802,24 @@ async function showPage(name) {
 
 // ── DASHBOARD ─────────────────────────────────────────────
 async function renderDashboard() {
+  // Set date
+  const dateEl = document.getElementById('dash-date');
+  if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+  // Inquiry badge + alert
+  const inqData2 = await sbGet('inquiries', '?select=id&status=eq.new');
+  const newInq  = inqData2 ? inqData2.length : 0;
+  const badge   = document.getElementById('inq-badge');
+  if (badge) { badge.textContent = newInq; badge.style.display = newInq > 0 ? 'inline-flex' : 'none'; }
+
+  // Alerts
+  const alerts = document.getElementById('dash-alerts');
+  if (alerts) {
+    const msgs = [];
+    if (newInq > 0) msgs.push(`<div style="background:rgba(200,144,58,0.08); border:1px solid rgba(200,144,58,0.3); padding:12px 16px; font-size:13px; color:var(--text-dark); display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;"><span>✦ ${newInq} new inquir${newInq===1?'y':'ies'} waiting for follow-up</span><button class="btn-sm" onclick="showPage('inquiries')">Review →</button></div>`);
+    alerts.innerHTML = msgs.join('');
+  }
+
   const events = await CLAC.events.all();
   const anns = await CLAC.announcements.all();
   const upcoming = events.filter(e => e.status === 'upcoming').length;
@@ -1675,13 +1843,59 @@ async function renderDashboard() {
     : '<div style="padding:20px; color:var(--text-muted); font-size:13px;">No upcoming events. <a onclick="newEventClick()" style="color:var(--amber); cursor:pointer;">Add one →</a></div>';
 
   const recentAnns = CLAC.announcements.published().slice(0,4);
-  document.getElementById('dash-anns').innerHTML = recentAnns.length
+  document.getElementById('dash-anns') && (document.getElementById('dash-anns').innerHTML = recentAnns.length
     ? recentAnns.map(a => `<div style="padding:12px 16px; border-bottom:1px solid var(--rule); font-size:13px;">
         <div style="font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber); margin-bottom:3px;">${a.type}</div>
         <div style="font-weight:500; color:var(--text-dark);">${a.title}</div>
         <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">${CLAC.formatDateShort(a.date)}</div>
       </div>`).join('')
-    : '<div style="padding:20px; color:var(--text-muted); font-size:13px;">No announcements yet.</div>';
+    : '<div style="padding:20px; color:var(--text-muted); font-size:13px;">No announcements yet.</div>');
+
+  // Next event card
+  const nextEl = document.getElementById('dash-next-event');
+  if (nextEl && upcomingItems.length) {
+    const next = upcomingItems[0];
+    const d = new Date(next.date+'T12:00:00');
+    const daysUntil = Math.max(0, Math.ceil((d - new Date()) / (1000*60*60*24)));
+    nextEl.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px;">
+        <div style="flex:1; min-width:0;">
+          <div style="font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--text-dark); margin-bottom:6px;">${next.title}</div>
+          <div style="font-family:'DM Mono',monospace; font-size:11px; color:var(--amber);">${d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</div>
+          <div style="font-size:13px; color:var(--text-muted); margin-top:4px;">${next.location||''}</div>
+        </div>
+        <div style="text-align:center; flex-shrink:0; padding:8px 16px; background:var(--linen); border:1px solid var(--rule);">
+          <div style="font-family:'Playfair Display',serif; font-size:36px; font-weight:900; color:var(--forest); line-height:1;">${daysUntil}</div>
+          <div style="font-family:'DM Mono',monospace; font-size:9px; color:var(--text-muted); letter-spacing:0.1em; text-transform:uppercase;">days away</div>
+        </div>
+      </div>
+      <div style="margin-top:16px; display:flex; gap:8px;">
+        <button class="btn-sm primary" onclick="editEvent('${next.id}')">Edit Event →</button>
+        <a href="event.html?id=${next.id}" target="_blank" class="btn-sm">Preview ↗</a>
+      </div>`;
+  }
+
+  // Recent activity in dashboard
+  const actEl = document.getElementById('dash-recent-activity');
+  if (actEl) {
+    const logs = await sbGet('activity_log', '?select=*&order=created_at.desc&limit=6');
+    if (!logs||!logs.length) {
+      actEl.innerHTML = '<div style="padding:20px; color:var(--text-muted); font-size:13px;">No activity yet.</div>';
+    } else {
+      const icons = { created:'✦', updated:'✎', deleted:'✕', published:'◆', posted:'◉', 'auto-published':'⏰' };
+      actEl.innerHTML = logs.map(a => {
+        const t = new Date(a.created_at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+        const detail = (a.detail||'').slice(0,50);
+        return `<div style="padding:12px 16px; border-bottom:1px solid var(--rule); display:flex; gap:12px; align-items:flex-start;">
+          <span style="color:var(--amber); font-size:12px; flex-shrink:0;">${icons[a.action]||'◈'}</span>
+          <div style="flex:1; min-width:0; overflow:hidden;">
+            <div style="font-size:12px; color:var(--text-dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${a.action} ${a.entity}${detail?' — '+detail:''}</div>
+            <div style="font-size:11px; color:var(--text-faint); font-family:'DM Mono',monospace;">${a.user_name||'system'} · ${t}</div>
+          </div>
+        </div>`;
+      }).join('') + `<div style="padding:10px 16px; text-align:center;"><a onclick="showPage('activity')" style="font-family:'DM Mono',monospace; font-size:10px; color:var(--amber); cursor:pointer; letter-spacing:0.1em; text-transform:uppercase;">View All →</a></div>`;
+    }
+  }
 }
 
 // ── EVENTS ────────────────────────────────────────────────
@@ -3434,6 +3648,73 @@ async function deleteInquiry(id) {
   await sbDelete('inquiries', id);
   await renderInquiries();
   showToast('✓ Inquiry deleted.');
+}
+
+
+// ── SIDEBAR ────────────────────────────────────────────────────────────────────
+function toggleSidebar() {
+  const sidebar = document.getElementById('admin-sidebar');
+  sidebar.classList.toggle('collapsed');
+  localStorage.setItem('sb_collapsed', sidebar.classList.contains('collapsed') ? '1' : '0');
+}
+
+function toggleMobileSidebar() {
+  const sidebar  = document.getElementById('admin-sidebar');
+  const overlay  = document.getElementById('sidebar-overlay');
+  const isOpen   = sidebar.classList.contains('mobile-open');
+  sidebar.classList.toggle('mobile-open', !isOpen);
+  overlay.classList.toggle('show', !isOpen);
+}
+
+function toggleGroup(name) {
+  const body = document.getElementById('grp-' + name);
+  const chev = document.getElementById('chev-' + name);
+  if (!body) return;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  if (chev) chev.classList.toggle('open', !isOpen);
+  // Save state
+  const state = JSON.parse(localStorage.getItem('sb_groups') || '{}');
+  state[name] = !isOpen;
+  localStorage.setItem('sb_groups', JSON.stringify(state));
+}
+
+function restoreSidebarState() {
+  // Restore collapsed state
+  if (localStorage.getItem('sb_collapsed') === '1') {
+    document.getElementById('admin-sidebar').classList.add('collapsed');
+  }
+  // Restore group open/closed states
+  const state = JSON.parse(localStorage.getItem('sb_groups') || '{}');
+  Object.entries(state).forEach(([name, open]) => {
+    const body = document.getElementById('grp-' + name);
+    const chev = document.getElementById('chev-' + name);
+    if (body) body.classList.toggle('open', open);
+    if (chev) chev.classList.toggle('open', open);
+  });
+}
+
+function autoOpenGroupForPage(pageName) {
+  const pageToGroup = {
+    events: 'content', announcements: 'content', 'page-content': 'content',
+    gallery: 'site', media: 'site', board: 'site', 'quick-links': 'site',
+    inquiries: 'community', donations: 'community', sponsors: 'community',
+    social: 'social', calendar: 'social',
+    portal: 'board-grp', activity: 'board-grp',
+    users: 'admin', settings: 'admin',
+  };
+  const group = pageToGroup[pageName];
+  if (group) {
+    const body = document.getElementById('grp-' + group);
+    const chev = document.getElementById('chev-' + group);
+    if (body && !body.classList.contains('open')) {
+      body.classList.add('open');
+      if (chev) chev.classList.add('open');
+    }
+  }
+  // Close mobile sidebar after navigation
+  document.getElementById('admin-sidebar').classList.remove('mobile-open');
+  document.getElementById('sidebar-overlay').classList.remove('show');
 }
 
 // ── TOAST ─────────────────────────────────────────────────
