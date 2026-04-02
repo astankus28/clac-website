@@ -159,6 +159,8 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
       <a class="snav-item" onclick="showPage('activity')" href="#"><span class="snav-icon">◇</span> Activity Log</a>
       <a class="snav-item" onclick="showPage('portal')" href="#"><span class="snav-icon">◆</span> Board Portal</a>
       <a class="snav-item" onclick="showPage('inquiries')" href="#"><span class="snav-icon">✦</span> Inquiries</a>
+      <a class="snav-item" onclick="showPage('donations')" href="#"><span class="snav-icon">◆</span> Donations</a>
+      <a class="snav-item" onclick="showPage('sponsors')" href="#"><span class="snav-icon">◈</span> Sponsors</a>
       <div class="snav-section">Public</div>
       <a class="snav-item" href="index.html" target="_blank"><span class="snav-icon">↗</span> View Public Site</a>
     </nav>
@@ -737,6 +739,113 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
           <span id="activity-count" style="font-family:'DM Mono',monospace; font-size:11px; color:var(--text-muted);"></span>
         </div>
         <div id="activity-feed" style="padding:0;"></div>
+      </div>
+    </div>
+
+
+    <!-- DONATIONS -->
+    <div class="page" id="page-donations">
+      <div style="margin-bottom:24px;"><div style="font-size:13px; color:var(--text-muted);">Track donations received. Set up Stripe to enable online payments.</div></div>
+
+      <!-- STRIPE SETUP STATUS -->
+      <div class="settings-section" id="stripe-setup-banner">
+        <div class="settings-section-title">Stripe Setup</div>
+        <div style="background:rgba(200,144,58,0.08); border:1px solid rgba(200,144,58,0.2); padding:20px; margin-bottom:16px;">
+          <div style="font-weight:600; color:var(--text-dark); margin-bottom:8px;">⚡ Wire up Stripe to accept online donations</div>
+          <div style="font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:16px;">1. Create a Stripe account at stripe.com (free, nonprofit rates available)<br>2. Go to Stripe Dashboard → Developers → API Keys → copy Secret Key<br>3. Add to Cloudflare → Pages → Settings → Variables: <code>STRIPE_SECRET_KEY</code><br>4. Add your public key below in Settings</div>
+          <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+            <a href="https://stripe.com" target="_blank" class="btn-sm primary">Go to Stripe ↗</a>
+            <button class="btn-sm" onclick="showPage('settings')">Add Keys in Settings →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- FUNDRAISING GOALS -->
+      <div class="settings-section">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div class="settings-section-title" style="margin:0;">Fundraising Goals</div>
+          <button class="btn-sm" onclick="toggleGoalForm()">+ Add Goal</button>
+        </div>
+        <div id="goal-form" style="display:none; background:var(--linen); padding:20px; margin-top:16px; border:1px solid var(--rule);">
+          <div class="form-grid" style="grid-template-columns:1fr 1fr;">
+            <div class="form-group"><label class="form-label">Title</label><input class="form-input" type="text" id="goal-title" placeholder="One World Day 2026"></div>
+            <div class="form-group"><label class="form-label">Goal Amount ($)</label><input class="form-input" type="number" id="goal-amount" placeholder="500"></div>
+            <div class="form-group"><label class="form-label">Fund Key</label><input class="form-input" type="text" id="goal-fund" placeholder="one-world-day"></div>
+            <div class="form-group"><label class="form-label">Raised So Far ($)</label><input class="form-input" type="number" id="goal-raised" placeholder="0"></div>
+            <div class="form-group full"><label class="form-label">Description</label><textarea class="form-textarea" style="min-height:60px;" id="goal-desc"></textarea></div>
+          </div>
+          <button class="btn-sm primary" onclick="saveGoal()">Save Goal →</button>
+          <button class="btn-sm" onclick="toggleGoalForm()" style="margin-left:8px;">Cancel</button>
+          <input type="hidden" id="goal-editing-id">
+        </div>
+        <div id="goals-table" style="margin-top:16px;"></div>
+      </div>
+
+      <!-- DONATION HISTORY -->
+      <div class="settings-section">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div class="settings-section-title" style="margin:0;">Donation History</div>
+          <span id="donations-total" style="font-family:'DM Mono',monospace; font-size:11px; color:var(--amber);"></span>
+        </div>
+        <table class="data-table" style="margin-top:16px;">
+          <thead><tr><th>Donor</th><th>Amount</th><th>Fund</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody id="donations-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SPONSORS -->
+    <div class="page" id="page-sponsors">
+      <div style="margin-bottom:24px;"><div style="font-size:13px; color:var(--text-muted);">Manage sponsors displayed on the public site and donate page.</div></div>
+      <div class="ann-form-mini" id="sp-form-wrap">
+        <div class="ann-form-title">
+          <span id="sp-form-title">New Sponsor</span>
+          <button class="toggle-form-btn" onclick="toggleSpForm()">+ Add New</button>
+        </div>
+        <div id="sp-form-fields" style="display:none;">
+          <div class="form-grid">
+            <div class="form-group"><label class="form-label">Company / Org Name</label><input class="form-input" type="text" id="sp-name" placeholder="Acme Lithuanian Bakery"></div>
+            <div class="form-group">
+              <label class="form-label">Tier</label>
+              <select class="form-select" id="sp-tier">
+                <option value="platinum">Platinum ($1,000/yr)</option>
+                <option value="heritage">Heritage ($500/yr)</option>
+                <option value="community" selected>Community ($250/yr)</option>
+              </select>
+            </div>
+            <div class="form-group"><label class="form-label">Website URL</label><input class="form-input" type="url" id="sp-url" placeholder="https://..."></div>
+            <div class="form-group"><label class="form-label">Annual Amount ($)</label><input class="form-input" type="number" id="sp-amount" placeholder="250"></div>
+            <div class="form-group"><label class="form-label">Contact Name</label><input class="form-input" type="text" id="sp-contact-name"></div>
+            <div class="form-group"><label class="form-label">Contact Email</label><input class="form-input" type="email" id="sp-contact-email"></div>
+            <div class="form-group"><label class="form-label">Start Date</label><input class="form-input" type="date" id="sp-start"></div>
+            <div class="form-group"><label class="form-label">End Date</label><input class="form-input" type="date" id="sp-end"></div>
+            <div class="form-group full">
+              <label class="form-label">Logo</label>
+              <div class="photo-upload-area" style="padding:16px;" onclick="document.getElementById('sp-logo-input').click()">
+                <div class="upload-icon" style="font-size:18px;">🏢</div>
+                <div class="upload-text" style="font-size:12px;">Click to upload logo</div>
+              </div>
+              <input type="file" id="sp-logo-input" accept="image/*" style="display:none" onchange="uploadSpLogo(this.files[0])">
+              <div id="sp-logo-preview" style="margin-top:8px; display:none;"><img id="sp-logo-img" src="" style="max-height:60px; max-width:200px; object-fit:contain;"></div>
+              <input type="hidden" id="sp-logo-url">
+            </div>
+            <div class="form-group" style="display:flex; align-items:center; gap:8px; padding-top:24px;">
+              <input type="checkbox" id="sp-active" checked style="accent-color:var(--amber);">
+              <label class="form-label" style="margin:0;">Active / Visible</label>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-sm primary" onclick="saveSponsor()">Save Sponsor →</button>
+            <button class="btn-sm" onclick="cancelSpEdit()">Cancel</button>
+          </div>
+          <input type="hidden" id="sp-editing-id">
+        </div>
+      </div>
+      <div style="background:var(--white); border:1px solid var(--rule);">
+        <table class="data-table">
+          <thead><tr><th>Sponsor</th><th>Tier</th><th>Amount</th><th>Expires</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="sp-tbody"></tbody>
+        </table>
       </div>
     </div>
 
@@ -1466,9 +1575,9 @@ if (_existingSession) {
 function doLogout() { CLAC.auth.logout(); window.location.href = 'index.html'; }
 
 // ── NAVIGATION ────────────────────────────────────────────
-const pages = ['dashboard','events','announcements','settings','page-content','quick-links','board','media','users','portal','inquiries','social','activity','calendar','gallery'];
-const pageTitles = { dashboard:'Dashboard', events:'Events', announcements:'Announcements', settings:'Settings', 'page-content':'Page Content', 'quick-links':'Quick Links', board:'Board Members', media:'Media Library', gallery:'Gallery', users:'Users & Security', portal:'Board Portal', inquiries:'Inquiries', social:'Social Media', activity:'Activity Log', calendar:'Content Calendar' };
-const topbarActions = { dashboard:'+ New Event', events:'+ New Event', announcements:'+ New Announcement', settings:'Save Settings', 'page-content':'Save Content', 'quick-links':'+ New Link', board:'+ New Member', media:'Upload Photos', gallery:'Upload Photos', users:'+ Add User', portal:'', inquiries:'', social:'Generate Post', activity:'', calendar:'✦ Generate Week' };
+const pages = ['dashboard','events','announcements','settings','page-content','quick-links','board','media','gallery','users','portal','inquiries','donations','sponsors','social','activity','calendar'];
+const pageTitles = { dashboard:'Dashboard', events:'Events', announcements:'Announcements', settings:'Settings', 'page-content':'Page Content', 'quick-links':'Quick Links', board:'Board Members', media:'Media Library', gallery:'Gallery', users:'Users & Security', portal:'Board Portal', inquiries:'Inquiries', donations:'Donations', sponsors:'Sponsors', social:'Social Media', activity:'Activity Log', calendar:'Content Calendar' };
+const topbarActions = { dashboard:'+ New Event', events:'+ New Event', announcements:'+ New Announcement', settings:'Save Settings', 'page-content':'Save Content', 'quick-links':'+ New Link', board:'+ New Member', media:'Upload Photos', gallery:'Upload Photos', users:'+ Add User', portal:'', inquiries:'', donations:'', sponsors:'+ Add Sponsor', social:'Generate Post', activity:'', calendar:'✦ Generate Week' };
 
 async function showPage(name) {
   pages.forEach(p => {
@@ -1494,6 +1603,8 @@ async function showPage(name) {
   if (name === 'activity') await renderActivityLog();
   if (name === 'calendar') { await renderCalendarFeed(); await renderLibraryFeed(); }
   if (name === 'gallery') await loadGalleryPage();
+  if (name === 'donations') await loadDonationsPage();
+  if (name === 'sponsors') { await renderSponsorsTable(); }
   // Update topbar action
   const btn = document.getElementById('topbar-action');
   btn.textContent = topbarActions[name] || '+ New';
@@ -1503,6 +1614,7 @@ async function showPage(name) {
   else if (name === 'media') btn.onclick = () => document.getElementById('media-file-input').click();
   else if (name === 'users') btn.onclick = () => toggleUsrForm(true);
   else if (name === 'social') btn.onclick = generateSocialPost;
+  else if (name === 'sponsors') btn.onclick = () => toggleSpForm(true);
   else if (name === 'calendar') btn.onclick = generateWeek;
   else if (name === 'page-content') btn.onclick = savePageContent;
   else btn.onclick = newEventClick;

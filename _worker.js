@@ -223,6 +223,55 @@ export default {
       } catch(e) { return json({ error: e.message }, 500); }
     }
 
+
+    // ── STRIPE DONATE ─────────────────────────────────────────────────────────
+    if (url.pathname === '/api/stripe-donate' && request.method === 'POST') {
+      try {
+        const { amount, fund, name, email, donationId } = await request.json();
+        const stripeKey = env.STRIPE_SECRET_KEY;
+
+        if (!stripeKey) return json({ error: 'Stripe not configured' }, 503);
+
+        const fundNames = { general:'General Community Fund', 'one-world-day':'One World Day 2026', 'saturday-school':'Lithuanian Saturday School', 'cultural-garden':'Cultural Garden Maintenance' };
+        const fundName  = fundNames[fund] || 'CLAC Donation';
+        const siteUrl   = env.SITE_URL || 'https://clac-website.pages.dev';
+
+        const params = new URLSearchParams({
+          'payment_method_types[]':        'card',
+          'line_items[0][price_data][currency]':                    'usd',
+          'line_items[0][price_data][product_data][name]':          `CLAC Donation — ${fundName}`,
+          'line_items[0][price_data][product_data][description]':   'Tax-deductible donation to Cleveland Lithuanian American Community, 501(c)(3)',
+          'line_items[0][price_data][unit_amount]':                 String(amount * 100),
+          'line_items[0][quantity]':                                '1',
+          'mode':                          'payment',
+          'success_url':                   `${siteUrl}/donate.html?success=true&fund=${fund}&session_id={CHECKOUT_SESSION_ID}`,
+          'cancel_url':                    `${siteUrl}/donate.html`,
+          'customer_email':                email || '',
+          'metadata[donation_id]':         donationId,
+          'metadata[fund]':                fund,
+          'metadata[donor_name]':          name || '',
+          'payment_intent_data[metadata][donation_id]': donationId,
+          'payment_intent_data[description]':           `CLAC Donation — ${fundName}`,
+        });
+
+        const res = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${stripeKey}`,
+            'Content-Type':  'application/x-www-form-urlencoded',
+          },
+          body: params.toString(),
+        });
+
+        const session = await res.json();
+        if (!res.ok) return json({ error: session.error?.message || 'Stripe error' }, 500);
+
+        return json({ url: session.url });
+      } catch(e) {
+        return json({ error: e.message }, 500);
+      }
+    }
+
     // ── CONTACT ───────────────────────────────────────────────────────────────
     if (url.pathname === '/api/contact' && request.method === 'POST') {
       try {
