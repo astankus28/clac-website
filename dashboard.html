@@ -153,6 +153,8 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
       <a class="snav-item" onclick="showPage('users')" href="#"><span class="snav-icon">◈</span> Users</a>
       <a class="snav-item" onclick="showPage('settings')" href="#"><span class="snav-icon">⚙</span> Settings</a>
       <div class="snav-section">Board</div>
+      <a class="snav-item" onclick="showPage('social')" href="#"><span class="snav-icon">◉</span> Social Media</a>
+      <a class="snav-item" onclick="showPage('activity')" href="#"><span class="snav-icon">◇</span> Activity Log</a>
       <a class="snav-item" onclick="showPage('portal')" href="#"><span class="snav-icon">◆</span> Board Portal</a>
       <a class="snav-item" onclick="showPage('inquiries')" href="#"><span class="snav-icon">✦</span> Inquiries</a>
       <div class="snav-section">Public</div>
@@ -323,15 +325,20 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
             <div class="photo-preview-grid" id="photo-preview-grid"></div>
             <div id="photo-upload-status" style="font-size:12px; color:var(--amber); font-family:'DM Mono',monospace; margin-top:8px; display:none;"></div>
           </div>
-          <div style="grid-column:1/-1; display:flex; align-items:center; gap:12px;">
+          <div style="grid-column:1/-1; display:flex; align-items:center; gap:24px; flex-wrap:wrap;">
             <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:14px; color:var(--text-body);">
               <input type="checkbox" id="f-published" checked style="width:16px; height:16px; accent-color:var(--amber);">
               Published (visible on public site)
             </label>
-            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:14px; color:var(--text-body); margin-left:20px;">
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:14px; color:var(--text-body);">
               <input type="checkbox" id="f-featured" style="width:16px; height:16px; accent-color:var(--amber);">
-              Featured (show prominently on homepage)
+              Featured on homepage
             </label>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <label style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--amber); white-space:nowrap;">Schedule Publish:</label>
+              <input type="date" id="f-publish-at" class="form-input" style="width:160px; padding:6px 10px;" title="Leave blank to publish immediately when Published is checked">
+              <span style="font-size:11px; color:var(--text-muted);">optional</span>
+            </div>
           </div>
         </div>
         <div style="margin-top:24px; padding-top:20px; border-top:1px solid var(--rule); display:flex; gap:12px;">
@@ -348,8 +355,13 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
           <button class="btn-sm" id="filter-upcoming" onclick="filterEvents('upcoming')">Upcoming</button>
           <button class="btn-sm" id="filter-past" onclick="filterEvents('past')">Past</button>
         </div>
+        <div style="padding:12px 20px; border-bottom:1px solid var(--rule); display:flex; gap:10px; align-items:center; justify-content:flex-end;" id="bulk-actions" style="display:none;">
+          <span id="bulk-count" style="font-family:'DM Mono',monospace; font-size:11px; color:var(--text-muted);"></span>
+          <button class="btn-sm del" onclick="bulkDeleteEvents()" style="color:var(--red); border-color:rgba(192,57,43,0.3);">Delete Selected</button>
+        </div>
         <table class="data-table" id="events-table">
           <thead><tr>
+            <th style="width:32px;"><input type="checkbox" id="select-all-events" onclick="toggleSelectAll(this)" style="accent-color:var(--amber);"></th>
             <th>Event</th><th>Date</th><th>Category</th><th>Status</th><th>Featured</th><th>Actions</th>
           </tr></thead>
           <tbody id="events-tbody"></tbody>
@@ -473,6 +485,112 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
 
 
 
+
+
+    <!-- SOCIAL MEDIA -->
+    <div class="page" id="page-social">
+      <div style="margin-bottom:24px;"><div style="font-size:13px; color:var(--text-muted);">Generate posts and image cards for Facebook and Instagram.</div></div>
+
+      <!-- POST GENERATOR -->
+      <div class="settings-section">
+        <div class="settings-section-title">Generate Social Post</div>
+        <div class="form-grid">
+          <div class="form-group full">
+            <label class="form-label">Select Event</label>
+            <select class="form-select" id="soc-event-select" onchange="loadSocialEvent()">
+              <option value="">— Choose an event —</option>
+            </select>
+          </div>
+          <div class="form-group full" id="soc-event-preview" style="display:none;">
+            <div style="background:var(--forest); color:var(--cream); padding:20px; display:flex; gap:20px; align-items:center;">
+              <div id="soc-event-color" style="width:60px; height:60px; flex-shrink:0;"></div>
+              <div>
+                <div style="font-family:'Playfair Display',serif; font-size:18px; font-weight:700;" id="soc-event-title"></div>
+                <div style="font-family:'DM Mono',monospace; font-size:11px; color:var(--amber); margin-top:4px;" id="soc-event-meta"></div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Platform</label>
+            <div style="display:flex; gap:10px;">
+              <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:14px;">
+                <input type="radio" name="soc-platform" value="facebook" checked style="accent-color:var(--amber);"> Facebook
+              </label>
+              <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:14px;">
+                <input type="radio" name="soc-platform" value="instagram" style="accent-color:var(--amber);"> Instagram
+              </label>
+              <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:14px;">
+                <input type="radio" name="soc-platform" value="both" style="accent-color:var(--amber);"> Both
+              </label>
+            </div>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Tone / Focus — optional hint for AI</label>
+            <input class="form-input" type="text" id="soc-hint" placeholder="e.g. emphasize family-friendly, mention potluck, invite newcomers">
+          </div>
+        </div>
+        <button class="btn-sm primary" onclick="generateSocialPost()" style="padding:10px 24px;">✦ Generate with AI →</button>
+      </div>
+
+      <!-- GENERATED POSTS -->
+      <div class="settings-section" id="soc-output" style="display:none;">
+        <div class="settings-section-title">Generated Posts</div>
+
+        <!-- FACEBOOK -->
+        <div id="soc-fb-wrap" style="margin-bottom:24px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+            <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:#4267B2;">f Facebook</div>
+            <button class="btn-sm" onclick="copyPost('soc-fb-text')">Copy →</button>
+          </div>
+          <textarea id="soc-fb-text" class="form-textarea" style="min-height:160px; font-size:13px; line-height:1.7;"></textarea>
+          <a id="soc-fb-share" href="#" target="_blank" class="btn-sm primary" style="display:inline-block; margin-top:8px; text-decoration:none;">Share on Facebook ↗</a>
+        </div>
+
+        <!-- INSTAGRAM -->
+        <div id="soc-ig-wrap" style="margin-bottom:24px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+            <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:#C13584;">◉ Instagram</div>
+            <button class="btn-sm" onclick="copyPost('soc-ig-text')">Copy Caption →</button>
+          </div>
+          <textarea id="soc-ig-text" class="form-textarea" style="min-height:160px; font-size:13px; line-height:1.7;"></textarea>
+        </div>
+
+        <!-- INSTAGRAM IMAGE CARD -->
+        <div id="soc-image-wrap">
+          <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber); margin-bottom:10px;">Instagram Image Card (1080×1080)</div>
+          <div style="display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap;">
+            <div id="soc-image-preview" style="width:270px; height:270px; border:1px solid var(--rule); overflow:hidden; flex-shrink:0; background:var(--forest);">
+              <img id="soc-image-svg" src="" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+            <div>
+              <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px; line-height:1.6;">This image card is generated from the event details. Download it and upload to Instagram along with the caption above.</p>
+              <button class="btn-sm primary" onclick="downloadSocialImage()">⬇ Download Image Card</button>
+              <div style="margin-top:10px; font-size:12px; color:var(--text-muted);">Then open Instagram → + New Post → upload image → paste caption</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SAVED POSTS -->
+      <div class="settings-section">
+        <div class="settings-section-title">Saved Drafts & History</div>
+        <div id="soc-history" style="min-height:60px;">
+          <div style="color:var(--text-muted); font-size:13px; padding:16px 0;">No saved posts yet. Generate a post above to get started.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIVITY LOG -->
+    <div class="page" id="page-activity">
+      <div style="margin-bottom:24px;"><div style="font-size:13px; color:var(--text-muted);">A record of all content changes made in the dashboard.</div></div>
+      <div style="background:var(--white); border:1px solid var(--rule);">
+        <div style="padding:16px 20px; border-bottom:1px solid var(--rule); display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-muted);">Recent Activity</span>
+          <span id="activity-count" style="font-family:'DM Mono',monospace; font-size:11px; color:var(--text-muted);"></span>
+        </div>
+        <div id="activity-feed" style="padding:0;"></div>
+      </div>
+    </div>
 
     <!-- BOARD PORTAL -->
     <div class="page" id="page-portal">
@@ -1157,9 +1275,9 @@ if (_existingSession) {
 function doLogout() { CLAC.auth.logout(); window.location.href = 'index.html'; }
 
 // ── NAVIGATION ────────────────────────────────────────────
-const pages = ['dashboard','events','announcements','settings','page-content','quick-links','board','media','users','portal','inquiries'];
-const pageTitles = { dashboard:'Dashboard', events:'Events', announcements:'Announcements', settings:'Settings', 'page-content':'Page Content', 'quick-links':'Quick Links', board:'Board Members', media:'Media Library', users:'Users & Security', portal:'Board Portal', inquiries:'Inquiries' };
-const topbarActions = { dashboard:'+ New Event', events:'+ New Event', announcements:'+ New Announcement', settings:'Save Settings', 'page-content':'Save Content', 'quick-links':'+ New Link', board:'+ New Member', media:'Upload Photos', users:'+ Add User', portal:'', inquiries:'' };
+const pages = ['dashboard','events','announcements','settings','page-content','quick-links','board','media','users','portal','inquiries','social','activity'];
+const pageTitles = { dashboard:'Dashboard', events:'Events', announcements:'Announcements', settings:'Settings', 'page-content':'Page Content', 'quick-links':'Quick Links', board:'Board Members', media:'Media Library', users:'Users & Security', portal:'Board Portal', inquiries:'Inquiries', social:'Social Media', activity:'Activity Log' };
+const topbarActions = { dashboard:'+ New Event', events:'+ New Event', announcements:'+ New Announcement', settings:'Save Settings', 'page-content':'Save Content', 'quick-links':'+ New Link', board:'+ New Member', media:'Upload Photos', users:'+ Add User', portal:'', inquiries:'', social:'Generate Post', activity:'' };
 
 async function showPage(name) {
   pages.forEach(p => {
@@ -1181,6 +1299,8 @@ async function showPage(name) {
   if (name === 'users') await renderUsersTable();
   if (name === 'portal') await loadPortal();
   if (name === 'inquiries') await renderInquiries();
+  if (name === 'social') { await loadSocialEventList(); await renderSocialHistory(); }
+  if (name === 'activity') await renderActivityLog();
   // Update topbar action
   const btn = document.getElementById('topbar-action');
   btn.textContent = topbarActions[name] || '+ New';
@@ -1189,6 +1309,7 @@ async function showPage(name) {
   else if (name === 'board') btn.onclick = () => toggleBmForm(true);
   else if (name === 'media') btn.onclick = () => document.getElementById('media-file-input').click();
   else if (name === 'users') btn.onclick = () => toggleUsrForm(true);
+  else if (name === 'social') btn.onclick = generateSocialPost;
   else if (name === 'page-content') btn.onclick = savePageContent;
   else btn.onclick = newEventClick;
   return false;
@@ -1261,6 +1382,7 @@ function clearEventForm() {
   _uploadedPhotos = [];
   renderPhotoPreview();
   loadCoverPhoto('');
+  document.getElementById('f-publish-at').value = '';
   document.getElementById('f-status').value = 'upcoming';
   document.getElementById('f-category').value = 'Cultural';
   document.getElementById('f-attendees').value = '';
@@ -1297,6 +1419,7 @@ async function editEvent(id) {
   document.getElementById('f-featured').checked = e.featured;
   document.getElementById('f-cover-color').value = e.coverColor || '#2d4a33';
   loadCoverPhoto(e.coverPhoto || '');
+  document.getElementById('f-publish-at').value = e.publishAt || '';
   document.getElementById('f-contact-email').value = e.contactEmail || '';
   loadPhotoPreviews(e.photos || []);
   buildColorGrid();
@@ -1330,7 +1453,8 @@ async function saveEvent() {
     rsvpLink: document.getElementById('f-rsvp').value.trim(),
     recap: document.getElementById('f-recap').value.trim(),
     coverColor: document.getElementById('f-cover-color').value,
-    coverPhoto: document.getElementById('f-cover-photo').value || '',
+    coverPhoto:  document.getElementById('f-cover-photo').value || '',
+    publishAt:   document.getElementById('f-publish-at').value || null,
     contactEmail: document.getElementById('f-contact-email').value.trim(),
     contactName: 'Board Contact',
     published: document.getElementById('f-published').checked,
@@ -1340,6 +1464,7 @@ async function saveEvent() {
     updatedAt: new Date().toISOString().split('T')[0]
   };
   await CLAC.events.save(event);
+  await logActivity(editingEventId ? 'updated' : 'created', 'event', event.id, event.title);
   hideEventForm();
   await renderEventsTable(filterStatus);
   await renderDashboard();
@@ -1352,6 +1477,7 @@ function previewEvent() {
 
 async function deleteEvent(id) {
   if (!confirm('Delete this event? This cannot be undone.')) return;
+  await logActivity('deleted', 'event', id);
   await CLAC.events.delete(id);
   await renderEventsTable(filterStatus);
   await renderDashboard();
@@ -1388,6 +1514,7 @@ async function renderEventsTable(status) {
   if (!events.length) { tbody.innerHTML = '<tr><td colspan="6" style="padding:32px; text-align:center; color:var(--text-muted); font-size:13px;">No events found. <a onclick="newEventClick()" style="color:var(--amber); cursor:pointer;">Add your first event →</a></td></tr>'; return; }
   tbody.innerHTML = events.map(e => `
     <tr>
+      <td style="width:32px;"><input type="checkbox" class="event-row-check" data-id="${e.id}" onclick="toggleEventSelect(this)" style="accent-color:var(--amber);"></td>
       <td><div class="td-title">${e.title}</div><div class="td-meta">${e.location}</div></td>
       <td><div style="font-family:'DM Mono',monospace; font-size:12px;">${CLAC.formatDateShort(e.date)}</div></td>
       <td><span style="font-size:12px; color:var(--text-muted);">${e.category}</span></td>
@@ -1495,6 +1622,7 @@ async function saveAnnouncement() {
     published: document.getElementById('ann-published').checked
   };
   await CLAC.announcements.save(ann);
+  await logActivity(editId ? 'updated' : 'created', 'announcement', ann.id, ann.title);
   cancelAnnEdit();
   await renderAnnouncementsTable();
   await renderDashboard();
@@ -2208,6 +2336,273 @@ async function deleteMedia(id) {
   showToast('✓ Photo deleted.');
 }
 
+
+
+// ── ACTIVITY LOG ──────────────────────────────────────────────────────────────
+async function logActivity(action, entity, entityId, detail) {
+  try {
+    await sbUpsert('activity_log', {
+      id:        'log-' + Date.now().toString(36),
+      user_name: currentUser ? currentUser.name : 'unknown',
+      action, entity,
+      entity_id: entityId || null,
+      detail:    detail   || null,
+    });
+  } catch(e) { /* non-critical */ }
+}
+
+async function renderActivityLog() {
+  const items = await sbGet('activity_log', '?select=*&order=created_at.desc&limit=50');
+  const feed  = document.getElementById('activity-feed');
+  const count = document.getElementById('activity-count');
+  if (!items || !items.length) {
+    feed.innerHTML = '<div style="padding:32px; text-align:center; color:var(--text-muted); font-size:13px;">No activity yet.</div>';
+    return;
+  }
+  count.textContent = items.length + ' entries';
+  const icons = { created:'✦', updated:'✎', deleted:'✕', published:'◆', 'auto-published':'⏰' };
+  const colors = { created:'var(--amber)', updated:'var(--text-muted)', deleted:'var(--red)', published:'#27ae60', 'auto-published':'#27ae60' };
+  feed.innerHTML = items.map(a => {
+    const date = new Date(a.created_at).toLocaleString('en-US', { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' });
+    const icon  = icons[a.action]  || '◈';
+    const color = colors[a.action] || 'var(--amber)';
+    return `<div style="display:flex; gap:16px; align-items:flex-start; padding:14px 20px; border-bottom:1px solid var(--rule);">
+      <div style="color:${color}; font-size:14px; flex-shrink:0; margin-top:2px;">${icon}</div>
+      <div style="flex:1;">
+        <div style="font-size:13px; color:var(--text-dark);">
+          <strong>${a.user_name || 'system'}</strong>
+          <span style="color:var(--text-muted);"> ${a.action} </span>
+          <span style="color:var(--text-dark);">${a.entity}</span>
+          ${a.detail ? `<span style="color:var(--text-muted);"> — ${a.detail}</span>` : ''}
+        </div>
+      </div>
+      <div style="font-family:'DM Mono',monospace; font-size:11px; color:var(--text-faint); white-space:nowrap;">${date}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── BULK DELETE EVENTS ────────────────────────────────────────────────────────
+let _selectedEvents = new Set();
+
+function toggleSelectAll(checkbox) {
+  const boxes = document.querySelectorAll('.event-row-check');
+  boxes.forEach(b => {
+    b.checked = checkbox.checked;
+    if (checkbox.checked) _selectedEvents.add(b.dataset.id);
+    else _selectedEvents.delete(b.dataset.id);
+  });
+  updateBulkBar();
+}
+
+function toggleEventSelect(checkbox) {
+  if (checkbox.checked) _selectedEvents.add(checkbox.dataset.id);
+  else _selectedEvents.delete(checkbox.dataset.id);
+  updateBulkBar();
+}
+
+function updateBulkBar() {
+  const bar = document.getElementById('bulk-actions');
+  const cnt = document.getElementById('bulk-count');
+  if (_selectedEvents.size > 0) {
+    bar.style.display = 'flex';
+    cnt.textContent = _selectedEvents.size + ' selected';
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
+async function bulkDeleteEvents() {
+  if (!_selectedEvents.size) return;
+  if (!confirm(`Delete ${_selectedEvents.size} event${_selectedEvents.size > 1 ? 's' : ''}? This cannot be undone.`)) return;
+  for (const id of _selectedEvents) {
+    await sbDelete('events', id);
+    await logActivity('deleted', 'event', id);
+  }
+  _selectedEvents.clear();
+  updateBulkBar();
+  await renderEventsTable(filterStatus);
+  await renderDashboard();
+  showToast(`✓ ${_selectedEvents.size || 'Selected'} events deleted.`);
+}
+
+// ── SCHEDULED PUBLISH FIELD ───────────────────────────────────────────────────
+// Wire publish_at into saveEvent and editEvent
+// (these patches are applied inline below)
+
+// ── SOCIAL MEDIA ──────────────────────────────────────────────────────────────
+let _socialEvent = null;
+let _socialImageSvg = null;
+
+async function loadSocialEventList() {
+  const events = await sbGet('events', '?select=id,title,date,location,cover_color,cover_photo&order=date.desc&limit=30');
+  const select = document.getElementById('soc-event-select');
+  if (!events || !events.length) return;
+  select.innerHTML = '<option value="">— Choose an event —</option>' +
+    events.map(e => `<option value="${e.id}">${e.title} — ${e.date}</option>`).join('');
+}
+
+async function loadSocialEvent() {
+  const id = document.getElementById('soc-event-select').value;
+  if (!id) { document.getElementById('soc-event-preview').style.display = 'none'; _socialEvent = null; return; }
+  const events = await sbGet('events', `?id=eq.${id}&select=*`);
+  _socialEvent = events && events[0];
+  if (!_socialEvent) return;
+  document.getElementById('soc-event-preview').style.display = 'block';
+  document.getElementById('soc-event-title').textContent = _socialEvent.title;
+  document.getElementById('soc-event-meta').textContent  = _socialEvent.date + ' · ' + (_socialEvent.location || 'Cleveland, OH');
+  const colorBox = document.getElementById('soc-event-color');
+  if (_socialEvent.cover_photo) {
+    colorBox.style.background = `url(${_socialEvent.cover_photo}) center/cover`;
+  } else {
+    colorBox.style.background = _socialEvent.cover_color || '#2d4a33';
+  }
+}
+
+async function generateSocialPost() {
+  if (!_socialEvent) { showToast('⚠ Please select an event first.'); return; }
+
+  const platform = document.querySelector('input[name="soc-platform"]:checked').value;
+  const hint     = document.getElementById('soc-hint').value.trim();
+  const btn      = document.querySelector('#page-social .btn-sm.primary');
+
+  btn.textContent = '✦ Generating...';
+  btn.disabled    = true;
+
+  try {
+    // Generate image card
+    const imgRes = await fetch('/api/social-image', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title:    _socialEvent.title,
+        date:     new Date(_socialEvent.date + 'T12:00:00').toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' }),
+        location: _socialEvent.location,
+        color:    _socialEvent.cover_color || '#2d4a33',
+      }),
+    });
+    if (imgRes.ok) {
+      const svgText = await imgRes.text();
+      _socialImageSvg = svgText;
+      const blob = new Blob([svgText], { type: 'image/svg+xml' });
+      const blobUrl = URL.createObjectURL(blob);
+      document.getElementById('soc-image-svg').src = blobUrl;
+    }
+
+    // Generate copy with Claude
+    const systemPrompt = `You are a social media writer for the Cleveland Lithuanian American Community (CLAC), a 501(c)(3) nonprofit in Cleveland, Ohio. Write warm, community-focused posts that feel authentic and welcoming. Always include relevant emojis. For Facebook: 2-3 paragraphs, conversational, include event details. For Instagram: punchy opening line, event details, strong call to action, then hashtags on new lines. Hashtags to always include: #ClevelandLithuanian #CLAC #Cleveland #Lithuanian #LithuanianAmerican #ClevelandOhio. Add 3-5 relevant event-specific hashtags too.`;
+
+    const eventContext = `Event: ${_socialEvent.title}
+Date: ${new Date(_socialEvent.date + 'T12:00:00').toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' })}
+Time: ${_socialEvent.time || 'TBA'}
+Location: ${_socialEvent.location || 'Cleveland, OH'}
+Description: ${(_socialEvent.description || '').slice(0, 400)}
+${hint ? 'Additional focus: ' + hint : ''}`;
+
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: `Write social media posts for this event. Return JSON only with keys "facebook" and "instagram".
+
+${eventContext}` }],
+      }),
+    });
+
+    const data = await res.json();
+    let posts = { facebook: '', instagram: '' };
+    try {
+      const text = data.content?.[0]?.text || '{}';
+      const clean = text.replace(/```json|```/g, '').trim();
+      posts = JSON.parse(clean);
+    } catch(e) {
+      const text = data.content?.[0]?.text || '';
+      posts.facebook  = text;
+      posts.instagram = text;
+    }
+
+    // Show output
+    document.getElementById('soc-output').style.display = 'block';
+    document.getElementById('soc-fb-wrap').style.display  = (platform === 'facebook' || platform === 'both') ? 'block' : 'none';
+    document.getElementById('soc-ig-wrap').style.display  = (platform === 'instagram' || platform === 'both') ? 'block' : 'none';
+
+    document.getElementById('soc-fb-text').value = posts.facebook  || '';
+    document.getElementById('soc-ig-text').value = posts.instagram || '';
+
+    // Facebook share URL
+    const fbUrl = `https://www.facebook.com/profile.php?id=61565856471983`;
+    document.getElementById('soc-fb-share').href = fbUrl;
+
+    // Save to history
+    await sbUpsert('social_posts', {
+      id:        'soc-' + Date.now().toString(36),
+      event_id:  _socialEvent.id,
+      platform,
+      caption:   posts.facebook || posts.instagram,
+      hashtags:  '#ClevelandLithuanian #CLAC',
+      image_url: _socialImageSvg ? 'generated' : null,
+      status:    'draft',
+    });
+
+    await logActivity('created', 'social_post', _socialEvent.id, `${platform} post for "${_socialEvent.title}"`);
+    await renderSocialHistory();
+
+    document.getElementById('soc-output').scrollIntoView({ behavior: 'smooth' });
+
+  } catch(e) {
+    showToast('⚠ Could not generate post: ' + e.message);
+    console.error(e);
+  }
+
+  btn.textContent = '✦ Generate with AI →';
+  btn.disabled    = false;
+}
+
+function copyPost(id) {
+  const text = document.getElementById(id).value;
+  navigator.clipboard.writeText(text).then(() => showToast('✓ Copied to clipboard!'));
+}
+
+function downloadSocialImage() {
+  if (!_socialImageSvg) { showToast('⚠ Generate a post first.'); return; }
+  const blob = new Blob([_socialImageSvg], { type: 'image/svg+xml' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = (_socialEvent?.title || 'clac-event').toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-instagram.svg';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('✓ Image downloaded. Open in a browser and screenshot, or convert to PNG.');
+}
+
+async function renderSocialHistory() {
+  const items = await sbGet('social_posts', '?select=*,events(title)&order=created_at.desc&limit=10');
+  const el = document.getElementById('soc-history');
+  if (!items || !items.length) {
+    el.innerHTML = '<div style="color:var(--text-muted); font-size:13px; padding:16px 0;">No saved posts yet.</div>';
+    return;
+  }
+  el.innerHTML = items.map(p => {
+    const date    = new Date(p.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric' });
+    const evtName = p.events?.title || 'Unknown event';
+    return `<div style="padding:14px 0; border-bottom:1px solid var(--rule); display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <div style="font-size:13px; font-weight:500; color:var(--text-dark);">${evtName}</div>
+        <div style="font-size:11px; color:var(--text-muted); font-family:'DM Mono',monospace;">${p.platform} · ${date} · ${p.status}</div>
+      </div>
+      <button class="row-btn del" onclick="deleteSocialPost('${p.id}')">Delete</button>
+    </div>`;
+  }).join('');
+}
+
+async function deleteSocialPost(id) {
+  if (!confirm('Delete this saved post?')) return;
+  await sbDelete('social_posts', id);
+  await renderSocialHistory();
+  showToast('✓ Post deleted.');
+}
 
 // ── BOARD PORTAL ──────────────────────────────────────────────────────────────
 async function loadPortal() {
