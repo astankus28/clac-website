@@ -256,6 +256,7 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
         </div>
         <div class="snav-group-body" id="grp-board-grp">
           <a class="snav-item sub" onclick="showPage('portal')" href="#" data-page="portal">Board Portal</a>
+          <a class="snav-item sub" onclick="showPage('grants')" href="#" data-page="grants">Grant Tracker</a>
           <a class="snav-item sub" onclick="showPage('activity')" href="#" data-page="activity">Activity Log</a>
         </div>
       </div>
@@ -920,6 +921,170 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
     </div>
 
 
+
+    <!-- GRANT TRACKER -->
+    <div class="page" id="page-grants">
+      <div style="margin-bottom:24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div style="font-size:13px; color:var(--text-muted);">Track grant opportunities, deadlines, and application status.</div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <select id="grant-filter-status" class="form-select" style="width:160px; padding:8px 12px; font-size:13px;" onchange="renderGrantsTable()">
+            <option value="all">All Status</option>
+            <option value="researching">Researching</option>
+            <option value="drafting">Drafting</option>
+            <option value="submitted">Submitted</option>
+            <option value="awarded">Awarded</option>
+            <option value="declined">Declined</option>
+            <option value="recurring">Recurring</option>
+          </select>
+          <select id="grant-filter-priority" class="form-select" style="width:140px; padding:8px 12px; font-size:13px;" onchange="renderGrantsTable()">
+            <option value="all">All Priority</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- STATS STRIP -->
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:24px;" id="grant-stats"></div>
+
+      <!-- GRANT FORM -->
+      <div class="ann-form-mini" id="grant-form-wrap">
+        <div class="ann-form-title">
+          <span id="grant-form-title">New Grant</span>
+          <button class="toggle-form-btn" onclick="toggleGrantForm()">+ Add Grant</button>
+        </div>
+        <div id="grant-form-fields" style="display:none;">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Funder / Organization</label>
+              <input class="form-input" type="text" id="gf-funder" placeholder="Ohio Arts Council">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Grant Name</label>
+              <input class="form-input" type="text" id="gf-name" placeholder="Arts Access Grant">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Amount Min ($)</label>
+              <input class="form-input" type="number" id="gf-amount-min" placeholder="500">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Amount Max ($)</label>
+              <input class="form-input" type="number" id="gf-amount-max" placeholder="5000">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Amount Notes</label>
+              <input class="form-input" type="text" id="gf-amount-notes" placeholder="e.g. up to $5,000 or varies">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Deadline</label>
+              <input class="form-input" type="date" id="gf-deadline">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Deadline Notes</label>
+              <input class="form-input" type="text" id="gf-deadline-notes" placeholder="e.g. rolling, annual March 15">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Status</label>
+              <select class="form-select" id="gf-status">
+                <option value="researching">Researching</option>
+                <option value="drafting">Drafting</option>
+                <option value="submitted">Submitted</option>
+                <option value="awarded">Awarded</option>
+                <option value="declined">Declined</option>
+                <option value="not_eligible">Not Eligible</option>
+                <option value="recurring">Recurring</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Priority</label>
+              <select class="form-select" id="gf-priority">
+                <option value="high">High</option>
+                <option value="medium" selected>Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Eligible?</label>
+              <select class="form-select" id="gf-eligible">
+                <option value="yes">Yes</option>
+                <option value="maybe">Maybe</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Assigned To</label>
+              <input class="form-input" type="text" id="gf-assigned" placeholder="Board member name">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Award Amount ($) — if awarded</label>
+              <input class="form-input" type="number" id="gf-award-amount" placeholder="2500">
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Funder Website</label>
+              <input class="form-input" type="url" id="gf-funder-url" placeholder="https://oac.ohio.gov/...">
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Google Drive Link — application documents</label>
+              <input class="form-input" type="url" id="gf-drive-url" placeholder="https://drive.google.com/...">
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Notes</label>
+              <textarea class="form-textarea" id="gf-notes" style="min-height:80px;" placeholder="Requirements, eligibility details, contacts, anything relevant..."></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Contact Name</label>
+              <input class="form-input" type="text" id="gf-contact-name" placeholder="Program Officer name">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Contact Email</label>
+              <input class="form-input" type="email" id="gf-contact-email" placeholder="grants@funder.org">
+            </div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-sm primary" onclick="saveGrant()">Save Grant →</button>
+            <button class="btn-sm" onclick="cancelGrantEdit()">Cancel</button>
+          </div>
+          <input type="hidden" id="gf-editing-id">
+        </div>
+      </div>
+
+      <!-- GRANTS TABLE -->
+      <div style="background:var(--white); border:1px solid var(--rule);">
+        <table class="data-table" id="grants-table">
+          <thead><tr>
+            <th>Funder / Grant</th>
+            <th>Amount</th>
+            <th>Deadline</th>
+            <th>Status</th>
+            <th>Priority</th>
+            <th>Assigned</th>
+            <th>Actions</th>
+          </tr></thead>
+          <tbody id="grants-tbody"></tbody>
+        </table>
+      </div>
+
+      <!-- GRANT DETAIL PANEL -->
+      <div id="grant-detail-panel" style="display:none; margin-top:20px; background:var(--white); border:1px solid var(--rule); padding:28px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--rule);">
+          <div style="font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--text-dark);" id="gd-title"></div>
+          <button class="btn-sm" onclick="closeGrantDetail()">Close ✕</button>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:24px;">
+          <div id="gd-details"></div>
+          <div>
+            <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber); margin-bottom:12px;">Notes & Comments</div>
+            <div id="gd-notes-feed" style="margin-bottom:12px;"></div>
+            <div style="display:flex; gap:8px;">
+              <textarea id="gd-note-input" class="form-textarea" style="min-height:60px; flex:1; font-size:13px;" placeholder="Add a note..."></textarea>
+            </div>
+            <button class="btn-sm primary" onclick="addGrantNote()" style="margin-top:8px;">Add Note →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- DONATIONS -->
     <div class="page" id="page-donations">
       <div style="margin-bottom:24px;"><div style="font-size:13px; color:var(--text-muted);">Track donations received. Set up Stripe to enable online payments.</div></div>
@@ -1031,12 +1196,12 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
       <div style="margin-bottom:24px;"><div style="font-size:13px; color:var(--text-muted);">Board resources, tools, and quick access to all community platforms.</div></div>
 
       <!-- GRANT TRACKER -->
-      <div class="settings-section" style="padding:0; overflow:hidden;">
-        <div style="padding:20px 28px; border-bottom:1px solid var(--rule); display:flex; justify-content:space-between; align-items:center;">
+      <div class="settings-section">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
           <div class="settings-section-title" style="margin:0;">Grant Tracker</div>
-          <a href="https://cle-grants.vercel.app" target="_blank" class="btn-sm">Open Full Page ↗</a>
+          <button class="btn-sm primary" onclick="showPage('grants')">Open Grant Tracker →</button>
         </div>
-        <iframe src="https://cle-grants.vercel.app" style="width:100%; height:600px; border:none; display:block;"></iframe>
+        <div style="font-size:13px; color:var(--text-muted); margin-top:8px;">The grant tracker is now fully built into this dashboard. Click above to manage grants, deadlines, and notes.</div>
       </div>
 
       <!-- QUICK ACCESS -->
@@ -1753,9 +1918,9 @@ if (_existingSession) {
 function doLogout() { CLAC.auth.logout(); window.location.href = 'index.html'; }
 
 // ── NAVIGATION ────────────────────────────────────────────
-const pages = ['dashboard','events','announcements','settings','page-content','quick-links','board','media','gallery','users','portal','inquiries','donations','sponsors','social','activity','calendar'];
-const pageTitles = { dashboard:'Dashboard', events:'Events', announcements:'Announcements', settings:'Settings', 'page-content':'Page Content', 'quick-links':'Quick Links', board:'Board Members', media:'Media Library', gallery:'Gallery', users:'Users & Security', portal:'Board Portal', inquiries:'Inquiries', donations:'Donations', sponsors:'Sponsors', social:'Social Media', activity:'Activity Log', calendar:'Content Calendar' };
-const topbarActions = { dashboard:'+ New Event', events:'+ New Event', announcements:'+ New Announcement', settings:'Save Settings', 'page-content':'Save Content', 'quick-links':'+ New Link', board:'+ New Member', media:'Upload Photos', gallery:'Upload Photos', users:'+ Add User', portal:'', inquiries:'', donations:'', sponsors:'+ Add Sponsor', social:'Generate Post', activity:'', calendar:'✦ Generate Week' };
+const pages = ['dashboard','events','announcements','settings','page-content','quick-links','board','media','gallery','users','portal','inquiries','donations','sponsors','grants','social','activity','calendar'];
+const pageTitles = { dashboard:'Dashboard', events:'Events', announcements:'Announcements', settings:'Settings', 'page-content':'Page Content', 'quick-links':'Quick Links', board:'Board Members', media:'Media Library', gallery:'Gallery', users:'Users & Security', portal:'Board Portal', inquiries:'Inquiries', donations:'Donations', sponsors:'Sponsors', grants:'Grant Tracker', social:'Social Media', activity:'Activity Log', calendar:'Content Calendar' };
+const topbarActions = { dashboard:'+ New Event', events:'+ New Event', announcements:'+ New Announcement', settings:'Save Settings', 'page-content':'Save Content', 'quick-links':'+ New Link', board:'+ New Member', media:'Upload Photos', gallery:'Upload Photos', users:'+ Add User', portal:'', inquiries:'', donations:'', sponsors:'+ Add Sponsor', grants:'+ Add Grant', social:'Generate Post', activity:'', calendar:'✦ Generate Week' };
 
 async function showPage(name) {
   autoOpenGroupForPage(name);
@@ -1783,6 +1948,7 @@ async function showPage(name) {
   if (name === 'calendar') { await renderCalendarFeed(); await renderLibraryFeed(); }
   if (name === 'gallery') await loadGalleryPage();
   if (name === 'donations') await loadDonationsPage();
+  if (name === 'grants') { await renderGrantStats(); await renderGrantsTable(); }
   if (name === 'sponsors') { await renderSponsorsTable(); }
   // Update topbar action
   const btn = document.getElementById('topbar-action');
@@ -1794,6 +1960,7 @@ async function showPage(name) {
   else if (name === 'users') btn.onclick = () => toggleUsrForm(true);
   else if (name === 'social') btn.onclick = generateSocialPost;
   else if (name === 'sponsors') btn.onclick = () => toggleSpForm(true);
+  else if (name === 'grants') btn.onclick = () => toggleGrantForm(true);
   else if (name === 'calendar') btn.onclick = generateWeek;
   else if (name === 'page-content') btn.onclick = savePageContent;
   else btn.onclick = newEventClick;
@@ -3700,7 +3867,7 @@ function autoOpenGroupForPage(pageName) {
     gallery: 'site', media: 'site', board: 'site', 'quick-links': 'site',
     inquiries: 'community', donations: 'community', sponsors: 'community',
     social: 'social', calendar: 'social',
-    portal: 'board-grp', activity: 'board-grp',
+    portal: 'board-grp', grants: 'board-grp', activity: 'board-grp',
     users: 'admin', settings: 'admin',
   };
   const group = pageToGroup[pageName];
