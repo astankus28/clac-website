@@ -3,16 +3,128 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Event — Cleveland Lithuanian American Community</title>
-  <meta name="description" content="Event details — Cleveland Lithuanian American Community.">
+  <title id="page-title">Event — Cleveland Lithuanian American Community</title>
+  <meta name="description" id="page-desc" content="Event details — Cleveland Lithuanian American Community.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <style>
+    /* ── HERO ── */
+    .event-hero { position:relative; min-height:70vh; display:flex; flex-direction:column; justify-content:flex-end; overflow:hidden; }
+    .event-hero-bg { position:absolute; inset:0; background:#1a2e1e; }
+    .event-hero-overlay { position:absolute; inset:0; background:linear-gradient(to top, rgba(5,10,6,0.97) 0%, rgba(5,10,6,0.4) 50%, rgba(5,10,6,0.15) 100%); }
+    .event-hero-content { position:relative; z-index:2; max-width:1280px; margin:0 auto; width:100%; padding:60px 40px 48px; }
+    .event-back { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:rgba(242,237,228,0.5); text-decoration:none; display:inline-flex; align-items:center; gap:8px; margin-bottom:24px; transition:color 0.15s; }
+    .event-back:hover { color:var(--amber); }
+    .event-category { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:var(--amber); display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+    .event-category::before { content:''; width:24px; height:1px; background:var(--amber); }
+    .event-title { font-family:'Playfair Display',serif; font-size:clamp(32px,5vw,68px); font-weight:900; color:var(--cream); line-height:1.05; margin-bottom:24px; max-width:900px; }
+    .event-meta-row { display:flex; flex-wrap:wrap; gap:24px; align-items:center; }
+    .event-meta-item { display:flex; align-items:center; gap:8px; font-size:14px; color:rgba(242,237,228,0.6); }
+    .event-meta-icon { font-size:16px; }
+    .event-meta-value { font-weight:400; }
+    .event-share { display:flex; gap:8px; margin-left:auto; }
+    .share-btn { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; padding:8px 16px; border:1px solid rgba(255,255,255,0.2); color:rgba(242,237,228,0.7); background:none; cursor:pointer; text-decoration:none; display:inline-block; transition:all 0.15s; }
+    .share-btn:hover { border-color:var(--amber); color:var(--amber); }
+
+    /* ── BODY LAYOUT ── */
+    .event-body { max-width:1280px; margin:0 auto; padding:0 40px; display:grid; grid-template-columns:1fr 340px; gap:60px; align-items:start; }
+    .event-main { padding:60px 0; }
+    .event-sidebar { padding:60px 0; position:sticky; top:80px; }
+
+    /* ── STORY ── */
+    .event-story { margin-bottom:48px; }
+    .event-story-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--amber); display:flex; align-items:center; gap:12px; margin-bottom:24px; }
+    .event-story-label::after { content:''; flex:1; height:1px; background:var(--rule); }
+    .event-story-text { font-size:17px; line-height:1.85; color:var(--text-body); font-weight:300; }
+    .event-story-text p { margin-bottom:1.4em; }
+    .event-story-text p:last-child { margin-bottom:0; }
+
+    /* ── STATS STRIP ── */
+    .event-stats { display:flex; gap:0; border:1px solid var(--rule); margin-bottom:48px; }
+    .event-stat { flex:1; padding:20px 24px; border-right:1px solid var(--rule); }
+    .event-stat:last-child { border-right:none; }
+    .event-stat-num { font-family:'Playfair Display',serif; font-size:32px; font-weight:700; color:var(--text-dark); line-height:1; }
+    .event-stat-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-muted); margin-top:6px; }
+
+    /* ── PHOTO GALLERY ── */
+    .event-gallery-section { margin-bottom:48px; }
+    .event-gallery-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--amber); display:flex; align-items:center; gap:12px; margin-bottom:24px; }
+    .event-gallery-label::after { content:''; flex:1; height:1px; background:var(--rule); }
+    .event-photo-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:3px; }
+    .event-photo-item { aspect-ratio:1; overflow:hidden; cursor:pointer; position:relative; }
+    .event-photo-item img { width:100%; height:100%; object-fit:cover; transition:transform 0.3s ease; }
+    .event-photo-item:hover img { transform:scale(1.04); }
+    .event-photo-item.wide { grid-column:span 2; aspect-ratio:2/1; }
+    .event-photo-item.tall { grid-row:span 2; aspect-ratio:1/2; }
+    .photo-count-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:32px; font-weight:700; color:white; }
+
+    /* ── SIDEBAR ── */
+    .sidebar-card { background:var(--white); border:1px solid var(--rule); padding:28px; margin-bottom:20px; }
+    .sidebar-card-title { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber); margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--rule); }
+    .sidebar-detail { display:flex; gap:12px; margin-bottom:14px; align-items:flex-start; }
+    .sidebar-detail-icon { font-size:16px; flex-shrink:0; margin-top:1px; }
+    .sidebar-detail-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-muted); }
+    .sidebar-detail-value { font-size:14px; color:var(--text-dark); margin-top:2px; line-height:1.4; }
+    .rsvp-btn { display:block; background:var(--forest); color:var(--amber); text-align:center; padding:14px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; transition:background 0.2s; margin-top:16px; }
+    .rsvp-btn:hover { background:var(--forest-mid); }
+    .tags-wrap { display:flex; flex-wrap:wrap; gap:6px; }
+    .tag { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; padding:4px 10px; border:1px solid var(--rule); color:var(--text-muted); }
+
+    /* ── UPCOMING EVENTS STRIP ── */
+    .upcoming-strip { background:var(--linen); border-top:1px solid var(--rule); padding:60px 0; }
+    .upcoming-strip-inner { max-width:1280px; margin:0 auto; padding:0 40px; }
+    .upcoming-strip-title { font-family:'Playfair Display',serif; font-size:28px; font-weight:700; color:var(--text-dark); margin-bottom:28px; }
+    .upcoming-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .upcoming-card { background:var(--white); border:1px solid var(--rule); padding:24px; text-decoration:none; transition:border-color 0.2s; display:block; }
+    .upcoming-card:hover { border-color:var(--amber); }
+    .uc-date { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber); margin-bottom:8px; }
+    .uc-title { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:var(--text-dark); line-height:1.25; margin-bottom:6px; }
+    .uc-location { font-size:12px; color:var(--text-muted); }
+
+    /* ── LIGHTBOX ── */
+    .lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.96); z-index:1000; flex-direction:column; }
+    .lightbox.open { display:flex; }
+    .lb-header { display:flex; justify-content:space-between; align-items:center; padding:16px 24px; flex-shrink:0; }
+    .lb-close { color:rgba(242,237,228,0.6); font-size:24px; cursor:pointer; background:none; border:none; padding:8px; }
+    .lb-close:hover { color:var(--cream); }
+    .lb-counter { font-family:'DM Mono',monospace; font-size:11px; color:rgba(242,237,228,0.4); }
+    .lb-body { flex:1; display:flex; align-items:center; justify-content:center; position:relative; }
+    .lb-img { max-width:90vw; max-height:calc(100vh - 140px); object-fit:contain; }
+    .lb-nav { position:absolute; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.08); color:var(--cream); border:none; width:48px; height:48px; cursor:pointer; font-size:20px; display:flex; align-items:center; justify-content:center; transition:background 0.15s; }
+    .lb-nav:hover { background:rgba(255,255,255,0.15); }
+    .lb-prev { left:16px; }
+    .lb-next { right:16px; }
+    .lb-footer { padding:16px 24px; display:flex; justify-content:space-between; align-items:center; flex-shrink:0; border-top:1px solid rgba(255,255,255,0.06); }
+    .lb-caption { font-size:13px; color:rgba(242,237,228,0.5); }
+    .lb-dl { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--amber); text-decoration:none; border:1px solid rgba(200,144,58,0.3); padding:6px 14px; }
+    .lb-dl:hover { background:rgba(200,144,58,0.1); }
+
+    /* ── NOT FOUND ── */
+    .event-not-found { min-height:60vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:40px; }
+    .enf-title { font-family:'Playfair Display',serif; font-size:32px; font-weight:700; color:var(--text-dark); margin-bottom:10px; }
+    .enf-sub { font-size:15px; color:var(--text-muted); margin-bottom:24px; }
+
+    @media (max-width:1024px) {
+      .event-body { grid-template-columns:1fr; gap:0; }
+      .event-sidebar { padding-top:0; position:static; }
+      .upcoming-cards { grid-template-columns:1fr 1fr; }
+    }
+    @media (max-width:768px) {
+      .event-hero-content, .event-body, .upcoming-strip-inner { padding-left:20px; padding-right:20px; }
+      .event-title { font-size:32px; }
+      .event-photo-grid { grid-template-columns:repeat(2,1fr); }
+      .event-photo-item.wide { grid-column:span 1; aspect-ratio:1; }
+      .event-share { display:none; }
+      .upcoming-cards { grid-template-columns:1fr; }
+      .event-stats { flex-wrap:wrap; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
 <div class="topbar">
   <div><span data-en="Cleveland, Ohio — Est. 1951" data-lt="Klivlandas, Ohajas — Įkurta 1951 m.">Cleveland, Ohio — Est. 1951</span> &nbsp;·&nbsp; <a href="https://javlb.lt/en/" target="_blank"><span data-en="Part of Lithuanian American Community, Inc." data-lt="JAV Lietuvių Bendruomenės narys">Part of Lithuanian American Community, Inc.</span></a></div>
   <div class="topbar-social">
@@ -21,15 +133,14 @@
   </div>
 </div>
 
-<!-- NAV -->
 <nav class="main-nav" id="main-nav">
   <a href="index.html" class="nav-logo">
     <div class="nav-logo-en">Cleveland Lithuanian American Community</div>
     <div class="nav-logo-lt">Clevelando Lietuvių Bendruomenė</div>
   </a>
-    <ul class="nav-links" id="nav-links">
+  <ul class="nav-links" id="nav-links">
     <li><a href="index.html" data-en="Home" data-lt="Pradžia">Home</a></li>
-    <li><a href="index.html#upcoming" class="active" data-en="Events" data-lt="Renginiai">Events</a></li>
+    <li><a href="index.html#upcoming" data-en="Events" data-lt="Renginiai">Events</a></li>
     <li><a href="community.html" data-en="Community Calendar" data-lt="Bendruomenės Kalendorius">Community Calendar</a></li>
     <li><a href="gallery.html" data-en="Gallery" data-lt="Galerija">Gallery</a></li>
     <li><a href="index.html#journal" data-en="Journal" data-lt="Archyvas">Journal</a></li>
@@ -48,356 +159,283 @@
   </div>
 </nav>
 
-<!-- EVENT HERO -->
-<div class="event-hero" id="event-hero">
-  <div class="event-hero-bg" id="hero-bg"></div>
-  <div class="event-hero-overlay"></div>
-  <div class="event-hero-content fade-in">
-    <div class="breadcrumb">
-      <a href="index.html">Home</a>
-      <span>/</span>
-      <a href="index.html#upcoming">Events</a>
-      <span>/</span>
-      <span id="bc-title">Event</span>
+<!-- EVENT CONTENT — populated by JS -->
+<div id="event-root">
+  <div style="min-height:60vh; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.1em;">Loading event...</div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <div class="lb-header">
+    <div style="font-family:'DM Mono',monospace; font-size:11px; color:rgba(242,237,228,0.5);" id="lb-title"></div>
+    <div style="display:flex; align-items:center; gap:16px;">
+      <div class="lb-counter" id="lb-counter"></div>
+      <button class="lb-close" onclick="closeLb()">✕</button>
     </div>
-    <div class="event-status-badge upcoming" id="status-badge">Upcoming</div>
-    <h1 class="event-hero-title" id="event-title">Loading...</h1>
-    <div class="event-hero-title-lt" id="event-title-lt"></div>
-    <div class="event-hero-meta" id="event-meta"></div>
+  </div>
+  <div class="lb-body">
+    <button class="lb-nav lb-prev" onclick="lbNav(-1)">‹</button>
+    <img class="lb-img" id="lb-img" src="" alt="">
+    <button class="lb-nav lb-next" onclick="lbNav(1)">›</button>
+  </div>
+  <div class="lb-footer">
+    <div class="lb-caption" id="lb-caption"></div>
+    <a class="lb-dl" id="lb-dl" href="#" download>⬇ Download</a>
   </div>
 </div>
 
-<!-- TICKER -->
-<div class="ticker"><div class="ticker-inner" id="ticker-inner">Loading...</div></div>
+<script src="assets/data.js"></script>
+<script>
+const SB_URL = 'https://pipgdibeustnvbiayixg.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBpcGdkaWJldXN0bnZiaWF5aXhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMDczODMsImV4cCI6MjA5MDU4MzM4M30.dkzUwPGg4q3bF9MfjLmc0Huf69Y1sadXXojuA62005w';
+const SB_H = { 'apikey':SB_KEY, 'Authorization':'Bearer '+SB_KEY, 'Content-Type':'application/json' };
 
-<!-- EVENT BODY -->
-<section class="event-body">
-  <div class="container">
-    <div class="event-layout">
+async function sbGet(t,p='') { const r=await fetch(`${SB_URL}/rest/v1/${t}${p}`,{headers:SB_H}); return r.json(); }
 
-      <!-- MAIN CONTENT -->
-      <div id="event-main">
-        <div class="event-section-label" data-en="About This Event" data-lt="Apie Renginį">About This Event</div>
-        <div class="event-description" id="event-desc">Loading...</div>
+let _lbPhotos=[], _lbIdx=0;
 
-        <div id="tags-section" style="display:none;">
-          <div class="event-section-label" data-en="Tags" data-lt="Žymos">Tags</div>
-          <div class="tags-row" id="event-tags"></div>
-        </div>
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
-        <div id="recap-section" style="display:none;">
-          <div class="event-section-label" data-en="Event Recap" data-lt="Renginio Apžvalga">Event Recap</div>
-          <div class="recap-block"><p id="event-recap"></p></div>
-        </div>
+function formatDate(d) {
+  const dt = new Date(d+'T12:00:00');
+  return MONTHS[dt.getMonth()] + ' ' + dt.getDate() + ', ' + dt.getFullYear();
+}
+function formatDay(d) {
+  return new Date(d+'T12:00:00').toLocaleDateString('en-US',{weekday:'long'});
+}
 
-        <div id="photos-section">
-          <div class="event-section-label" data-en="Photos" data-lt="Nuotraukos">Photos</div>
-          <div class="photo-grid" id="photo-grid">
-            <div class="photo-empty">
-              <div class="photo-empty-icon">◈</div>
-              <div class="photo-empty-text">Photos coming soon</div>
-              <div class="photo-empty-hint">Board members can upload photos via the admin dashboard</div>
-            </div>
+CLAC.ready().then(async () => {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+
+  if (!id) { renderNotFound(); return; }
+
+  const events = await sbGet('events', `?id=eq.${id}&select=*`);
+  const event  = events && events[0];
+
+  if (!event) { renderNotFound(); return; }
+
+  // Load gallery photos for this event
+  const photos = await sbGet('gallery_photos', `?event_id=eq.${id}&status=eq.published&order=sort_order.asc,created_at.asc`);
+
+  // Update page meta
+  document.title = event.title + ' — Cleveland Lithuanian American Community';
+  document.getElementById('page-desc').content = (event.description||'').slice(0,160);
+
+  renderEvent(event, photos || []);
+
+  // Load upcoming events for strip
+  const today = new Date().toISOString().split('T')[0];
+  const upcoming = await sbGet('events', `?published=eq.true&status=eq.upcoming&date=gte.${today}&id=neq.${id}&order=date.asc&limit=3`);
+  if (upcoming && upcoming.length) renderUpcomingStrip(upcoming);
+});
+
+function renderEvent(e, photos) {
+  const lang = localStorage.getItem('clac_lang') || 'en';
+  const title = (lang==='lt' && e.title_lt) ? e.title_lt : e.title;
+  const desc  = e.description || '';
+  const story = e.story || '';
+  const isPast = e.status === 'past';
+
+  // Hero background
+  const heroBg = e.cover_photo
+    ? `background:url(${e.cover_photo}) center/cover no-repeat;`
+    : `background:${e.cover_color||'#1a2e1e'};`;
+
+  // Story paragraphs
+  const storyHtml = story
+    ? story.split('\n\n').filter(Boolean).map(p => `<p>${p.replace(/\n/g,'<br>')}</p>`).join('')
+    : desc.split('\n\n').filter(Boolean).map(p => `<p>${p.replace(/\n/g,'<br>')}</p>`).join('');
+
+  // Tags
+  const tags = (e.tags||[]).map(t => `<span class="tag">${t}</span>`).join('');
+
+  // Stats strip (only for past events with data)
+  const statsHtml = isPast && (e.attendees || photos.length) ? `
+    <div class="event-stats">
+      ${e.attendees ? `<div class="event-stat"><div class="event-stat-num">${e.attendees}</div><div class="event-stat-label">Attendees</div></div>` : ''}
+      ${photos.length ? `<div class="event-stat"><div class="event-stat-num">${photos.length}</div><div class="event-stat-label">Photos</div></div>` : ''}
+      <div class="event-stat"><div class="event-stat-num">${new Date(e.date+'T12:00:00').getFullYear()}</div><div class="event-stat-label">Year</div></div>
+    </div>` : '';
+
+  // Photo grid (show up to 9, last one shows +count overlay)
+  const photoGrid = photos.length ? buildPhotoGrid(photos) : '';
+
+  // Address link
+  const mapLink = e.address
+    ? `<a href="https://maps.google.com/?q=${encodeURIComponent(e.address)}" target="_blank" style="color:var(--amber); text-decoration:none;">${e.location}</a>`
+    : e.location || 'Cleveland, OH';
+
+  document.getElementById('event-root').innerHTML = `
+    <div class="event-hero">
+      <div class="event-hero-bg" style="${heroBg}"></div>
+      <div class="event-hero-overlay"></div>
+      <div class="event-hero-content">
+        <a href="${isPast ? 'gallery.html' : 'index.html#upcoming'}" class="event-back">← ${isPast ? 'Back to Gallery' : 'Back to Events'}</a>
+        <div class="event-category">${e.category || 'Community Event'}</div>
+        <h1 class="event-title">${title}</h1>
+        <div class="event-meta-row">
+          <div class="event-meta-item"><span class="event-meta-icon">📅</span><div><div class="event-meta-value">${formatDay(e.date)}, ${formatDate(e.date)}</div></div></div>
+          ${e.time ? `<div class="event-meta-item"><span class="event-meta-icon">⏱</span><div><div class="event-meta-value">${e.time}${e.end_time ? ' – ' + e.end_time : ''}</div></div></div>` : ''}
+          ${e.location ? `<div class="event-meta-item"><span class="event-meta-icon">📍</span><div><div class="event-meta-value">${mapLink}</div></div></div>` : ''}
+          <div class="event-share">
+            <a class="share-btn" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}" target="_blank">Share ↗</a>
+            <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href).then(()=>alert('Link copied!'))">Copy Link</button>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- SIDEBAR -->
-      <div>
-        <div class="detail-card" id="detail-card">
-          <div class="detail-card-title" data-en="Event Details" data-lt="Renginio Informacija">Event Details</div>
-          <div id="detail-rows">Loading...</div>
-          <a class="rsvp-btn" id="rsvp-btn" href="#" style="display:none;" data-en="RSVP / Register →" data-lt="Registruotis →">RSVP / Register →</a>
+    <div class="event-body">
+      <div class="event-main">
+        ${statsHtml}
+        ${storyHtml ? `
+        <div class="event-story">
+          <div class="event-story-label">${isPast ? 'Event Story' : 'About This Event'}</div>
+          <div class="event-story-text">${storyHtml}</div>
+        </div>` : ''}
+        ${photoGrid ? `
+        <div class="event-gallery-section">
+          <div class="event-gallery-label">Photos</div>
+          <div class="event-photo-grid" id="event-photo-grid">${photoGrid}</div>
+        </div>` : ''}
+      </div>
+      <div class="event-sidebar">
+        <div class="sidebar-card">
+          <div class="sidebar-card-title">Event Details</div>
+          <div class="sidebar-detail">
+            <span class="sidebar-detail-icon">📅</span>
+            <div><div class="sidebar-detail-label">Date</div><div class="sidebar-detail-value">${formatDate(e.date)}</div></div>
+          </div>
+          ${e.time ? `<div class="sidebar-detail"><span class="sidebar-detail-icon">⏱</span><div><div class="sidebar-detail-label">Time</div><div class="sidebar-detail-value">${e.time}${e.end_time?' – '+e.end_time:''}</div></div></div>` : ''}
+          ${e.location ? `<div class="sidebar-detail"><span class="sidebar-detail-icon">📍</span><div><div class="sidebar-detail-label">Location</div><div class="sidebar-detail-value">${mapLink}${e.address?`<br><span style="font-size:12px;color:var(--text-muted);">${e.address}</span>`:''}</div></div></div>` : ''}
+          ${e.contact_email ? `<div class="sidebar-detail"><span class="sidebar-detail-icon">✉</span><div><div class="sidebar-detail-label">Contact</div><div class="sidebar-detail-value"><a href="mailto:${e.contact_email}" style="color:var(--amber);">${e.contact_email}</a></div></div></div>` : ''}
+          ${!isPast && e.rsvp_link ? `<a href="${e.rsvp_link}" target="_blank" class="rsvp-btn">RSVP / Get Tickets →</a>` : ''}
+          ${!isPast ? `<a href="join.html" class="rsvp-btn" style="margin-top:8px; background:transparent; border:1px solid var(--rule); color:var(--text-muted);">Join the Community →</a>` : ''}
         </div>
-
-        <div class="sidebar-widget" style="margin-bottom:20px;">
-          <div class="sidebar-widget-title" data-en="Share This Event" data-lt="Dalintis Renginiu">Share This Event</div>
-          <div style="margin-top:4px;">
-            <button class="share-btn" onclick="shareEvent('facebook')" data-en="Share on Facebook" data-lt="Dalintis Facebook">Share on Facebook</button>
-            <button class="share-btn" id="copy-btn" onclick="copyLink()" data-en="Copy Event Link" data-lt="Kopijuoti nuorodą">Copy Event Link</button>
+        ${tags ? `<div class="sidebar-card"><div class="sidebar-card-title">Tags</div><div class="tags-wrap">${tags}</div></div>` : ''}
+        <div class="sidebar-card">
+          <div class="sidebar-card-title">Share This Event</div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}" target="_blank" class="share-btn" style="text-align:center;">Share on Facebook ↗</a>
+            <button onclick="navigator.clipboard.writeText(window.location.href).then(()=>this.textContent='Copied!')" class="share-btn">Copy Page Link</button>
           </div>
         </div>
-
-        <div class="sidebar-widget">
-          <div class="sidebar-widget-title" data-en="Other Events" data-lt="Kiti Renginiai">Other Events</div>
-          <ul class="sidebar-link-list" id="other-events">
-            <li style="color:rgba(242,237,228,0.4); font-size:13px;">Loading...</li>
-          </ul>
-        </div>
       </div>
+    </div>`;
 
-    </div>
-  </div>
-</section>
+  // Wire lightbox
+  _lbPhotos = photos;
+}
 
-<!-- RELATED EVENTS -->
-<section style="background:var(--cream); padding: 60px 0;">
-  <div class="container">
-    <div class="section-header">
-      <div>
-        <div class="section-title" data-en="More Events" data-lt="Daugiau Renginių">More Events</div>
-        <div class="section-title-lt">Kiti Renginiai</div>
+function buildPhotoGrid(photos) {
+  const max = 9;
+  const show = photos.slice(0, max);
+  const remaining = photos.length - max;
+  return show.map((p, i) => {
+    const isLast = i === max - 1 && remaining > 0;
+    const wide = i === 0 ? ' wide' : '';
+    return `<div class="event-photo-item${wide}" onclick="openLb(${i})">
+      <img src="${p.url}" alt="${p.caption||''}" loading="${i < 4 ? 'eager' : 'lazy'}">
+      ${isLast ? `<div class="photo-count-overlay">+${remaining + 1}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function renderNotFound() {
+  document.getElementById('event-root').innerHTML = `
+    <div class="event-not-found">
+      <div style="font-size:48px; margin-bottom:20px;">🏛</div>
+      <div class="enf-title">Event Not Found</div>
+      <div class="enf-sub">This event may have been removed or the link is incorrect.</div>
+      <a href="gallery.html" class="rsvp-btn" style="display:inline-block; margin-top:0;">← Back to Gallery</a>
+    </div>`;
+}
+
+function renderUpcomingStrip(events) {
+  const strip = document.createElement('section');
+  strip.className = 'upcoming-strip';
+  strip.innerHTML = `
+    <div class="upcoming-strip-inner">
+      <div class="upcoming-strip-title">More Upcoming Events</div>
+      <div class="upcoming-cards">
+        ${events.map(e => `
+          <a href="event.html?id=${e.id}" class="upcoming-card">
+            <div class="uc-date">${new Date(e.date+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</div>
+            <div class="uc-title">${e.title}</div>
+            <div class="uc-location">${e.location||'Cleveland, OH'}</div>
+          </a>`).join('')}
       </div>
-      <a href="index.html#upcoming" class="section-link" data-en="All Events →" data-lt="Visi Renginiai →">All Events →</a>
-    </div>
-    <div class="related-grid" id="related-grid">
-      <div style="color:var(--text-muted);">Loading...</div>
-    </div>
-  </div>
-</section>
+    </div>`;
 
-<!-- NEWSLETTER -->
-<div class="newsletter-strip">
-  <div class="newsletter-inner">
-    <div>
-      <div class="newsletter-heading">Stay in the loop.<br data-en="Stay in the loop." data-lt="Likite prisijungę.">Likite prisijungę.</div>
-      <div class="newsletter-sub" data-en="Get event updates delivered to your inbox." data-lt="Gaukite renginių naujienas tiesiai į savo paštą.">Get event updates delivered to your inbox.</div>
-    </div>
-    <div class="newsletter-form">
-      <input type="email" class="newsletter-input" placeholder="Your email address">
-      <button class="newsletter-submit" data-en="Subscribe →" data-lt="Prenumeruoti →">Subscribe →</button>
-    </div>
-  </div>
-</div>
+  // Insert before footer
+  const footer = document.querySelector('.main-footer') || document.body;
+  document.body.insertBefore(strip, footer);
+}
 
-<!-- FOOTER -->
+// LIGHTBOX
+function openLb(idx) { _lbIdx=idx; document.getElementById('lightbox').classList.add('open'); updateLb(); document.addEventListener('keydown',lbKey); }
+function updateLb() {
+  const p=_lbPhotos[_lbIdx];
+  if(!p) return;
+  document.getElementById('lb-img').src=p.url;
+  document.getElementById('lb-caption').textContent=p.caption||'';
+  document.getElementById('lb-dl').href=p.url;
+  document.getElementById('lb-counter').textContent=`${_lbIdx+1} / ${_lbPhotos.length}`;
+}
+function lbNav(d) { _lbIdx=(_lbIdx+d+_lbPhotos.length)%_lbPhotos.length; updateLb(); }
+function closeLb() { document.getElementById('lightbox').classList.remove('open'); document.removeEventListener('keydown',lbKey); }
+function lbKey(e) { if(e.key==='ArrowRight') lbNav(1); else if(e.key==='ArrowLeft') lbNav(-1); else if(e.key==='Escape') closeLb(); }
+
+window.addEventListener('scroll',()=>{
+  document.getElementById('main-nav').style.boxShadow=window.scrollY>60?'0 1px 20px rgba(0,0,0,0.08)':'none';
+});
+</script>
 <footer class="main-footer">
   <div class="footer-grid">
     <div>
       <div class="footer-brand-name">Cleveland Lithuanian American Community</div>
       <div class="footer-brand-lt">Clevelando Lietuvių Bendruomenė</div>
-      <div class="footer-desc"><span data-en="A chapter of the Lithuanian American Community, Inc. — preserving Lithuanian culture and heritage in Northeast Ohio since 1951." data-lt="JAV Lietuvių Bendruomenės skyrius — saugome lietuvių kultūrą ir paveldą Šiaurės Rytų Ohajuje nuo 1951 m.">A chapter of the Lithuanian American Community, Inc. — preserving Lithuanian culture and heritage in Northeast Ohio since 1951.</span></div>
+      <div class="footer-desc">A chapter of the Lithuanian American Community, Inc. — preserving Lithuanian culture and heritage in Northeast Ohio since 1951.</div>
     </div>
     <div>
-      <div class="footer-col-title" data-en="Navigate" data-lt="Naršyti">Navigate</div>
+      <div class="footer-col-title">Navigate</div>
       <ul class="footer-links">
         <li><a href="index.html">Home</a></li>
         <li><a href="index.html#upcoming">Events</a></li>
-        <li><a href="index.html#journal">Photo Journal</a></li>
-        <li><a href="index.html#announcements">News</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="join.html">Join Us</a></li>
       </ul>
     </div>
     <div>
-      <div class="footer-col-title" data-en="Connect" data-lt="Ryšiai">Connect</div>
+      <div class="footer-col-title">Heritage Sites</div>
+      <ul class="footer-links">
+        <li><a href="http://www.saintcasimirparish.org" target="_blank">St. Casimir Parish ↗</a></li>
+        <li><a href="https://culturalgardensncleveland.org/" target="_blank">Lithuanian Cultural Garden ↗</a></li>
+        <li><a href="https://javlb.lt/en/" target="_blank">National LAC ↗</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Connect</div>
       <ul class="footer-links">
         <li><a href="https://www.facebook.com/profile.php?id=61565856471983" target="_blank">Facebook</a></li>
         <li><a href="https://www.instagram.com/cleveland_lietuviu_bendruomene" target="_blank">Instagram</a></li>
-        <li><a href="https://javlb.lt/en/" target="_blank">National LAC</a></li>
-        <li><a href="admin/index.html" data-en="Board Login" data-lt="Valdybos Prisijungimas">Board Login</a></li>
-      </ul>
-    </div>
-    <div>
-      <div class="footer-col-title" data-en="Heritage Sites" data-lt="Paveldo Vietos">Heritage Sites</div>
-      <ul class="footer-links">
-        <li><a href="http://www.saintcasimirparish.org" target="_blank">St. Casimir Parish ↗</a></li>
-        <li><a href="#">Lithuanian Cultural Garden</a></li>
-        <li><a href="#">E. 185th Corridor</a></li>
+        <li><a href="dashboard.html">Board Login</a></li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
     <div>© 2025 Cleveland Lithuanian American Community, Inc.</div>
-    <div style="font-family:'DM Mono',monospace; font-size:11px; color:rgba(242,237,228,0.3);">Vienybėje Mūsų Stiprybė</div>
+    <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(242,237,228,0.3);">Vienybėje Mūsų Stiprybė</div>
   </div>
 </footer>
-
-<!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox" onclick="closeLightbox()">
-  <button class="lb-close" onclick="closeLightbox()">✕</button>
-  <img class="lb-img" id="lb-img" src="" alt="Event photo">
-</div>
-
-<script src="assets/data.js"></script>
 <script>
-  const params  = new URLSearchParams(window.location.search);
-  const eventId = params.get('id');
-  const PALETTES = ['#2d4a33','#3d2e1a','#1e2e3a','#2a1e2e','#2e3a1e','#3a3010','#1a3038','#38281a'];
-
-  async function buildPage() {
-    const event = eventId ? await CLAC.events.get(eventId) : null;
-    if (!event) {
-      document.getElementById('event-title').textContent = 'Event Not Found';
-      document.getElementById('event-desc').innerHTML   = '<p>This event could not be found. <a href="index.html" style="color:var(--amber);">Return to the homepage.</a></p>';
-      return;
-    }
-
-    // Meta
-    document.title                                      = event.title + ' — Cleveland Lithuanian American Community';
-    document.getElementById('bc-title').textContent    = event.title;
-    document.querySelector('meta[name="description"]').setAttribute('content', event.title + ' — ' + event.location + ' — ' + CLAC.formatDate(event.date));
-
-    // Hero background
-    const bg = document.getElementById('hero-bg');
-    if (event.coverPhoto) {
-      bg.style.background = `url(${event.coverPhoto}) center/cover no-repeat`;
-    } else {
-      bg.style.background = event.coverColor || '#2d4a33';
-      bg.style.backgroundImage = 'repeating-linear-gradient(45deg,transparent,transparent 20px,rgba(255,255,255,0.015) 20px,rgba(255,255,255,0.015) 21px)';
-    }
-
-    // Status badge
-    const badge         = document.getElementById('status-badge');
-    badge.textContent   = event.status === 'upcoming' ? 'Upcoming Event' : 'Past Event';
-    badge.className     = 'event-status-badge ' + event.status;
-
-    // Title
-    document.getElementById('event-title').textContent = event.title;
-    if (event.titleLt) {
-      document.getElementById('event-title-lt').textContent = event.titleLt;
-    }
-
-    // Meta row
-    document.getElementById('event-meta').innerHTML = [
-      { label: 'Date',     value: CLAC.formatDate(event.date) },
-      event.time ? { label: 'Time', value: event.time + (event.endTime ? ' – ' + event.endTime : '') } : null,
-      { label: 'Location', value: event.location },
-      event.category  ? { label: 'Category',  value: event.category }       : null,
-      event.attendees ? { label: 'Attendees', value: event.attendees + '+' } : null,
-    ].filter(Boolean).map(m =>
-      `<div class="ehm-item"><div class="ehm-label">${m.label}</div><div class="ehm-value">${m.value}</div></div>`
-    ).join('');
-
-    // Description
-    document.getElementById('event-desc').innerHTML =
-      (event.description || '').split('\n').filter(p => p.trim()).map(p => `<p>${p}</p>`).join('');
-
-    // Tags
-    if (event.tags && event.tags.length) {
-      document.getElementById('tags-section').style.display = 'block';
-      document.getElementById('event-tags').innerHTML =
-        event.tags.map(t => `<span class="tag-pill">${t}</span>`).join('');
-    }
-
-    // Recap
-    if (event.recap) {
-      document.getElementById('recap-section').style.display = 'block';
-      document.getElementById('event-recap').textContent = event.recap;
-    }
-
-    // Photos
-    if (event.photos && event.photos.length) {
-      document.getElementById('photo-grid').innerHTML =
-        event.photos.map((p, i) =>
-          `<div class="photo-cell" onclick="openLightbox('${p}')"><img src="${p}" alt="Event photo ${i + 1}" loading="lazy"></div>`
-        ).join('');
-    }
-
-    // Detail sidebar
-    const detailRows = [
-      { label: 'Date',    value: CLAC.formatDate(event.date) },
-      event.time ? { label: 'Time', value: event.time + (event.endTime ? ' – ' + event.endTime : '') } : null,
-      { label: 'Location', value: event.location },
-      event.address      ? { label: 'Address',  value: `<a href="https://maps.google.com?q=${encodeURIComponent(event.address)}" target="_blank">${event.address} ↗</a>` } : null,
-      { label: 'Category', value: event.category },
-      event.contactEmail ? { label: 'Contact',  value: `<a href="mailto:${event.contactEmail}">${event.contactName || event.contactEmail}</a>` } : null,
-    ].filter(Boolean);
-
-    document.getElementById('detail-rows').innerHTML =
-      detailRows.map(r =>
-        `<div class="detail-row"><div class="dr-label">${r.label}</div><div class="dr-value">${r.value}</div></div>`
-      ).join('');
-
-    if (event.rsvpLink) {
-      const btn  = document.getElementById('rsvp-btn');
-      btn.href   = event.rsvpLink;
-      btn.style.display = 'block';
-    }
-
-    // Other events sidebar
-    const others = [...CLAC.events.upcoming(), ...CLAC.events.past()]
-      .filter(e => e.id !== eventId)
-      .slice(0, 5);
-    document.getElementById('other-events').innerHTML = others.length
-      ? others.map(e =>
-          `<li><a href="event.html?id=${e.id}">${e.title}
-            <span style="opacity:0.4; font-size:11px;">${CLAC.formatDateShort(e.date)}</span>
-          </a></li>`
-        ).join('')
-      : '<li style="color:rgba(242,237,228,0.4); font-size:13px;">No other events</li>';
-
-    // Related grid
-    document.getElementById('related-grid').innerHTML = others.slice(0, 3).length
-      ? others.slice(0, 3).map((e, i) => {
-          const color = e.coverColor || PALETTES[i % PALETTES.length];
-        const relBg = e.coverPhoto ? `background:url(${e.coverPhoto}) center/cover no-repeat;` : `background:${color};`;
-          return `<a class="related-card" href="event.html?id=${e.id}">
-            <div class="rc-top">
-              <div class="rc-img" style="background:${color}; background-image:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(255,255,255,0.02) 10px,rgba(255,255,255,0.02) 11px);"></div>
-            </div>
-            <div class="rc-body">
-              <div class="rc-cat">${e.category}</div>
-              <div class="rc-title">${e.title}</div>
-              <div class="rc-date">${CLAC.formatDateShort(e.date)} · ${e.location.split(',')[0]}</div>
-            </div>
-          </a>`;
-        }).join('')
-      : '<div style="color:var(--text-muted);">No other events at this time.</div>';
-
-    // Ticker
-    const tickerItems = CLAC.events.upcoming().slice(0, 4)
-      .map(e => 'Upcoming: ' + e.title + ' — ' + CLAC.formatDateShort(e.date));
-    const tickerText  = tickerItems.join(' ◆ ') + ' ◆ Follow us on Facebook and Instagram · St. Casimir Parish — E. 185th & Neff Rd, Cleveland';
-    document.getElementById('ticker-inner').textContent = tickerText + '  ◆  ' + tickerText;
-  }
-
-  function shareEvent(platform) {
-    const url = window.location.href;
-    if (platform === 'facebook') {
-      window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url), '_blank', 'width=600,height=400');
-    }
-  }
-
-  function copyLink() {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-      const btn       = document.getElementById('copy-btn');
-      btn.textContent = 'Copied! ✓';
-      setTimeout(() => { btn.textContent = 'Copy Event Link'; }, 2500);
-    });
-  }
-
-  function openLightbox(src) {
-    document.getElementById('lb-img').src = src;
-    document.getElementById('lightbox').classList.add('open');
-  }
-
-  function closeLightbox() {
-    document.getElementById('lightbox').classList.remove('open');
-  }
-
-  window.addEventListener('scroll', () => {
-    document.getElementById('main-nav').style.boxShadow =
-      window.scrollY > 60 ? '0 1px 20px rgba(0,0,0,0.08)' : 'none';
-  });
-
-  CLAC.ready().then(() => buildPage());
-</script>
-<script>
-(function() {
-  const LANG_KEY = 'clac_lang';
-  function setLang(lang) {
-    localStorage.setItem(LANG_KEY, lang);
-    document.documentElement.setAttribute('lang', lang);
-    document.querySelectorAll('[data-en]').forEach(el => {
-      el.innerHTML = lang === 'lt' ? el.dataset.lt : el.dataset.en;
-    });
-    document.querySelectorAll('[data-en-placeholder]').forEach(el => {
-      el.placeholder = lang === 'lt' ? el.dataset.ltPlaceholder : el.dataset.enPlaceholder;
-    });
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.lang === lang);
-    });
-  }
-  function initLang() {
-    const saved = localStorage.getItem(LANG_KEY) || 'en';
-    setLang(saved);
-  }
-  window.setLang = setLang;
-  window.initLang = initLang;
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initLang);
-  } else {
-    initLang();
-  }
+(function(){
+  const K='clac_lang';
+  function setLang(l){localStorage.setItem(K,l);document.documentElement.setAttribute('lang',l);document.querySelectorAll('[data-en]').forEach(el=>{el.innerHTML=l==='lt'?el.dataset.lt:el.dataset.en;});document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.dataset.lang===l);});}
+  window.setLang=setLang;
+  setLang(localStorage.getItem(K)||'en');
 })();
 </script>
 </body>

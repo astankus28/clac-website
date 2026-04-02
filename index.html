@@ -132,36 +132,18 @@
 </section>
 
 <!-- PHOTO JOURNAL -->
-<section id="journal" style="background: var(--forest); padding: 72px 0;">
+<section class="section-pad" id="journal" style="background:var(--forest);">
   <div class="container">
-    <div class="section-header" style="border-color: rgba(255,255,255,0.12);">
+    <div class="section-header" style="border-color:rgba(255,255,255,0.12);">
       <div>
-        <div class="section-title" style="color:var(--cream);">Photo Journal</div>
-        <div class="section-title-lt">Archyvas / Nuotraukos</div>
+        <div class="section-label" style="color:rgba(242,237,228,0.5);" data-en="Community Archive" data-lt="Bendruomenės Archyvas">Community Archive</div>
+        <div class="section-title" style="color:var(--cream);" data-en="Photo Journal" data-lt="Nuotraukų Žurnalas">Photo Journal</div>
       </div>
-      <a href="#" class="section-link" data-en="Full Archive →" data-lt="Visas Archyvas →">Full Archive →</a>
+      <a href="gallery.html" class="section-link" style="color:var(--amber);" data-en="View Full Gallery →" data-lt="Visa galerija →">View Full Gallery →</a>
     </div>
-    <div class="journal-grid" id="journal-grid">
-      <div style="color:rgba(242,237,228,0.4); padding:40px; grid-column:span 4;">Loading...</div>
-    </div>
-    <div style="text-align:center; margin-top:36px;">
-      <a href="#" class="btn-ghost-inv" data-en="View Full Archive — All Years →" data-lt="Peržiūrėti Visą Archyvą →">View Full Archive — All Years →</a>
-    </div>
-  </div>
-</section>
-
-<!-- EVENT HIGHLIGHTS -->
-<section id="highlights" style="background: var(--cream); padding: 72px 0;">
-  <div class="container">
-    <div class="section-header">
-      <div>
-        <div class="section-title" data-en="Event Highlights" data-lt="Renginių Akimirkos">Event Highlights</div>
-        <div class="section-title-lt">Renginių Akimirkos</div>
-      </div>
-      <a href="#" class="section-link" data-en="All Past Events →" data-lt="Visi Buvę Renginiai →">All Past Events →</a>
-    </div>
-    <div class="events-grid" id="events-grid">
-      <div style="color:var(--text-muted); padding:40px; grid-column:span 3;">Loading...</div>
+    <div id="journal-grid" style="display:grid; grid-template-columns:repeat(4,1fr); gap:2px;"></div>
+    <div style="text-align:center; margin-top:32px;">
+      <a href="gallery.html" class="btn-primary" data-en="Browse All Events & Photos →" data-lt="Naršyti visus renginius ir nuotraukas →">Browse All Events & Photos →</a>
     </div>
   </div>
 </section>
@@ -382,32 +364,33 @@
 
   /* ── JOURNAL GRID ── */
   function buildJournal() {
-    const past = CLAC.events.past();
-    const el   = document.getElementById('journal-grid');
-    if (!past.length) {
-      el.innerHTML = `<div style="color:rgba(242,237,228,0.4);padding:40px;grid-column:span 4;">${lang === 'lt' ? 'Kol kas nėra praeities renginių.' : 'No past events yet.'}</div>`;
-      return;
-    }
-    el.innerHTML = past.slice(0, 8).map((e, i) => {
-      const icon  = ICONS[i % ICONS.length];
-      const color = e.coverColor || PALETTES[i % PALETTES.length];
-      const angle = 45 + i * 15;
+    const lang   = localStorage.getItem('clac_lang') || 'en';
+    const past   = CLAC.events.past().slice(0, 8);
+    const grid   = document.getElementById('journal-grid');
+    if (!grid || !past.length) return;
+    grid.innerHTML = past.map((e, i) => {
       const bgStyle = e.coverPhoto
         ? `background:url(${e.coverPhoto}) center/cover no-repeat;`
-        : `background:${color}; background-image:repeating-linear-gradient(${angle}deg,transparent,transparent 12px,rgba(255,255,255,0.02) 12px,rgba(255,255,255,0.02) 13px);`;
-      return `<a class="journal-item" href="event.html?id=${e.id}" style="text-decoration:none;">
-        <div class="jg-bg" style="${bgStyle}">
-          <span class="jg-icon">${icon}</span>
-        </div>
-        <div class="jg-overlay">
-          <div class="jg-title">${e.title}</div>
-          <div class="jg-date">${CLAC.formatDateShort(e.date)} · ${e.location.split(',')[0]}</div>
+        : `background:${e.coverColor||'#1a2e1e'};background-image:repeating-linear-gradient(45deg,transparent,transparent 12px,rgba(255,255,255,0.02) 12px,rgba(255,255,255,0.02) 13px);`;
+      const title = (lang==='lt' && e.titleLt) ? e.titleLt : e.title;
+      const featured = i === 0 ? 'grid-column:span 2; grid-row:span 2; aspect-ratio:1;' : 'aspect-ratio:1;';
+      return `<a href="event.html?id=${e.id}" style="${featured} position:relative; overflow:hidden; display:flex; align-items:flex-end; text-decoration:none; cursor:pointer;" class="journal-card">
+        <div style="position:absolute; inset:0; transition:transform 0.4s ease; ${bgStyle}" class="jc-bg"></div>
+        <div style="position:absolute; inset:0; background:linear-gradient(to top,rgba(5,10,6,0.92) 0%,transparent 60%);"></div>
+        <div style="position:relative; z-index:2; padding:${i===0?'20px':'12px'};">
+          <div style="font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber); margin-bottom:4px;">${e.category||''}</div>
+          <div style="font-family:'Playfair Display',serif; font-size:${i===0?'22px':'14px'}; font-weight:700; color:var(--cream); line-height:1.2;">${title}</div>
+          <div style="font-family:'DM Mono',monospace; font-size:9px; color:rgba(242,237,228,0.45); margin-top:4px;">${CLAC.formatDateShort(e.date)}</div>
         </div>
       </a>`;
     }).join('');
+    // Hover effect
+    grid.querySelectorAll('.journal-card').forEach(card => {
+      card.addEventListener('mouseenter', () => { const bg = card.querySelector('.jc-bg'); if(bg) bg.style.transform='scale(1.04)'; });
+      card.addEventListener('mouseleave', () => { const bg = card.querySelector('.jc-bg'); if(bg) bg.style.transform=''; });
+    });
   }
 
-  /* ── EVENT HIGHLIGHTS ── */
   function buildHighlights() {
     const lang = localStorage.getItem('clac_lang') || 'en';
     const past = CLAC.events.past();
