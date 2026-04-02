@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#1a2e1e"/>
+  <!-- Grid texture -->
+  <defs>
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <!-- Amber accent bar -->
+  <rect x="80" y="80" width="4" height="160" fill="#c8903a"/>
+  <!-- Org name EN -->
+  <text x="108" y="150" font-family="Georgia, serif" font-size="52" font-weight="700" fill="#f2ede4" letter-spacing="1">Cleveland Lithuanian</text>
+  <text x="108" y="215" font-family="Georgia, serif" font-size="52" font-weight="700" fill="#f2ede4" letter-spacing="1">American Community</text>
+  <!-- Org name LT -->
+  <text x="108" y="265" font-family="Georgia, serif" font-size="22" font-weight="400" fill="#c8903a" letter-spacing="3">Clevelando Lietuvių Bendruomenė</text>
+  <!-- Divider -->
+  <rect x="80" y="310" width="1040" height="1" fill="rgba(255,255,255,0.12)"/>
+  <!-- Tagline -->
+  <text x="80" y="360" font-family="Georgia, serif" font-size="26" font-weight="400" font-style="italic" fill="rgba(242,237,228,0.7)">The heartbeat of Lithuanian culture in Northeast Ohio</text>
+  <!-- Stats -->
+  <text x="80"  y="450" font-family="Georgia, serif" font-size="44" font-weight="700" fill="#c8903a">70+</text>
+  <text x="80"  y="488" font-family="Arial, sans-serif" font-size="14" fill="rgba(242,237,228,0.5)" letter-spacing="3">YEARS ACTIVE</text>
+  <text x="320" y="450" font-family="Georgia, serif" font-size="44" font-weight="700" fill="#c8903a">E. 185th</text>
+  <text x="320" y="488" font-family="Arial, sans-serif" font-size="14" fill="rgba(242,237,228,0.5)" letter-spacing="3">HERITAGE CORRIDOR</text>
+  <text x="620" y="450" font-family="Georgia, serif" font-size="44" font-weight="700" fill="#c8903a">Est. 1951</text>
+  <text x="620" y="488" font-family="Arial, sans-serif" font-size="14" fill="rgba(242,237,228,0.5)" letter-spacing="3">CLEVELAND, OHIO</text>
+  <!-- URL -->
+  <text x="80" y="580" font-family="monospace" font-size="16" fill="rgba(242,237,228,0.3)" letter-spacing="2">clacleveland.org</text>
+</svg>
