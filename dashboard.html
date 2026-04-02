@@ -1067,9 +1067,21 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
 
       <!-- GRANT DETAIL PANEL -->
       <div id="grant-detail-panel" style="display:none; margin-top:20px; background:var(--white); border:1px solid var(--rule); padding:28px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--rule);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--rule); flex-wrap:wrap; gap:12px;">
           <div style="font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--text-dark);" id="gd-title"></div>
-          <button class="btn-sm" onclick="closeGrantDetail()">Close ✕</button>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <div style="font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-muted);">Quick Status:</div>
+            <select id="gd-status-select" onchange="quickUpdateGrantStatus(this.value)" class="form-select" style="padding:6px 10px; font-size:12px; width:160px;">
+              <option value="researching">Researching</option>
+              <option value="drafting">Drafting</option>
+              <option value="submitted">Submitted</option>
+              <option value="awarded">Awarded</option>
+              <option value="declined">Declined</option>
+              <option value="not_eligible">Not Eligible</option>
+              <option value="recurring">Recurring</option>
+            </select>
+            <button class="btn-sm" onclick="closeGrantDetail()">Close ✕</button>
+          </div>
         </div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:24px;">
           <div id="gd-details"></div>
@@ -4054,6 +4066,7 @@ async function openGrantDetail(id) {
   const sc = GRANT_STATUS_COLORS[g.status]||'#6b7280';
   const sl = GRANT_STATUS_LABELS[g.status]||g.status;
   document.getElementById('gd-title').textContent = `${g.funder} — ${g.grant_name}`;
+  const statusSel = document.getElementById('gd-status-select'); if (statusSel) statusSel.value = g.status || 'researching';
   document.getElementById('gd-details').innerHTML = `
     <div style="display:flex;flex-direction:column;gap:14px;">
       <div><div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--amber);margin-bottom:4px;">Status</div>
@@ -4094,6 +4107,31 @@ async function renderGrantNotes(grantId) {
       <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text-faint);">${n.author||'admin'} · ${d}</div>
     </div>`;
   }).join('');
+}
+
+
+async function quickUpdateGrantStatus(status) {
+  if (!_currentGrantId) return;
+  await fetch(`${SB_URL}/rest/v1/grants?id=eq.${_currentGrantId}`, {
+    method: 'PATCH',
+    headers: { ...SB_HEADERS, 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ status, updated_at: new Date().toISOString() }),
+  });
+  await logActivity('updated', 'grant', _currentGrantId, `Status changed to ${status}`);
+  await renderGrantsTable();
+  await renderGrantStats();
+
+  // Update the status badge in the detail panel immediately
+  const sc = GRANT_STATUS_COLORS[status] || '#6b7280';
+  const sl = GRANT_STATUS_LABELS[status] || status;
+  const badge = document.querySelector('#gd-details span[style*="text-transform:uppercase"]');
+  if (badge) {
+    badge.style.background = `${sc}18`;
+    badge.style.color = sc;
+    badge.style.borderColor = `${sc}40`;
+    badge.textContent = sl;
+  }
+  showToast(`✓ Status updated to ${sl}`);
 }
 
 async function addGrantNote() {
