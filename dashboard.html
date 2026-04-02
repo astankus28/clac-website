@@ -154,6 +154,7 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
       <a class="snav-item" onclick="showPage('settings')" href="#"><span class="snav-icon">⚙</span> Settings</a>
       <div class="snav-section">Board</div>
       <a class="snav-item" onclick="showPage('social')" href="#"><span class="snav-icon">◉</span> Social Media</a>
+      <a class="snav-item" onclick="showPage('calendar')" href="#"><span class="snav-icon">◇</span> Content Calendar</a>
       <a class="snav-item" onclick="showPage('activity')" href="#"><span class="snav-icon">◇</span> Activity Log</a>
       <a class="snav-item" onclick="showPage('portal')" href="#"><span class="snav-icon">◆</span> Board Portal</a>
       <a class="snav-item" onclick="showPage('inquiries')" href="#"><span class="snav-icon">✦</span> Inquiries</a>
@@ -577,6 +578,70 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
         <div id="soc-history" style="min-height:60px;">
           <div style="color:var(--text-muted); font-size:13px; padding:16px 0;">No saved posts yet. Generate a post above to get started.</div>
         </div>
+      </div>
+    </div>
+
+
+    <!-- CONTENT CALENDAR -->
+    <div class="page" id="page-calendar">
+      <div style="margin-bottom:24px;"><div style="font-size:13px; color:var(--text-muted);">Plan and schedule social media content. AI generates a week of posts from the Lithuanian content library.</div></div>
+
+      <div class="settings-section">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div class="settings-section-title" style="margin:0;">Upcoming Week</div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-sm" onclick="generateWeek()">✦ Generate Week with AI</button>
+            <select class="form-select" id="cal-platform" style="width:140px; padding:8px 12px; font-size:13px;">
+              <option value="facebook">Facebook</option>
+              <option value="instagram">Instagram</option>
+              <option value="both">Both</option>
+            </select>
+          </div>
+        </div>
+        <div id="cal-generating" style="display:none; padding:20px; text-align:center; color:var(--amber); font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.1em;">✦ Generating content from library...</div>
+        <div id="cal-feed" style="margin-top:16px;"></div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">Content Library</div>
+        <div style="margin-bottom:12px; font-size:13px; color:var(--text-muted);">Facts, history, recipes, and trivia that AI uses when generating posts. Add your own entries to customize the content.</div>
+        <div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;">
+          <button class="btn-sm active" id="lib-filter-all" onclick="filterLibrary('all')">All</button>
+          <button class="btn-sm" id="lib-filter-history" onclick="filterLibrary('history')">History</button>
+          <button class="btn-sm" id="lib-filter-culture" onclick="filterLibrary('culture')">Culture</button>
+          <button class="btn-sm" id="lib-filter-recipe" onclick="filterLibrary('recipe')">Recipes</button>
+          <button class="btn-sm" id="lib-filter-language" onclick="filterLibrary('language')">Language</button>
+          <button class="btn-sm" id="lib-filter-sports" onclick="filterLibrary('sports')">Sports</button>
+          <button class="btn-sm" id="lib-filter-trivia" onclick="filterLibrary('trivia')">Trivia</button>
+          <button class="btn-sm" onclick="toggleAddLibrary()" style="margin-left:auto;">+ Add Entry</button>
+        </div>
+        <div id="lib-add-form" style="display:none; background:var(--linen); padding:20px; margin-bottom:16px; border:1px solid var(--rule);">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Title</label>
+              <input class="form-input" type="text" id="lib-title" placeholder="e.g. The Hill of Crosses">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Category</label>
+              <select class="form-select" id="lib-category">
+                <option value="history">History</option>
+                <option value="culture">Culture</option>
+                <option value="recipe">Recipe</option>
+                <option value="language">Language</option>
+                <option value="sports">Sports</option>
+                <option value="trivia">Trivia</option>
+                <option value="tradition">Tradition</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Body / Fact</label>
+              <textarea class="form-textarea" id="lib-body" style="min-height:80px;" placeholder="The interesting fact or content..."></textarea>
+            </div>
+          </div>
+          <button class="btn-sm primary" onclick="saveLibraryEntry()">Save Entry →</button>
+          <button class="btn-sm" onclick="toggleAddLibrary()" style="margin-left:8px;">Cancel</button>
+        </div>
+        <div id="lib-feed"></div>
       </div>
     </div>
 
@@ -1275,9 +1340,9 @@ if (_existingSession) {
 function doLogout() { CLAC.auth.logout(); window.location.href = 'index.html'; }
 
 // ── NAVIGATION ────────────────────────────────────────────
-const pages = ['dashboard','events','announcements','settings','page-content','quick-links','board','media','users','portal','inquiries','social','activity'];
-const pageTitles = { dashboard:'Dashboard', events:'Events', announcements:'Announcements', settings:'Settings', 'page-content':'Page Content', 'quick-links':'Quick Links', board:'Board Members', media:'Media Library', users:'Users & Security', portal:'Board Portal', inquiries:'Inquiries', social:'Social Media', activity:'Activity Log' };
-const topbarActions = { dashboard:'+ New Event', events:'+ New Event', announcements:'+ New Announcement', settings:'Save Settings', 'page-content':'Save Content', 'quick-links':'+ New Link', board:'+ New Member', media:'Upload Photos', users:'+ Add User', portal:'', inquiries:'', social:'Generate Post', activity:'' };
+const pages = ['dashboard','events','announcements','settings','page-content','quick-links','board','media','users','portal','inquiries','social','activity','calendar'];
+const pageTitles = { dashboard:'Dashboard', events:'Events', announcements:'Announcements', settings:'Settings', 'page-content':'Page Content', 'quick-links':'Quick Links', board:'Board Members', media:'Media Library', users:'Users & Security', portal:'Board Portal', inquiries:'Inquiries', social:'Social Media', activity:'Activity Log', calendar:'Content Calendar' };
+const topbarActions = { dashboard:'+ New Event', events:'+ New Event', announcements:'+ New Announcement', settings:'Save Settings', 'page-content':'Save Content', 'quick-links':'+ New Link', board:'+ New Member', media:'Upload Photos', users:'+ Add User', portal:'', inquiries:'', social:'Generate Post', activity:'', calendar:'✦ Generate Week' };
 
 async function showPage(name) {
   pages.forEach(p => {
@@ -1301,6 +1366,7 @@ async function showPage(name) {
   if (name === 'inquiries') await renderInquiries();
   if (name === 'social') { await loadSocialEventList(); await renderSocialHistory(); }
   if (name === 'activity') await renderActivityLog();
+  if (name === 'calendar') { await renderCalendarFeed(); await renderLibraryFeed(); }
   // Update topbar action
   const btn = document.getElementById('topbar-action');
   btn.textContent = topbarActions[name] || '+ New';
@@ -1310,6 +1376,7 @@ async function showPage(name) {
   else if (name === 'media') btn.onclick = () => document.getElementById('media-file-input').click();
   else if (name === 'users') btn.onclick = () => toggleUsrForm(true);
   else if (name === 'social') btn.onclick = generateSocialPost;
+  else if (name === 'calendar') btn.onclick = generateWeek;
   else if (name === 'page-content') btn.onclick = savePageContent;
   else btn.onclick = newEventClick;
   return false;
@@ -2602,6 +2669,253 @@ async function deleteSocialPost(id) {
   await sbDelete('social_posts', id);
   await renderSocialHistory();
   showToast('✓ Post deleted.');
+}
+
+
+// ── CONTENT CALENDAR ──────────────────────────────────────────────────────────
+const CATEGORY_SCHEDULE = ['history', 'recipe', 'culture', 'trivia', 'language', 'sports', 'tradition'];
+const HASHTAG_MAP = {
+  history:    '#ClevelandLithuanian #LithuanianHistory #ClevelandHistory #CLAC #Lithuanian',
+  recipe:     '#ClevelandLithuanian #LithuanianFood #Lithuanian #BalticCooking #CLAC #FoodHistory',
+  culture:    '#ClevelandLithuanian #LithuanianCulture #Lithuanian #Heritage #CLAC #BalticCulture',
+  trivia:     '#ClevelandLithuanian #DidYouKnow #Lithuanian #Lithuania #CLAC #EasternEurope',
+  language:   '#ClevelandLithuanian #LearnLithuanian #LithuanianLanguage #Baltic #CLAC #LanguageLearning',
+  sports:     '#ClevelandLithuanian #LithuanianSports #Lithuanian #Basketball #CLAC #BalticSports',
+  tradition:  '#ClevelandLithuanian #LithuanianTraditions #Lithuanian #Heritage #CLAC #BalticCulture',
+};
+
+async function generateWeek() {
+  const platform = document.getElementById('cal-platform').value;
+  const genEl    = document.getElementById('cal-generating');
+  genEl.style.display = 'block';
+  document.getElementById('cal-feed').style.opacity = '0.4';
+
+  const today = new Date();
+  // Get existing calendar entries for next 7 days to avoid duplicates
+  const nextWeek = new Date(today); nextWeek.setDate(nextWeek.getDate() + 7);
+  const existing = await sbGet('content_calendar',
+    `?scheduled_for=gte.${today.toISOString().split('T')[0]}&scheduled_for=lte.${nextWeek.toISOString().split('T')[0]}&select=scheduled_for`
+  );
+  const existingDates = new Set((existing || []).map(e => e.scheduled_for));
+
+  // Get library entries, avoiding recently used ones
+  const library = await sbGet('content_library', '?active=eq.true&order=used_count.asc,random()&limit=14');
+  if (!library || !library.length) { showToast('⚠ Content library is empty.'); genEl.style.display = 'none'; return; }
+
+  let libIdx = 0;
+  const newPosts = [];
+
+  for (let d = 1; d <= 7; d++) {
+    const date = new Date(today);
+    date.setDate(date.getDate() + d);
+    const dateStr = date.toISOString().split('T')[0];
+    if (existingDates.has(dateStr)) continue; // skip days already scheduled
+
+    const category = CATEGORY_SCHEDULE[(d - 1) % CATEGORY_SCHEDULE.length];
+    const libEntry = library.find((l, i) => i >= libIdx && l.category === category) ||
+                     library[libIdx % library.length];
+    libIdx++;
+
+    // Generate post copy with Claude
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 600,
+          system: `You write social media content for the Cleveland Lithuanian American Community (CLAC), a nonprofit in Cleveland Ohio. Write warm, engaging, educational posts. For Facebook: 2-3 paragraphs, conversational, end with a question or call to action. For Instagram: punchy opening, shorter, more visual language. Return JSON only with keys "facebook" and "instagram". No markdown, no backticks.`,
+          messages: [{ role: 'user', content: `Write a social post about this topic:
+Title: ${libEntry.title}
+Fact: ${libEntry.body}
+Platform: ${platform}
+Category: ${category}
+Include emojis. Make it feel like a real community page, not corporate. End with engagement prompt.` }],
+        }),
+      });
+      const data = await res.json();
+      let posts = { facebook: libEntry.body, instagram: libEntry.body };
+      try {
+        const text = (data.content?.[0]?.text || '{}').replace(/```json|```/g, '').trim();
+        posts = JSON.parse(text);
+      } catch(e) { posts.facebook = data.content?.[0]?.text || libEntry.body; posts.instagram = posts.facebook; }
+
+      const caption = platform === 'instagram' ? posts.instagram : posts.facebook;
+      newPosts.push({
+        id:           'cal-' + Date.now().toString(36) + d,
+        scheduled_for: dateStr,
+        category,
+        platform,
+        caption,
+        hashtags:     HASHTAG_MAP[category] || '#ClevelandLithuanian #CLAC',
+        library_id:   libEntry.id,
+        status:       'draft',
+      });
+
+      // Small delay to avoid rate limiting
+      await new Promise(r => setTimeout(r, 500));
+    } catch(e) {
+      console.error('Generation error for day', d, e);
+    }
+  }
+
+  // Save all new posts
+  for (const post of newPosts) {
+    await sbUpsert('content_calendar', post);
+    // Increment used_count on library entry
+    if (post.library_id) {
+      await fetch(`${SB_URL}/rest/v1/content_library?id=eq.${post.library_id}`, {
+        method: 'PATCH',
+        headers: { ...SB_HEADERS, 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ used_count: (library.find(l => l.id === post.library_id)?.used_count || 0) + 1 }),
+      });
+    }
+  }
+
+  genEl.style.display = 'none';
+  document.getElementById('cal-feed').style.opacity = '1';
+  await renderCalendarFeed();
+  showToast(`✓ Generated ${newPosts.length} posts for the week.`);
+}
+
+async function renderCalendarFeed() {
+  const today = new Date().toISOString().split('T')[0];
+  const nextMonth = new Date(); nextMonth.setDate(nextMonth.getDate() + 30);
+  const posts = await sbGet('content_calendar',
+    `?scheduled_for=gte.${today}&scheduled_for=lte.${nextMonth.toISOString().split('T')[0]}&order=scheduled_for.asc&select=*`
+  );
+  const feed = document.getElementById('cal-feed');
+  if (!posts || !posts.length) {
+    feed.innerHTML = '<div style="padding:32px; text-align:center; color:var(--text-muted); font-size:13px;">No posts scheduled. Hit "Generate Week with AI" to get started.</div>';
+    return;
+  }
+  const statusColors = { draft:'var(--text-faint)', approved:'#27ae60', posted:'var(--text-muted)', skipped:'var(--red)' };
+  const catIcons = { history:'📜', recipe:'🍽', culture:'🌿', trivia:'💡', language:'🗣', sports:'🏀', tradition:'🕯' };
+  feed.innerHTML = posts.map(p => {
+    const d = new Date(p.scheduled_for + 'T12:00:00');
+    const dateLabel = d.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+    const icon = catIcons[p.category] || '◆';
+    const preview = (p.caption || '').slice(0, 120) + ((p.caption || '').length > 120 ? '...' : '');
+    return `<div style="display:grid; grid-template-columns:100px 1fr auto; gap:20px; align-items:start; padding:16px 0; border-bottom:1px solid var(--rule);">
+      <div style="text-align:center;">
+        <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--amber);">${dateLabel.split(',')[0]}</div>
+        <div style="font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--text-dark);">${d.getDate()}</div>
+        <div style="font-family:'DM Mono',monospace; font-size:9px; color:var(--text-muted);">${d.toLocaleDateString('en-US',{month:'short'})}</div>
+      </div>
+      <div>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+          <span>${icon}</span>
+          <span style="font-family:'DM Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber);">${p.category}</span>
+          <span style="font-family:'DM Mono',monospace; font-size:9px; color:var(--text-faint);">· ${p.platform}</span>
+        </div>
+        <div style="font-size:13px; color:var(--text-body); line-height:1.5;">${preview}</div>
+        ${p.hashtags ? `<div style="font-size:11px; color:var(--text-faint); margin-top:4px; font-family:'DM Mono',monospace;">${p.hashtags.slice(0,80)}...</div>` : ''}
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+        <select onchange="updateCalStatus('${p.id}', this.value)" style="font-family:'DM Mono',monospace; font-size:10px; padding:4px 8px; border:1px solid var(--rule); background:transparent; cursor:pointer; color:${statusColors[p.status] || 'inherit'};">
+          <option value="draft" ${p.status==='draft'?'selected':''}>Draft</option>
+          <option value="approved" ${p.status==='approved'?'selected':''}>✓ Approved</option>
+          <option value="skipped" ${p.status==='skipped'?'selected':''}>Skip</option>
+          <option value="posted" ${p.status==='posted'?'selected':''}>Posted</option>
+        </select>
+        <button class="row-btn" onclick="editCalPost('${p.id}')">Edit</button>
+        <button class="row-btn del" onclick="deleteCalPost('${p.id}')">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function updateCalStatus(id, status) {
+  await fetch(`${SB_URL}/rest/v1/content_calendar?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { ...SB_HEADERS, 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ status }),
+  });
+  showToast('✓ Status updated.');
+}
+
+async function editCalPost(id) {
+  const posts = await sbGet('content_calendar', `?id=eq.${id}&select=*`);
+  const post = posts && posts[0];
+  if (!post) return;
+  const newCaption = prompt('Edit caption:', post.caption);
+  if (newCaption === null) return;
+  await fetch(`${SB_URL}/rest/v1/content_calendar?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { ...SB_HEADERS, 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ caption: newCaption }),
+  });
+  await renderCalendarFeed();
+  showToast('✓ Post updated.');
+}
+
+async function deleteCalPost(id) {
+  if (!confirm('Delete this scheduled post?')) return;
+  await sbDelete('content_calendar', id);
+  await renderCalendarFeed();
+  showToast('✓ Post deleted.');
+}
+
+// ── CONTENT LIBRARY ────────────────────────────────────────────────────────────
+let _libFilter = 'all';
+
+function toggleAddLibrary() {
+  const form = document.getElementById('lib-add-form');
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+
+function filterLibrary(cat) {
+  _libFilter = cat;
+  ['all','history','culture','recipe','language','sports','trivia'].forEach(c => {
+    const btn = document.getElementById('lib-filter-' + c);
+    if (btn) { btn.style.background = c === cat ? 'var(--forest)' : ''; btn.style.color = c === cat ? 'var(--amber)' : ''; btn.style.borderColor = c === cat ? 'var(--forest)' : ''; }
+  });
+  renderLibraryFeed();
+}
+
+async function renderLibraryFeed() {
+  const params = _libFilter === 'all'
+    ? '?active=eq.true&order=category.asc,used_count.asc&limit=50'
+    : `?active=eq.true&category=eq.${_libFilter}&order=used_count.asc&limit=50`;
+  const items = await sbGet('content_library', params);
+  const feed  = document.getElementById('lib-feed');
+  if (!items || !items.length) { feed.innerHTML = '<div style="padding:20px; color:var(--text-muted); font-size:13px;">No entries in this category.</div>'; return; }
+  const catColors = { history:'#1a2e3a', recipe:'#2d1a0e', culture:'#1a2e1e', trivia:'#2e1a38', language:'#1a3022', sports:'#0e1a2d', tradition:'#2e1a1a' };
+  feed.innerHTML = items.map(item => `
+    <div style="display:grid; grid-template-columns:auto 1fr auto; gap:16px; align-items:start; padding:14px 0; border-bottom:1px solid var(--rule);">
+      <div style="width:8px; height:8px; border-radius:50%; background:${catColors[item.category] || 'var(--amber)'}; border:2px solid var(--amber); margin-top:6px; flex-shrink:0;"></div>
+      <div>
+        <div style="font-size:13px; font-weight:500; color:var(--text-dark); margin-bottom:4px;">${item.title}</div>
+        <div style="font-size:12px; color:var(--text-muted); line-height:1.5;">${(item.body || '').slice(0, 150)}${item.body?.length > 150 ? '...' : ''}</div>
+        <div style="font-family:'DM Mono',monospace; font-size:9px; color:var(--text-faint); margin-top:4px; text-transform:uppercase; letter-spacing:0.1em;">${item.category} · used ${item.used_count} times</div>
+      </div>
+      <button class="row-btn del" onclick="deleteLibEntry('${item.id}')">Delete</button>
+    </div>`).join('');
+}
+
+async function saveLibraryEntry() {
+  const title    = document.getElementById('lib-title').value.trim();
+  const body     = document.getElementById('lib-body').value.trim();
+  const category = document.getElementById('lib-category').value;
+  if (!title || !body) { showToast('⚠ Title and body are required.'); return; }
+  await sbUpsert('content_library', {
+    id: 'lib-' + Date.now().toString(36), title, body, category, used_count: 0, active: true,
+  });
+  document.getElementById('lib-title').value = '';
+  document.getElementById('lib-body').value  = '';
+  toggleAddLibrary();
+  await renderLibraryFeed();
+  showToast('✓ Entry added to content library.');
+}
+
+async function deleteLibEntry(id) {
+  if (!confirm('Remove this entry from the library?')) return;
+  await fetch(`${SB_URL}/rest/v1/content_library?id=eq.${id}`, {
+    method: 'PATCH', headers: { ...SB_HEADERS, 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ active: false }),
+  });
+  await renderLibraryFeed();
+  showToast('✓ Entry removed.');
 }
 
 // ── BOARD PORTAL ──────────────────────────────────────────────────────────────
