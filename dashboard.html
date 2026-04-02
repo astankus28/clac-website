@@ -942,6 +942,7 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
             <option value="medium">Medium</option>
             <option value="low">Low</option>
           </select>
+          <button class="btn-sm" id="grant-archived-btn" onclick="toggleArchivedGrants()" style="white-space:nowrap;">Show Archived</button>
         </div>
       </div>
 
@@ -3990,19 +3991,49 @@ async function editGrant(id) {
 }
 
 async function deleteGrant(id) {
-  if (!confirm('Delete this grant?')) return;
-  await logActivity('deleted', 'grant', id);
-  await sbDelete('grants', id);
+  if (!confirm('Archive this grant? It will be hidden but can be restored later.')) return;
+  await fetch(`${SB_URL}/rest/v1/grants?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { ...SB_HEADERS, 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ archived: true, updated_at: new Date().toISOString() }),
+  });
+  await logActivity('deleted', 'grant', id, 'Archived (soft delete — can be restored)');
   closeGrantDetail();
   await renderGrantsTable();
   await renderGrantStats();
-  showToast('✓ Grant deleted.');
+  showToast('✓ Grant archived. Use "Show Archived" to restore it.');
+}
+
+async function restoreGrant(id, name) {
+  await fetch(`${SB_URL}/rest/v1/grants?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { ...SB_HEADERS, 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ archived: false, updated_at: new Date().toISOString() }),
+  });
+  await logActivity('updated', 'grant', id, `Restored: ${name}`);
+  await renderGrantsTable();
+  await renderGrantStats();
+  showToast(`✓ "${name}" restored.`);
+}
+
+let _showingArchived = false;
+
+async function toggleArchivedGrants() {
+  _showingArchived = !_showingArchived;
+  const btn = document.getElementById('grant-archived-btn');
+  if (btn) {
+    btn.textContent = _showingArchived ? 'Hide Archived' : 'Show Archived';
+    btn.style.background    = _showingArchived ? 'var(--forest)' : '';
+    btn.style.color         = _showingArchived ? 'var(--amber)'  : '';
+    btn.style.borderColor   = _showingArchived ? 'var(--forest)' : '';
+  }
+  await renderGrantsTable();
 }
 
 async function renderGrantStats() {
   const el = document.getElementById('grant-stats');
   if (!el) return;
-  const all = await sbGet('grants', '?select=status,amount_max,award_amount') || [];
+  const all = await sbGet('grants', '?select=status,amount_max,award_amount&archived=eq.false') || [];
   const awarded = all.filter(g => g.status === 'awarded');
   const awardedTotal = awarded.reduce((s,g) => s + (g.award_amount || g.amount_max || 0), 0);
   el.innerHTML = `
@@ -4018,11 +4049,15 @@ async function renderGrantsTable() {
   const tbody = document.getElementById('grants-tbody');
   if (!sf || !pf || !tbody) return;
   let params = '?select=*&order=deadline.asc.nullslast,priority.asc';
+  // Show archived or active grants
+  params += _showingArchived ? '&archived=eq.true' : '&archived=eq.false';
   if (sf.value !== 'all') params += `&status=eq.${sf.value}`;
   if (pf.value !== 'all') params += `&priority=eq.${pf.value}`;
   const grants = await sbGet('grants', params);
   if (!grants || !grants.length) {
-    tbody.innerHTML = '<tr><td colspan="7" style="padding:32px;text-align:center;color:var(--text-muted);font-size:13px;">No grants yet. Click + Add Grant to get started.</td></tr>';
+    tbody.innerHTML = _showingArchived
+      ? '<tr><td colspan="7" style="padding:32px;text-align:center;color:var(--text-muted);font-size:13px;">No archived grants.</td></tr>'
+      : '<tr><td colspan="7" style="padding:32px;text-align:center;color:var(--text-muted);font-size:13px;">No grants yet. Click + Add Grant to get started.</td></tr>';
     return;
   }
   const today = new Date();
@@ -4052,8 +4087,11 @@ async function renderGrantsTable() {
       <td><span style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;color:${pc};font-weight:600;">${g.priority}</span></td>
       <td><span style="font-size:12px;color:var(--text-muted);">${g.assigned_to||'—'}</span></td>
       <td onclick="event.stopPropagation()"><div class="row-actions">
-        <button class="row-btn" onclick="editGrant('${g.id}')">Edit</button>
-        <button class="row-btn del" onclick="deleteGrant('${g.id}')">Delete</button>
+        ${g.archived
+          ? `<button class="row-btn primary" onclick="restoreGrant('${g.id}', '${g.grant_name.replace(/'/g,"\\'")}')">Restore</button>`
+          : `<button class="row-btn" onclick="editGrant('${g.id}')">Edit</button>
+             <button class="row-btn del" onclick="deleteGrant('${g.id}')">Archive</button>`
+        }
       </div></td>
     </tr>`;
   }).join('');
