@@ -446,6 +446,7 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
                   <div class="upload-hint">Recommended: landscape, at least 800×500px</div>
                 </div>
                 <input type="file" id="cover-file-input" accept="image/*" style="display:none" onchange="handleCoverSelect(this.files[0])">
+                <button class="btn-sm" onclick="openMediaPicker(url => { document.getElementById('f-cover-photo').value=url; loadCoverPhoto(url); })" style="margin-top:8px; width:100%;">◈ Browse Media Library</button>
                 <div id="cover-upload-status" style="font-size:12px; color:var(--amber); font-family:'DM Mono',monospace; margin-top:6px; display:none;"></div>
               </div>
             </div>
@@ -1614,9 +1615,12 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
             </div>
             <div class="form-group full">
               <label class="form-label">Photo</label>
-              <div class="photo-upload-area" style="padding:16px;" onclick="document.getElementById('bm-photo-input').click()">
-                <div class="upload-icon" style="font-size:18px;">👤</div>
-                <div class="upload-text" style="font-size:12px;">Click to upload photo</div>
+              <div style="display:flex; gap:8px;">
+                <div class="photo-upload-area" style="padding:16px; flex:1;" onclick="document.getElementById('bm-photo-input').click()">
+                  <div class="upload-icon" style="font-size:18px;">👤</div>
+                  <div class="upload-text" style="font-size:12px;">Upload new photo</div>
+                </div>
+                <button class="btn-sm" onclick="openMediaPicker(url => { _bmPhotoUrl=url; document.getElementById('bm-photo-url').value=url; document.getElementById('bm-photo-img').src=url; document.getElementById('bm-photo-preview').style.display='block'; })" style="padding:16px 12px; font-size:11px; white-space:normal; text-align:center; line-height:1.3;">◈ Browse<br>Library</button>
               </div>
               <input type="file" id="bm-photo-input" accept="image/*" style="display:none" onchange="handleBmPhoto(this.files[0])">
               <div id="bm-photo-preview" style="margin-top:8px; display:none;">
@@ -1664,6 +1668,7 @@ html,body { height:100%; font-family:'DM Sans',sans-serif; background:#f0ece4; c
       </div>
       <div class="settings-section">
         <div class="settings-section-title">All Photos <span id="media-count" style="font-family:'DM Mono',monospace; font-size:11px; color:var(--text-muted); font-weight:400;"></span></div>
+        <div style="margin-top:8px; margin-bottom:12px;"><button class="btn-sm primary" onclick="openMediaPicker(url => { navigator.clipboard.writeText(url).then(()=>showToast('✓ URL copied to clipboard!')); })">◈ Open Picker to Copy URL</button></div>
         <div id="media-grid" style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:4px;"></div>
       </div>
     </div>
@@ -4214,6 +4219,157 @@ async function addGrantNote() {
   showToast('✓ Note added.');
 }
 
+
+// ── UNIFIED MEDIA PICKER ──────────────────────────────────────────────────────
+let _mpCallback  = null;  // function to call with selected URL
+let _mpSelected  = null;  // currently selected URL
+let _mpAllPhotos = [];    // all loaded photos
+let _mpFilter    = 'all';
+let _mpSearch    = '';
+
+async function openMediaPicker(callback) {
+  _mpCallback = callback;
+  _mpSelected = null;
+  _mpFilter   = 'all';
+  _mpSearch   = '';
+  document.getElementById('media-picker-modal').style.display = 'flex';
+  document.getElementById('mp-confirm-btn').disabled = true;
+  document.getElementById('mp-confirm-btn').style.opacity = '0.5';
+  document.getElementById('mp-selected-preview').textContent = 'Click any photo to select it';
+  document.getElementById('mp-search').value = '';
+  // Reset filter buttons
+  document.querySelectorAll('[id^="mp-filter-"]').forEach(b => {
+    b.style.background = ''; b.style.color = ''; b.style.borderColor = '';
+  });
+  const allBtn = document.getElementById('mp-filter-all');
+  if (allBtn) { allBtn.style.background = 'var(--forest)'; allBtn.style.color = 'var(--amber)'; allBtn.style.borderColor = 'var(--forest)'; }
+  await mpLoadAll();
+}
+
+function closeMediaPicker() {
+  document.getElementById('media-picker-modal').style.display = 'none';
+  _mpCallback = null;
+  _mpSelected = null;
+}
+
+function confirmMediaPick() {
+  if (!_mpSelected || !_mpCallback) return;
+  _mpCallback(_mpSelected);
+  closeMediaPicker();
+}
+
+async function mpLoadAll() {
+  // Load from all Supabase Storage folders
+  const folders = ['library', 'events', 'covers', 'board', 'sponsors', 'submissions'];
+  _mpAllPhotos = [];
+
+  for (const folder of folders) {
+    try {
+      const res = await fetch(`${SB_URL}/storage/v1/object/list/clac-media`, {
+        method: 'POST',
+        headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prefix: folder + '/', limit: 200, sortBy: { column: 'created_at', order: 'desc' } }),
+      });
+      const files = await res.json();
+      if (Array.isArray(files)) {
+        files.forEach(f => {
+          if (f.name && f.name !== '.emptyFolderPlaceholder') {
+            _mpAllPhotos.push({
+              url:    `${SB_URL}/storage/v1/object/public/clac-media/${folder}/${f.name}`,
+              folder,
+              name:   f.name,
+              size:   f.metadata?.size || 0,
+            });
+          }
+        });
+      }
+    } catch(e) { console.error('mpLoadAll error for', folder, e); }
+  }
+
+  mpRender();
+}
+
+function mpFilter(folder, btn) {
+  _mpFilter = folder;
+  document.querySelectorAll('[id^="mp-filter-"]').forEach(b => {
+    b.style.background = ''; b.style.color = ''; b.style.borderColor = '';
+  });
+  if (btn) { btn.style.background = 'var(--forest)'; btn.style.color = 'var(--amber)'; btn.style.borderColor = 'var(--forest)'; }
+  mpRender();
+}
+
+function mpSearch(val) {
+  _mpSearch = val.toLowerCase();
+  mpRender();
+}
+
+function mpRender() {
+  let photos = _mpAllPhotos;
+  if (_mpFilter !== 'all') photos = photos.filter(p => p.folder === _mpFilter);
+  if (_mpSearch) photos = photos.filter(p => p.name.toLowerCase().includes(_mpSearch) || p.folder.includes(_mpSearch));
+
+  const grid = document.getElementById('mp-grid');
+  if (!photos.length) {
+    grid.innerHTML = '<div style="grid-column:span 5; padding:40px; text-align:center; color:var(--text-muted); font-size:13px;">No photos found.</div>';
+    return;
+  }
+
+  grid.innerHTML = photos.map(p => `
+    <div onclick="mpSelect('${p.url}', this)" style="position:relative; aspect-ratio:1; overflow:hidden; cursor:pointer; border:2px solid transparent; transition:border-color 0.15s;" class="mp-item">
+      <img src="${p.url}" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
+      <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.6); padding:3px 5px; font-family:'DM Mono',monospace; font-size:8px; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.1em; opacity:0; transition:opacity 0.15s;" class="mp-folder-label">${p.folder}</div>
+      <div style="display:none; position:absolute; top:4px; right:4px; background:var(--amber); color:var(--forest); width:20px; height:20px; border-radius:50%; align-items:center; justify-content:center; font-size:12px; font-weight:700;" class="mp-check">✓</div>
+    </div>`).join('');
+
+  // Hover effects
+  grid.querySelectorAll('.mp-item').forEach(el => {
+    el.addEventListener('mouseenter', () => { el.querySelector('.mp-folder-label').style.opacity = '1'; });
+    el.addEventListener('mouseleave', () => { el.querySelector('.mp-folder-label').style.opacity = '0'; });
+  });
+}
+
+function mpSelect(url, el) {
+  // Deselect previous
+  document.querySelectorAll('.mp-item').forEach(item => {
+    item.style.borderColor = 'transparent';
+    const check = item.querySelector('.mp-check');
+    if (check) check.style.display = 'none';
+  });
+  // Select this one
+  el.style.borderColor = 'var(--amber)';
+  const check = el.querySelector('.mp-check');
+  if (check) check.style.display = 'flex';
+  _mpSelected = url;
+  // Update UI
+  const btn = document.getElementById('mp-confirm-btn');
+  btn.disabled = false; btn.style.opacity = '1';
+  const fname = url.split('/').pop();
+  document.getElementById('mp-selected-preview').innerHTML = `<img src="${url}" style="height:32px; width:32px; object-fit:cover; margin-right:8px; vertical-align:middle;"> ${fname}`;
+}
+
+async function mpUpload(files) {
+  if (!files || !files.length) return;
+  const status = document.getElementById('mp-status');
+  status.style.display = 'block';
+  let done = 0;
+  for (const file of Array.from(files)) {
+    try {
+      const compressed = await compressGallery(file);
+      const path = `library/${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
+      const res  = await fetch(`${SB_URL}/storage/v1/object/clac-media/${path}`, {
+        method: 'POST',
+        headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'image/jpeg', 'x-upsert': 'true' },
+        body: compressed,
+      });
+      if (res.ok) done++;
+      status.textContent = `Uploading... ${done}/${files.length}`;
+    } catch(e) { console.error(e); }
+  }
+  status.textContent = `✓ ${done} photo${done>1?'s':''} uploaded`;
+  setTimeout(() => { status.style.display = 'none'; }, 3000);
+  await mpLoadAll();
+}
+
 // ── TOAST ─────────────────────────────────────────────────
 let toastTimer;
 function showToast(msg) {
@@ -4228,5 +4384,40 @@ function showToast(msg) {
 renderDashboard();
 
 </script>
+
+<!-- UNIFIED MEDIA PICKER MODAL -->
+<div id="media-picker-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:2000; align-items:center; justify-content:center; padding:20px;">
+  <div style="background:var(--white); width:100%; max-width:900px; max-height:85vh; display:flex; flex-direction:column; box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+    <div style="padding:20px 24px; border-bottom:1px solid var(--rule); display:flex; justify-content:space-between; align-items:center; flex-shrink:0;">
+      <div style="font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--text-dark);">Media Library</div>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <button class="btn-sm" onclick="document.getElementById('mp-upload-input').click()">+ Upload New</button>
+        <input type="file" id="mp-upload-input" accept="image/*" multiple style="display:none" onchange="mpUpload(this.files)">
+        <button class="btn-sm" onclick="closeMediaPicker()">✕ Close</button>
+      </div>
+    </div>
+    <div style="padding:12px 24px; border-bottom:1px solid var(--rule); display:flex; gap:8px; flex-wrap:wrap; align-items:center; flex-shrink:0;">
+      <button class="btn-sm active" id="mp-filter-all" onclick="mpFilter('all',this)" style="background:var(--forest);color:var(--amber);border-color:var(--forest);">All</button>
+      <button class="btn-sm" id="mp-filter-library" onclick="mpFilter('library',this)">Library</button>
+      <button class="btn-sm" id="mp-filter-events" onclick="mpFilter('events',this)">Events</button>
+      <button class="btn-sm" id="mp-filter-covers" onclick="mpFilter('covers',this)">Covers</button>
+      <button class="btn-sm" id="mp-filter-board" onclick="mpFilter('board',this)">Board</button>
+      <button class="btn-sm" id="mp-filter-sponsors" onclick="mpFilter('sponsors',this)">Sponsors</button>
+      <input type="text" id="mp-search" placeholder="Search filename..." oninput="mpSearch(this.value)" style="margin-left:auto; padding:6px 12px; border:1px solid var(--rule); font-size:13px; width:160px; outline:none;">
+    </div>
+    <div id="mp-status" style="display:none; padding:8px 24px; font-family:'DM Mono',monospace; font-size:11px; color:var(--amber); border-bottom:1px solid var(--rule); flex-shrink:0;"></div>
+    <div style="flex:1; overflow-y:auto; padding:16px 24px; min-height:200px;">
+      <div id="mp-grid" style="display:grid; grid-template-columns:repeat(5,1fr); gap:6px;"></div>
+    </div>
+    <div style="padding:16px 24px; border-top:1px solid var(--rule); display:flex; justify-content:space-between; align-items:center; flex-shrink:0; background:var(--linen);">
+      <div id="mp-selected-preview" style="font-size:13px; color:var(--text-muted); display:flex; align-items:center; gap:8px;">Click any photo to select it</div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn-sm" onclick="closeMediaPicker()">Cancel</button>
+        <button class="btn-sm primary" id="mp-confirm-btn" onclick="confirmMediaPick()" disabled style="opacity:0.5;">Use This Photo →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
